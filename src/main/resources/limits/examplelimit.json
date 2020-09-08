@@ -1,0 +1,20 @@
+{
+  "key": "limit1",
+  "limitType": "BUY",
+  "itemStack": {
+    "item_id": 1,
+    "item_skull_owner": "",
+    "item_skull_url": "",
+    "item_data": 0,
+    "item_amount": 1,
+    "item_slot": 0,
+    "item_name": "&eLimite de compra",
+    "item_enchants": [],
+    "item_lore": [
+      "&eUtilize-me para aumentar seu",
+      "&elimite de compra."
+    ]
+  },
+  "value": 1000000.0,
+  "permission": "member.permission"
+}

@@ -1,0 +1,358 @@
+{
+  "mainMenuSettings": {
+    "buy": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/964f25cfff754f287a9838d8efe03998073c22df7a9d3025c425e3ed7ff52c20",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 11,
+      "item_name": "&eComprar geradores",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para poder comprar geradores."
+      ]
+    },
+    "spawners": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/4e6896eafd7861b92616e5d78feea79fe3dd3363cb3e4d4aa7a4ab54e64c3012",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 15,
+      "item_name": "&aSeus geradores",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para ver seus geradores colocados."
+      ]
+    }
+  },
+  "infoSpawnerMenuSettings": {
+    "spawner_item": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 10,
+      "item_name": "&aGerador",
+      "item_enchants": [],
+      "item_lore": [
+        "&fValor: &2R$ &7{coins}",
+        "&fDono: &7{owner}",
+        "&fTipo: &7{entity-type}",
+        "&fPilha: &7{stack}",
+        "&fLocalização: &7{location}"
+      ]
+    },
+    "boosters": {
+      "item_id": 373,
+      "item_skull_owner": "",
+      "item_skull_url": "",
+      "item_data": 0,
+      "item_amount": 1,
+      "item_slot": 13,
+      "item_name": "&aBoosters",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para ver seus boosters ativos."
+      ]
+    },
+    "friends": {
+      "item_id": 397,
+      "item_skull_owner": "Steve",
+      "item_skull_url": "",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 14,
+      "item_name": "&2Amigos",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para gerenciar as permissões de jogadores."
+      ]
+    },
+    "utils": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/8928ef335313214bb8cc137df153c1bee7b7a9d1e8e6281fe9d362d91fe9d89",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 15,
+      "item_name": "&eUtilidades",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para acessar o menu de utilidades do gerador."
+      ]
+    },
+    "top": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/99e77fae5313bac19bf14577d50093e4738ebd70fd54a4de1a27475d0ec9538f",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 16,
+      "item_name": "&bTop Ranking",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para ver os jogadores que mais possuem spawners."
+      ]
+    }
+  },
+  "utilsMenuSettings": {
+    "add": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/19123a068dacfc43964ec886976c4b08875687316fc1eed2711a11d65fa712",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 11,
+      "item_name": "&aAdicionar spawners",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique no gerador que está no seu.",
+        "&7inventário para poder adicioná-lo."
+      ]
+    },
+    "get": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 13,
+      "item_name": "&cRecolher todos",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para recolher todos os spawners."
+      ]
+    },
+    "remove": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/7f85bff3a2c1527f85274374c870c73d2efef6be7713eea569d3a1bc4a5efc49",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 15,
+      "item_name": "&cRemover spawners",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique aqui para remover spawners desse stack."
+      ]
+    },
+    "back": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 18,
+      "item_name": "&cVoltar",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para voltar para voltar ao menu do spawner."
+      ]
+    }
+  },
+  "friendsMenuSettings": {
+    "slots": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "spawner_item": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 4,
+      "item_name": "&aGerador",
+      "item_enchants": [],
+      "item_lore": [
+        "&fValor: &2R$ &7{coins}",
+        "&fDono: &7{owner}",
+        "&fTipo: &7{entity-type}",
+        "&fPilha: &7{stack}",
+        "&fLocalização: &7{location}"
+      ]
+    },
+    "add": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 49,
+      "item_name": "&aAdicionar amigo",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para adicionar um jogador a sua lista de amigos."
+      ]
+    },
+    "player": {
+      "item_id": 397,
+      "item_skull_owner": "{player}",
+      "item_skull_url": "",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 49,
+      "item_name": "&f{player}",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique no jogador para removê-lo da sua lista."
+      ]
+    },
+    "back": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 45,
+      "item_name": "&cVoltar",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para voltar para voltar ao menu do spawner."
+      ]
+    },
+    "back_page": {
+      "item_id": 262,
+      "item_skull_owner": "",
+      "item_skull_url": "",
+      "item_data": 0,
+      "item_amount": 1,
+      "item_slot": 47,
+      "item_name": "&cPágina anterior",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para voltar a página anterior."
+      ]
+    },
+    "next_page": {
+      "item_id": 262,
+      "item_skull_owner": "",
+      "item_skull_url": "",
+      "item_data": 0,
+      "item_amount": 1,
+      "item_slot": 47,
+      "item_name": "&aPróxima página",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para ir à página seguinte."
+      ]
+    }
+  },
+  "rankingMenuSettings": {
+    "slots": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      21,
+      22,
+      23
+    ],
+    "updating": {
+      "item_id": 30,
+      "item_skull_owner": "",
+      "item_skull_url": "",
+      "item_data": 0,
+      "item_amount": 1,
+      "item_slot": 13,
+      "item_name": "&aAtualizando",
+      "item_enchants": [],
+      "item_lore": [
+        "&7O ranking está atualizando."
+      ]
+    },
+    "player": {
+      "item_id": 397,
+      "item_skull_owner": "{player}",
+      "item_skull_url": "",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 15,
+      "item_name": "&f{player}",
+      "item_enchants": [],
+      "item_lore": [
+        "&fPosição: &7{position}º",
+        "&fValor: &2R$ &7{price}"
+      ]
+    },
+    "back": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 18,
+      "item_name": "&cVoltar",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para voltar para voltar ao menu do spawner."
+      ]
+    }
+  },
+  "boosterMenuSettings": {
+    "add": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 11,
+      "item_name": "&aAdicionar booster",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique em um booster do seu inventário para ativar."
+      ]
+    },
+    "boosters": {
+      "item_id": 373,
+      "item_skull_owner": "",
+      "item_skull_url": "",
+      "item_data": 0,
+      "item_amount": 1,
+      "item_slot": 15,
+      "item_name": "&eInformações",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Boosters ativos/Tempo restante:",
+        ""
+      ]
+    },
+    "back": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_slot": 18,
+      "item_name": "&cVoltar",
+      "item_enchants": [],
+      "item_lore": [
+        "&7Clique para voltar para voltar ao menu do spawner."
+      ]
+    }
+  }
+}

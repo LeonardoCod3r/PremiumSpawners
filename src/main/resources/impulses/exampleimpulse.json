@@ -1,0 +1,22 @@
+{
+  "id": "booster1",
+  "name": "§aBooster 2x",
+  "time": 300,
+  "type": "GENERATION",
+  "value": 2.0,
+  "item": {
+    "item_id": 1,
+    "item_skull_owner": "",
+    "item_skull_url": "",
+    "item_data": 0,
+    "item_slot": 0,
+    "item_amount": 1,
+    "item_name": "&aBooster",
+    "item_enchants": [],
+    "item_lore": [
+      "&fTempo: §75 minutos.",
+      "§fMultiplicador: §72x.",
+      "§fTipo: §7Geração de mobs."
+    ]
+  }
+}

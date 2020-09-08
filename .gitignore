@@ -1,0 +1,17 @@
+# Project exclude paths
+/target/
+.idea/$CACHE_FILE$
+.idea/.gitignore
+.idea/compiler.xml
+.idea/dbnavigator.xml
+.idea/dictionaries/
+.idea/discord.xml
+.idea/jarRepositories.xml
+.idea/jsonSchemas.xml
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+src/test/
+.idea/workspace.xml

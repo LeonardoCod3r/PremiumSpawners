@@ -1,0 +1,7 @@
+Answered: false #no edit this
+MySQL:
+  User: "root"
+  Password: "123"
+  Database: "twmobcoins"
+  Host: "localhost"
+  Port: "3306"

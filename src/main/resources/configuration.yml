@@ -1,0 +1,90 @@
+Settings:
+  #NÃO SUPORTA KILL-STEP
+  black-list:
+    - "mundo"
+  friends:
+    toggle: true
+    max: 5
+  format:
+    - ",1.0"
+    - "K,1000.0"
+    - "M,1000000.0"
+    - "B,1000000000.0"
+    - "T,1000000000000.0"
+    - "QA,1000000000000.0"
+    - "QI,1000000000000000.0"
+    - "SEX,1000000000000000000.0"
+    - "SEP,1000000000000000000000.0"
+Bonus:
+  permission-dois-use: 20 # permissão (cada "-" conta como se fosse um ".") e porcentagem
+  permission-use-vip: 10 # permissão (cada "-" conta como se fosse um ".") e porcentagem
+  permission-membro: 0
+Boosters:
+  default:
+    - "member.vip.prime:2.0"
+    - "member.member:1.0"
+Drops:
+  dropTwo:
+    id: 277
+    data: 0
+    mob: ZOMBIE
+    unit-sales-value: 10000000.0
+    drop-item-menu:
+      id: 277
+      data: 0
+      name: "&eCarne de Zumbi"
+      lore:
+        - "&ePreço unitário: {price-sell-unit}"
+        - "&eQuantidade: {amount}"
+        - "&ePreço de venda: {price-sell-all}"
+      amount: 1
+  galinha:
+    id: 365
+    data: 0
+    mob: CHICKEN
+    unit-sales-value: 1000000.0
+    drop-item-menu:
+      id: 365
+      data: 0
+      name: "&eFrango cru"
+      lore:
+        - "&ePreço unitário: {price-sell-unit}"
+        - "&eQuantidade: {amount}"
+        - "&ePreço de venda: {price-sell-all}"
+      amount: 1
+Inventory:
+  sell: # Tenha cuidado ao configurar
+    name: "&aMenu de vendas."
+    rows: 6
+    slotsDropSell: "10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,32,34"
+    items:
+      playerStats:
+        slot: 4 #válido a primeira e a última row
+        id: 397
+        data: 3
+        toggle: true
+        skull-owner: "{playername}"
+        name: "&e{playername}"
+        lore:
+          - "&fLimite de Venda: &7{limit}"
+          - "&fBooster de Drops: &7{multiplier}"
+          - "&fBônus de venda: &7{bonus}%"
+      sellAll:
+        slot: 51 #válido a primeira e a última row
+        toggle: true
+        id: 339
+        data: 0
+        name: "&eVender tudo"
+        lore:
+          - "&aClique aqui para vender {drops}"
+          - "&apor &2R$ &f{total}&a."
+      autoSell:
+        slot: 47 #válido a primeira e a última row
+        toggle: true
+        id: 154
+        data: 0
+        name: "&aAuto vender"
+        lore:
+          - "&eEstado: {state}"
+          - "&aClique para {future-state} a"
+          - "&aAuto-venda."

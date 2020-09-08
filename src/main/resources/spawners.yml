@@ -1,0 +1,33 @@
+Hologram:
+  - " &6&lMob Spawner"
+  - ""
+  - "&fDono: &7{owner}"
+  - "&fMob: &7{mob}"
+  - "&fStack: &7{stack}"
+List:
+  CHICKEN:
+    toggle: true #Quando for apagado da config com o servidor ainda na mesma temporada, ainda haverá spawners com NBTTag, desse modo, aqui pode desativá-los.
+    in: ""
+    item:
+      id: 397
+      data: 3
+      skull-url: "http://textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893"
+      #skull-owner: " "
+      name: "&6&lMOB SPAWNER"
+      lore:
+        - "&fCriatura: &7{entity-type}"
+        - "&fStack: &7{stack}"
+    price: 1500000.0
+  ZOMBIE:
+    toggle: true #Quando for apagado da config com o servidor ainda na mesma temporada, ainda haverá spawners com NBTTag, desse modo, aqui pode desativá-los.
+    in: "20:30:00-13/10/2020"
+    item:
+      id: 397
+      data: 3
+      skull-url: "http://textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893"
+      #skull-owner: " "
+      name: "&6&lMOB SPAWNER"
+      lore:
+        - "&fCriatura: &7{entity-type}"
+        - "&fStack: &7{stack}"
+    price: 1500000.0

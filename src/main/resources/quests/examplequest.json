@@ -1,0 +1,109 @@
+{
+  "settings": {
+    "name": "§eMinerar e construir é bom?",
+    "description": [
+      "§7Está afim de usar droga, mas não tem dinheiro?",
+      "§7Eis aqui uma chance única de conseguir 100.000 coins."
+    ],
+    "message": "§7Parabéns, você completou a primeira missão do servidor. Boa sorte nessa jornada, bem-vindo.",
+    "identifier": "missaomista1",
+    "position": 1,
+    "needPreviousQuestToRun": false,
+    "needQuests": []
+  },
+  "rules": [
+    {
+      "id": "one",
+      "type": "mining",
+      "value": 10,
+      "additionalInformation": {},
+      "defaultValue": 0,
+      "inventoryView": {
+        "item_id": 1,
+        "item_skull_owner": "",
+        "item_skull_url": "",
+        "item_data": 0,
+        "item_amount": 1,
+        "item_slot": 0,
+        "item_name": "&eMinerar",
+        "item_enchants": [],
+        "item_lore": [
+          "&7Minerar 10 blocos de qualquer tipo.",
+          "",
+          "§fBlocos minerados: §7{value}",
+          "§fCompleta: §7{completed}",
+          "§fCompletada em: §7{completedDay}"
+        ]
+      }
+    },
+    {
+      "id": "two",
+      "type": "place",
+      "value": 10,
+      "additionalInformation": {},
+      "defaultValue": 0,
+      "inventoryView": {
+        "item_id": 1,
+        "item_skull_owner": "",
+        "item_skull_url": "",
+        "item_data": 0,
+        "item_amount": 1,
+        "item_slot": 0,
+        "item_name": "&eColocar blocos",
+        "item_enchants": [],
+        "item_lore": [
+          "&7Colocar 10 blocos de qualquer tipo.",
+          "",
+          "§fBlocos colocados: §7{value}",
+          "§fCompleta: §7{completed}",
+          "§fCompletada em: §7{completedDay}"
+        ]
+      }
+    }
+  ],
+  "rewards": [
+    {
+      "id": "one",
+      "type": "COMMAND",
+      "sliceReward": {
+        "command": "money add {player} 1000000"
+      }
+    },
+    {
+      "id": "two",
+      "type": "ITEM",
+      "sliceReward": {
+        "item_id": 1,
+        "item_amount": 10,
+        "item_skull_owner": "",
+        "item_skull_url": "",
+        "item_data": 0,
+        "item_name": "&cAlgo para usar",
+        "item_enchants": [
+          "PROTECTION_ENVIRONMENTAL:1"
+        ],
+        "item_lore": [
+          "&cGato",
+          "&cNo",
+          "&cForno"
+        ]
+      }
+    }
+  ],
+  "inventoryView": {
+    "item_id": 1,
+    "item_skull_owner": "",
+    "item_skull_url": "",
+    "item_data": 0,
+    "item_amount": 1,
+    "item_slot": 0,
+    "item_name": "&cMissão 1",
+    "item_enchants": [],
+    "item_lore": [
+      "&7Minerar e colocar blocos.",
+      "§7Clique para visualizar a missão."
+    ]
+  }
+}
+
+

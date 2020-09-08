@@ -1,0 +1,9 @@
+Settings:
+  worldBlackList:
+    - "mundo"
+  name: "&7{mob} x{stack}"
+  max-stack: 10000000.0
+  area:
+    x: 8.0
+    y: 5.0
+    z: 8.0
