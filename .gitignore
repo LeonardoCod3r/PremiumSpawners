@@ -15,3 +15,7 @@
 .idea/vcs.xml
 src/test/
 .idea/workspace.xml
+dynmap/
+dynmap-api/
+DynmapCore/
+DyinmapCoreAPI/

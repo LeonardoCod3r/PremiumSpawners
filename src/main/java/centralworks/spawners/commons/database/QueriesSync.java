@@ -1,7 +1,7 @@
 package centralworks.spawners.commons.database;
 
 import centralworks.spawners.commons.database.specifications.AbstractDAO;
-import centralworks.spawners.commons.database.specifications.CommonQueries;
+import centralworks.spawners.commons.database.specifications.AbstractDTO;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
@@ -14,7 +14,7 @@ public class QueriesSync<T extends Storable<T>> {
     private String identifier;
     private Integer id;
     private T object;
-    private CommonQueries<T> dto;
+    private AbstractDTO<T> dto;
     private AbstractDAO<T> dao;
 
     @SuppressWarnings("unchecked")
@@ -35,7 +35,7 @@ public class QueriesSync<T extends Storable<T>> {
     }
 
     public QueriesSync(Class<T> classe) {
-        dto = new CommonQueries<>(classe);
+        dto = new AbstractDTO<>(classe);
         try {
             final T instance = classe.newInstance();
             dao = new AbstractDAO<>(classe, instance.getProperties());
@@ -44,7 +44,7 @@ public class QueriesSync<T extends Storable<T>> {
 
     public QueriesSync(Class<T> classe, String identifier) {
         this.identifier = identifier;
-        dto = new CommonQueries<>(classe);
+        dto = new AbstractDTO<>(classe);
         try {
             final T instance = classe.newInstance();
             dao = new AbstractDAO<>(classe, instance.getProperties());
@@ -53,7 +53,7 @@ public class QueriesSync<T extends Storable<T>> {
 
     public QueriesSync(Class<T> classe, Integer id) {
         this.id = id;
-        dto = new CommonQueries<>(classe);
+        dto = new AbstractDTO<>(classe);
         try {
             final T instance = classe.newInstance();
             dao = new AbstractDAO<>(classe, instance.getProperties());
@@ -62,7 +62,7 @@ public class QueriesSync<T extends Storable<T>> {
 
     public QueriesSync(Class<T> classe, T obj) {
         setObject(obj);
-        dto = new CommonQueries<>(classe);
+        dto = new AbstractDTO<>(classe);
         try {
             final T instance = classe.newInstance();
             dao = new AbstractDAO<>(classe, instance.getProperties());

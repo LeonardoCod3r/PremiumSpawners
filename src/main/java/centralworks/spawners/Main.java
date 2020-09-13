@@ -6,26 +6,26 @@ import centralworks.spawners.modules.cmds.BoosterCommand;
 import centralworks.spawners.modules.cmds.LimitCommand;
 import centralworks.spawners.modules.menu.settings.MenusSettings;
 import centralworks.spawners.modules.models.ApplicationCommons;
-import centralworks.spawners.modules.models.UserDetails;
+import centralworks.spawners.modules.models.addons.ImpulseLoader;
+import centralworks.spawners.modules.models.addons.LimitLoader;
 import centralworks.spawners.modules.models.dropsstorage.ApplicationDropStorage;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
-import centralworks.spawners.modules.models.spawners.cached.SICached;
-import centralworks.spawners.modules.models.addons.LimitLoader;
 import centralworks.spawners.modules.models.quests.ApplicationQuest;
 import centralworks.spawners.modules.models.quests.suppliers.QuestLoader;
 import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
-import centralworks.spawners.modules.models.addons.ImpulseLoader;
+import centralworks.spawners.modules.models.spawners.cached.SICached;
 import com.google.gson.Gson;
 import de.tr7zw.nbtinjector.NBTInjector;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Monster;
+import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class Main extends JavaPlugin {
 
@@ -85,7 +85,7 @@ public class Main extends JavaPlugin {
         NBTInjector.inject();
         LOGGER.info("NBTInjector aplicado!");
         LOGGER.info("Corrigindo entidades...");
-        Bukkit.getWorlds().forEach(world -> world.getEntitiesByClasses(Animals.class, Monster.class).forEach(NBTInjector::patchEntity));
+        Bukkit.getWorlds().forEach(world -> world.getEntitiesByClasses(IronGolem.class, Villager.class, Animals.class, Monster.class).stream().filter(entity -> !entity.hasMetadata("NPC")).forEach(NBTInjector::patchEntity));
         LOGGER.info("Entidades corrigidas!");
     }
 
@@ -96,6 +96,12 @@ public class Main extends JavaPlugin {
 
     public void distribution() {
         LOGGER.info("Distribuindo valores para produção.");
+        /*InjectBuilder.register(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(Main.class).toInstance(Main.this);
+            }
+        });*/
         me = this;
         messages = new Configuration("messages");
         configuration = new Configuration("configuration");
@@ -109,7 +115,7 @@ public class Main extends JavaPlugin {
         LOGGER.info("Distribuição completada com sucesso.");
     }
 
-    public void reload(){
+    public void reload() {
         distribution();
         final QuestLoader questLoader = QuestLoader.get();
         questLoader.setLoaded(false);

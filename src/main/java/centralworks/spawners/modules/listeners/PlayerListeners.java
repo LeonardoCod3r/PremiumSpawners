@@ -250,9 +250,10 @@ public class PlayerListeners implements Listener {
         query2.persist().addQuestsDefaults();
         query2.commit(true);
         final QueriesSync<DropStorage> query3 = new DropStorage(name).query();
-        query3.persist().fixDrops();
-        query3.persist().applyBoostersDefault();
-        query3.persist().fixBonus(e.getPlayer());
+        final DropStorage storage = query3.persist();
+        storage.fixDrops();
+        storage.applyBoostersDefault();
+        storage.fixBonus(e.getPlayer());
         query3.commit(true);
     }
 

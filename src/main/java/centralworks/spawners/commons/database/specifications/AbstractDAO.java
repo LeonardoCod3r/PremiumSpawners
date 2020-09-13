@@ -82,7 +82,7 @@ public class AbstractDAO<T extends Storable<T>> {
     }
 
     public void saveAll() {
-        new CommonQueries<>(getClazz()).findAllFiles().forEach(this::save);
+        new AbstractDTO<>(getClazz()).findAllFiles().forEach(this::save);
     }
 
     public T load(String id) {

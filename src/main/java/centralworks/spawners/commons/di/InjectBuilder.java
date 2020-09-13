@@ -1,6 +1,7 @@
 package centralworks.spawners.commons.di;
 
 import centralworks.spawners.commons.di.services.ConnectionService;
+import centralworks.spawners.commons.di.services.MainClassService;
 import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -26,9 +27,10 @@ public class InjectBuilder<T> {
     static {
         injectors = Maps.newHashMap();
         register(new ConnectionService());
+        register(new MainClassService());
     }
 
-    private static void register(AbstractModule abstractModule) {
+    public static void register(AbstractModule abstractModule) {
         injectors.put(abstractModule.getClass(), Guice.createInjector(abstractModule));
     }
 

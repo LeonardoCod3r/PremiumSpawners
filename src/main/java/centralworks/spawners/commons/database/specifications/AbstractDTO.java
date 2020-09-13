@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class CommonQueries<T extends Storable<T>> {
+public class AbstractDTO<T extends Storable<T>> {
 
     private final Class<T> clazz;
 
@@ -21,7 +21,7 @@ public class CommonQueries<T extends Storable<T>> {
         return clazz;
     }
 
-    public CommonQueries(Class<T> clazz) {
+    public AbstractDTO(Class<T> clazz) {
         this.clazz = clazz;
     }
 
