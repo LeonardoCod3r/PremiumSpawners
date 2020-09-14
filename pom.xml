@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>centralworks.spawners</groupId>
     <artifactId>PremiumSpawners</artifactId>
-    <version>1.0-BETA</version>
+    <version>1.2.0</version>
     <name>NitroSpawners</name>
     <organization>
         <name>CentralWorks</name>
@@ -56,6 +56,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <finalName>NitroSpawners_V${version}</finalName>
                 </configuration>
                 <executions>
                     <execution>
@@ -100,6 +101,13 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <systemPath>${project.basedir}/../../ApisBukkit/Vault.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>Dynmap</artifactId>
+            <version>2.5</version>
+            <systemPath>${project.basedir}/../../ApisBukkit/dynmap-2.5.jar</systemPath>
             <scope>system</scope>
         </dependency>
         <dependency>

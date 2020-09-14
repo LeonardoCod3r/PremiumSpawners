@@ -7,6 +7,7 @@ import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.lib.Serialize;
+import centralworks.spawners.modules.hook.DynmapHook;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.addons.ImpulseType;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
@@ -203,6 +204,8 @@ public class Spawner extends Storable<Spawner> {
             pullHologram();
             callback.accept(this);
         });
+        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        dynmapHook.view(this);
     }
 
     public void pullHologram() {
@@ -214,6 +217,8 @@ public class Spawner extends Storable<Spawner> {
                 .replace("{owner}", getOwner()))
         );
         hologram.teleport(hologram.getLocation());
+        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        dynmapHook.view(this);
     }
 
     public void updateHologram() {
@@ -229,6 +234,8 @@ public class Spawner extends Storable<Spawner> {
                 hologram.teleport(hologram.getLocation());
             }, 2L);
         } else pullHologram();
+        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        dynmapHook.view(this);
     }
 
     public Boolean isOwner(String name) {
@@ -248,6 +255,8 @@ public class Spawner extends Storable<Spawner> {
         query().delete(true);
         userDetails.deleteSpawnerLocation(l);
         userDetails.query().commit();
+        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        dynmapHook.hide(this);
     }
 
     public void concat(Spawner spawner) {

@@ -5,7 +5,7 @@ import centralworks.spawners.modules.models.UserDetails;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
-public class PlaceHolder extends PlaceholderExpansion {
+public class PlaceHolderHook extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
