@@ -9,12 +9,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-public class DropC extends Cache<Drop> {
+public class LootData extends Cache<Drop> {
 
-    private static DropC me;
+    private static LootData me;
 
-    public static DropC get() {
-        return me == null ? me = new DropC() : me;
+    public static LootData get() {
+        return me == null ? me = new LootData() : me;
     }
 
     public Drop get(String key) {

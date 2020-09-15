@@ -32,8 +32,7 @@ public class ApplicationSpawner {
         for (Spawner spawner : queriesSync.getDao().loadAll()) {
             spawner.query().queue((spawner1, q) -> {
                 spawner1.getLocation().getChunk().load();
-                spawner1.pullHologram();
-                spawner1.impulsesForceRun();
+                spawner1.appear(null);
                 q.commit();
             });
         }

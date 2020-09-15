@@ -5,8 +5,8 @@ import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusC;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import com.google.common.collect.Lists;
 import lombok.*;
 import org.bukkit.Bukkit;
@@ -73,7 +73,7 @@ public class DropStorage extends Storable<DropStorage> {
     }
 
     public void fixDrops() {
-        DropC.get().getList().forEach(drop -> {
+        LootData.get().getList().forEach(drop -> {
             if (getDropPlayers().stream().noneMatch(dropPlayer -> dropPlayer.getKeyDrop().equalsIgnoreCase(drop.getKeyDrop()))) {
                 final List<DropPlayer> list = new ArrayList<>(getDropPlayers());
                 list.add(new DropPlayer(drop.getKeyDrop(), 0D));
@@ -83,7 +83,7 @@ public class DropStorage extends Storable<DropStorage> {
     }
 
     public void fixBonus(Player p){
-        setBonus(BonusC.get(p));
+        setBonus(BonusRegistered.get(p));
     }
 
     public void applyBoostersDefault(){
@@ -103,7 +103,7 @@ public class DropStorage extends Storable<DropStorage> {
     public Double getPriceAll() {
         double priceAll = 0D;
         for (DropPlayer dropPlayer : dropPlayers) {
-            final Drop drop = DropC.get().get(dropPlayer.getKeyDrop());
+            final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
             priceAll += drop.getUnitPrice() * dropPlayer.getAmount();
         }
         return priceAll;

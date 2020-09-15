@@ -8,7 +8,7 @@ import centralworks.spawners.modules.models.dropsstorage.DropPlayer;
 import centralworks.spawners.modules.models.dropsstorage.DropStorage;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.lib.ItemName;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -49,7 +49,7 @@ public class SellCommand extends BukkitCommand {
     public void openSellInventory(Player p, DropStorage dropStorage, Configuration configuration) {
         final InventoryBuilder inventoryBuilder = new InventoryBuilder(Main.get(), configuration.getInt("Inventory.sell.rows"), configuration.get("Inventory.sell.name", true));
         final List<Integer> slots = new ArrayList<>();
-        final DropC cached = DropC.get();
+        final LootData cached = LootData.get();
         final Configuration messages = Main.getMessages();
         Arrays.asList(configuration.get("Inventory.sell.slotsDropSell", true).split(",")).forEach(s1 -> slots.add(Integer.parseInt(s1)));
         inventoryBuilder.setCancellable(true);

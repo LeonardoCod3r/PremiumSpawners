@@ -4,19 +4,19 @@ import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
 import centralworks.spawners.modules.cmds.DSFriendsCommand;
 import centralworks.spawners.modules.cmds.SellCommand;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusC;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 
 public class ApplicationDropStorage {
 
     public static void boot() {
         QueriesSync.supply(DropStorage.class).getDao().createTable();
-        DropC.get().load();
+        LootData.get().load();
         ((CraftServer) Main.get().getServer()).getCommandMap().register("armazem", new SellCommand());
         if (Main.getConfiguration().is("Settings.friends.toggle"))
             ((CraftServer) Main.get().getServer()).getCommandMap().register("armazemfriends", new DSFriendsCommand());
-        Main.getConfiguration().section("Bonus").forEach(s -> BonusC.put(s.replace("-", "."), Main.getConfiguration().getInt("Bonus." + s)));
+        Main.getConfiguration().section("Bonus").forEach(s -> BonusRegistered.put(s.replace("-", "."), Main.getConfiguration().getInt("Bonus." + s)));
     }
 
     public static void shutdown() {

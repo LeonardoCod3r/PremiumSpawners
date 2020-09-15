@@ -1,15 +1,16 @@
 package centralworks.spawners.modules.models.ranking;
 
+import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
 import centralworks.spawners.modules.models.UserDetails;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Data
@@ -43,8 +44,9 @@ public class SpawnerRanking {
                     setSuppliers(suppliers.stream().sorted((o1, o2) -> o2.getPriceAll().compareTo(o1.getPriceAll())).collect(Collectors.toList()));
                     loaded = true;
                     final long l1 = System.currentTimeMillis() - l;
-                    Bukkit.getLogger().log(Level.INFO, "O ranking de geradores foi carregado com sucesso.");
-                    Bukkit.getLogger().log(Level.INFO, "Tempo de atualização: " + l1 + "ms.");
+                    final Logger logger = Main.get().getLogger();
+                    logger.log(Level.INFO, "O ranking de geradores foi carregado com sucesso.");
+                    logger.log(Level.INFO, "Tempo de atualização: " + l1 + "ms.");
                 });
     }
 

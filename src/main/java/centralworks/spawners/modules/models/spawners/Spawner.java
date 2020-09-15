@@ -7,6 +7,7 @@ import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.lib.Serialize;
+import centralworks.spawners.modules.animations.AnimationService;
 import centralworks.spawners.modules.hook.DynmapHook;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.addons.ImpulseType;
@@ -42,6 +43,7 @@ public class Spawner extends Storable<Spawner> {
     private Double amount = 1.0;
     private LinkedList<String> friends = Lists.newLinkedList();
     private LinkedList<SpawnerImpulse> impulsesOfGeneration = Lists.newLinkedList();
+    private AnimationService animationService;
     private Long hologramId;
 
     public Spawner(String locSerialized) {
@@ -110,6 +112,10 @@ public class Spawner extends Storable<Spawner> {
 
     public String getEntityName() {
         return EntityName.valueOf(getEntityType()).getName();
+    }
+
+    public boolean inAnimation() {
+        return animationService != null;
     }
 
     public void setLocation(Location location) {
@@ -202,6 +208,7 @@ public class Spawner extends Storable<Spawner> {
             spawnerBlock.setDelay(20);
             spawnerBlock.update();
             pullHologram();
+            impulsesForceRun();
             callback.accept(this);
         });
         final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();

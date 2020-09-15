@@ -3,6 +3,7 @@ package centralworks.spawners.modules.listeners;
 import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
 import centralworks.spawners.lib.Configuration;
+import centralworks.spawners.modules.animations.AnimationPlace;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.menu.InfoSpawnerMenu;
 import centralworks.spawners.modules.models.spawners.cached.DCached;
@@ -85,6 +86,13 @@ public class SpawnerListeners implements Listener {
                 spawner.appear(spawner1 -> {
                     user.query().commit(true);
                     spawner1.query().commit(true);
+                    AnimationPlace.builder()
+                            .radius(1.3)
+                            .ticksToFinalize(60)
+                            .spawner(spawner)
+                            .red(50)
+                            .green(168)
+                            .blue(82).build().send();
                 });
             }
         });

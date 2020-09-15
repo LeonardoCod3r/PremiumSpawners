@@ -8,7 +8,7 @@ import centralworks.spawners.modules.models.dropsstorage.DropPlayer;
 import centralworks.spawners.modules.models.dropsstorage.DropStorage;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.lib.ItemName;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import centralworks.spawners.modules.models.entities.EntityStacked;
 import centralworks.spawners.modules.models.addons.ImpulseType;
 import centralworks.spawners.modules.models.spawners.Spawner;
@@ -78,7 +78,7 @@ public class EntityListeners implements Listener {
             final Entity mob = e.getEntity();
             final DropStorage dropStorage = new DropStorage(p).query().persist();
             for (DropPlayer dropPlayer : dropStorage.getDropPlayers()) {
-                final Drop drop = DropC.get().get(dropPlayer.getKeyDrop());
+                final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
                 if (drop.getEntityType().equals(mob.getType())) {
                     final Configuration messages = Main.getMessages();
                     if (!dropStorage.isMax()) {

@@ -9,7 +9,7 @@ import centralworks.spawners.modules.models.ApplicationCommons;
 import centralworks.spawners.modules.models.addons.ImpulseLoader;
 import centralworks.spawners.modules.models.addons.LimitLoader;
 import centralworks.spawners.modules.models.dropsstorage.ApplicationDropStorage;
-import centralworks.spawners.modules.models.dropsstorage.supliers.cached.DropC;
+import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import centralworks.spawners.modules.models.quests.ApplicationQuest;
 import centralworks.spawners.modules.models.quests.suppliers.QuestLoader;
 import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
@@ -24,8 +24,6 @@ import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class Main extends JavaPlugin {
 
@@ -127,7 +125,7 @@ public class Main extends JavaPlugin {
         limitLoader.setLoaded(false);
         limitLoader.run();
         MenusSettings.newInstance();
-        DropC.get().load();
+        LootData.get().load();
         SICached.get().load();
     }
 

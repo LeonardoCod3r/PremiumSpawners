@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-public class BonusC {
+public class BonusRegistered {
 
     public static HashMap<String, Integer> bonus = Maps.newHashMap();
 
