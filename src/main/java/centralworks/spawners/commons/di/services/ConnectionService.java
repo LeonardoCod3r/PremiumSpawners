@@ -13,7 +13,6 @@ public class ConnectionService extends AbstractModule {
 
     @Override
     protected void configure() {
-
     }
 
     @Provides

@@ -2,7 +2,7 @@ package centralworks.spawners.modules.models;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
-import centralworks.spawners.commons.database.specifications.AbstractDAO;
+import centralworks.spawners.commons.database.specifications.DAO;
 import centralworks.spawners.modules.hook.PlaceHolderHook;
 import centralworks.spawners.modules.menu.settings.MenusSettings;
 import centralworks.spawners.modules.models.addons.ImpulseLoader;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationCommons {
 
     public static void boot() {
-        final AbstractDAO<UserDetails> dao = QueriesSync.supply(UserDetails.class).getDao();
+        final DAO<UserDetails> dao = QueriesSync.supply(UserDetails.class).getDao();
         dao.createTable();
         dao.loadAll();
         MenusSettings.get();
