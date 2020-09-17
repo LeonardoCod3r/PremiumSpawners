@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Properties;
 
 @Data
-public class AbstractDAO<T extends Storable<T>> {
+public class DAO<T extends Storable<T>> {
 
     private final Class<T> clazz;
     private final Properties properties;
     @Inject
     private Connection connection;
 
-    public AbstractDAO(Class<T> clazz, Properties properties) {
+    public DAO(Class<T> clazz, Properties properties) {
         this.clazz = clazz;
         this.properties = properties;
         new InjectBuilder<>(this, ConnectionService.class);
@@ -81,7 +81,7 @@ public class AbstractDAO<T extends Storable<T>> {
     }
 
     public void saveAll() {
-        new AbstractDTO<>(getClazz()).findAllFiles().forEach(this::save);
+        new DTO<>(getClazz()).findAllFiles().forEach(this::save);
     }
 
     public T load(String id) {

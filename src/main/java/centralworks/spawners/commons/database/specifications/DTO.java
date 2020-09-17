@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AbstractDTO<T extends Storable<T>> {
+public class DTO<T extends Storable<T>> {
 
     private final Class<T> clazz;
 
-    public AbstractDTO(Class<T> clazz) {
+    public DTO(Class<T> clazz) {
         this.clazz = clazz;
     }
 
@@ -48,7 +48,7 @@ public class AbstractDTO<T extends Storable<T>> {
 
     public List<T> loadAllFiles() {
         try {
-            final List<T> ts = new AbstractDAO<>(clazz, clazz.newInstance().getProperties()).loadAll();
+            final List<T> ts = new DAO<>(clazz, clazz.newInstance().getProperties()).loadAll();
             ts.forEach(t -> {
                 final String id = (String) t.getIdentifier();
                 Bukkit.getScheduler().runTask(Main.get(), () -> read(id));

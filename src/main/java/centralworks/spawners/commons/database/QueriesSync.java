@@ -1,7 +1,7 @@
 package centralworks.spawners.commons.database;
 
-import centralworks.spawners.commons.database.specifications.AbstractDAO;
-import centralworks.spawners.commons.database.specifications.AbstractDTO;
+import centralworks.spawners.commons.database.specifications.DAO;
+import centralworks.spawners.commons.database.specifications.DTO;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
@@ -14,44 +14,44 @@ public class QueriesSync<T extends Storable<T>> {
     private String identifier;
     private Integer id;
     private T object;
-    private AbstractDTO<T> dto;
-    private AbstractDAO<T> dao;
+    private DTO<T> dto;
+    private DAO<T> dao;
 
     public QueriesSync(Class<T> classe) {
-        dto = new AbstractDTO<>(classe);
+        dto = new DTO<>(classe);
         try {
             final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
+            dao = new DAO<>(classe, instance.getProperties());
         } catch (Exception ignored) {
         }
     }
 
     public QueriesSync(Class<T> classe, String identifier) {
         this.identifier = identifier;
-        dto = new AbstractDTO<>(classe);
+        dto = new DTO<>(classe);
         try {
             final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
+            dao = new DAO<>(classe, instance.getProperties());
         } catch (Exception ignored) {
         }
     }
 
     public QueriesSync(Class<T> classe, Integer id) {
         this.id = id;
-        dto = new AbstractDTO<>(classe);
+        dto = new DTO<>(classe);
         try {
             final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
+            dao = new DAO<>(classe, instance.getProperties());
         } catch (Exception ignored) {
         }
     }
 
     public QueriesSync(Class<T> classe, T obj) {
         setObject(obj);
-        dto = new AbstractDTO<>(classe);
+        dto = new DTO<>(classe);
         try {
             final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
+            dao = new DAO<>(classe, instance.getProperties());
         } catch (Exception ignored) {
         }
     }
