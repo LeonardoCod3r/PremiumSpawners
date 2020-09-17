@@ -3,7 +3,6 @@ package centralworks.spawners.modules.models;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 @Data

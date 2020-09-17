@@ -13,6 +13,11 @@ public class QuestRule {
     private Long completedIn = System.currentTimeMillis();
     private Object value;
 
+    public QuestRule(boolean completed) {
+        this.completed = completed;
+        if (completed) completedIn = System.currentTimeMillis();
+    }
+
     public Double addValueAsDouble(Double value) {
         final double newValue = getValueAsDouble() + value;
         setValue(newValue);
@@ -23,11 +28,6 @@ public class QuestRule {
         final int newValue = getValueAsInteger() + value;
         setValue(newValue);
         return newValue;
-    }
-
-    public QuestRule(boolean completed) {
-        this.completed = completed;
-        if (completed) completedIn = System.currentTimeMillis();
     }
 
     public Double getValueAsDouble() {

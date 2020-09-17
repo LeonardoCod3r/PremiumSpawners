@@ -3,5 +3,5 @@ main: centralworks.spawners.Main
 author: <Leonardo/>
 version: 1.2.0
 description: A advanced plug-in of Spawners system
-depend: [HolographicDisplays, NBTAPI, PlaceholderAPI]
+depend: [HolographicDisplays, NBTAPI, PlaceholderAPI, ProtocolLib]
 softdepend: [dynmap]

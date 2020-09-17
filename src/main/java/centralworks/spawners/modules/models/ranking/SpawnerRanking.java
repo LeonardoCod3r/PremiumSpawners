@@ -18,13 +18,12 @@ import java.util.stream.Collectors;
 public class SpawnerRanking {
 
     private static SpawnerRanking me;
+    private List<Supplier> suppliers = Lists.newArrayList();
+    private boolean loaded = false;
 
     public static SpawnerRanking get() {
         return me == null ? me = new SpawnerRanking() : me;
     }
-
-    private List<Supplier> suppliers = Lists.newArrayList();
-    private boolean loaded = false;
 
     public void updateAsync() {
         loaded = false;

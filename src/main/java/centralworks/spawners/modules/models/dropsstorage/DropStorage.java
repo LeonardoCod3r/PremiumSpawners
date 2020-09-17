@@ -1,8 +1,8 @@
 package centralworks.spawners.modules.models.dropsstorage;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
@@ -82,21 +82,21 @@ public class DropStorage extends Storable<DropStorage> {
         });
     }
 
-    public void fixBonus(Player p){
+    public void fixBonus(Player p) {
         setBonus(BonusRegistered.get(p));
     }
 
-    public void applyBoostersDefault(){
-        final Double b = Double.valueOf(Main.getConfiguration().getList("Boosters.default", false).stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
+    public void applyBoostersDefault() {
+        final Double b = Double.valueOf(Main.getDropStorage().getList("Boosters.default", false).stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
         if (getMultiplier() < b) setMultiplier(b);
     }
 
-    public void sellAll(){
+    public void sellAll() {
         getDropPlayers().forEach(dropPlayer -> dropPlayer.sell(getOwnerPlayer(), this));
         query().commit();
     }
 
-    public DropPlayer getDropPlayer(String keyDrop){
+    public DropPlayer getDropPlayer(String keyDrop) {
         return getDropPlayers().stream().filter(dropPlayer -> dropPlayer.getKeyDrop().equals(keyDrop)).findFirst().get();
     }
 
@@ -109,11 +109,11 @@ public class DropStorage extends Storable<DropStorage> {
         return priceAll;
     }
 
-    public Double getPriceWithBonus(){
+    public Double getPriceWithBonus() {
         return getPriceAll() + (getPriceAll() * getBonus() / 100);
     }
 
-    public UserDetails getUser(){
+    public UserDetails getUser() {
         return new UserDetails(getOwner()).query().persist();
     }
 

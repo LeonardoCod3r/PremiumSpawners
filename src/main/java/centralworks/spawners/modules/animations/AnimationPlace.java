@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 @AllArgsConstructor
 public class AnimationPlace implements AnimationService {
 
-    private Spawner spawner;
     private float red = 255;
     private float green = 0;
     private float blue = 0;
@@ -28,17 +27,7 @@ public class AnimationPlace implements AnimationService {
     private int ticksToFinalize = 60;
     private boolean cancelled = false;
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-        if (cancelled) end();
-    }
-
-    private void end() {
-        spawner.setAnimationService(null);
-        spawner.query().commit();
-    }
-
-    public void send() {
+    public void send(Spawner spawner) {
         final Location location = spawner.getLocation().add(0.5, 0.0, 0.5);
         spawner.setAnimationService(this);
         spawner.query().commit();
@@ -46,10 +35,11 @@ public class AnimationPlace implements AnimationService {
         new BukkitRunnable() {
             int duration = 0;
             double time = 0;
+
             @Override
             public void run() {
                 if (isCancelled()) {
-                    end();
+                    spawner.cancelAnimation();
                     cancel();
                     return;
                 }
@@ -62,12 +52,12 @@ public class AnimationPlace implements AnimationService {
                             .write(1, (float) location.getY() + 2)
                             .write(2, (float) (location.getZ()));
                     pManager.broadcastServerPacket(packet);
-                    end();
+                    spawner.cancelAnimation();
                     cancel();
                     return;
                 }
-                final double x = radius*Math.sin(time);
-                final double z = radius*Math.cos(time);
+                final double x = radius * Math.sin(time);
+                final double z = radius * Math.cos(time);
                 final PacketContainer packet = pManager.createPacket(PacketType.Play.Server.WORLD_PARTICLES);
                 packet.getModifier().writeDefaults();
                 packet.getParticles().write(0, EnumWrappers.Particle.DRAGON_BREATH);
@@ -79,8 +69,8 @@ public class AnimationPlace implements AnimationService {
                         .write(4, green)
                         .write(5, blue);
                 pManager.broadcastServerPacket(packet);
-                time+=0.1;
-                duration+=1;
+                time += 0.1;
+                duration += 1;
             }
         }.runTaskTimer(Main.get(), 20, 1);
     }

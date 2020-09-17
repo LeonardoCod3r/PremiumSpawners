@@ -21,7 +21,7 @@ public class SpawnerBuilder {
         this.owner = owner;
     }
 
-    public Spawner build(ItemStack itemStack){
+    public Spawner build(ItemStack itemStack) {
         final Spawner spawner = new Spawner();
         final SpawnerItem item = new SpawnerItem().parse(itemStack);
         spawner.setLocation(location);
@@ -31,7 +31,7 @@ public class SpawnerBuilder {
         return this.resultBuild = spawner;
     }
 
-    public Spawner build(SpawnerItem item){
+    public Spawner build(SpawnerItem item) {
         final Spawner spawner = new Spawner();
         spawner.setLocation(location);
         spawner.setAmount(item.getAmountSpawners() * item.getAmountItem());

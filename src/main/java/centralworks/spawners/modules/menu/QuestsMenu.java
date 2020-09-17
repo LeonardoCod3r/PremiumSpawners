@@ -45,7 +45,7 @@ public class QuestsMenu extends InventoryBuilder {
 
     public Item getInfoPlayer(Player p) {
         final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();
-        return new Item(Material.SKULL_ITEM, 1, (short)3).setSkullOwner(p.getName()).name("§eInformações").lore(
+        return new Item(Material.SKULL_ITEM, 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações").lore(
                 "§fUsuário: §7" + p.getName(),
                 "§fÚltima missão completada: §7" +
                         (playerQuests.hasCompletedQuest() ?

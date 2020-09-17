@@ -20,7 +20,7 @@ public class Impulse {
     private String permission;
     private ItemSettings item;
 
-    public ItemStack getAsItem(){
+    public ItemStack getAsItem() {
         final Settings settings = Settings.get();
         final ItemStack itemStack = item.getAsItem(s -> s);
         final NBTItem nbtItem = new NBTItem(itemStack);

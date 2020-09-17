@@ -13,7 +13,7 @@ public class CraftReward {
     private JsonObject sliceReward;
 
     public boolean toAward(String playerName) {
-        switch (type){
+        switch (type) {
             case COMMAND:
                 new CraftRewardCommand().parse(sliceReward).toAward(playerName);
                 return true;

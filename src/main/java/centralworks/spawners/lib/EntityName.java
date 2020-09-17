@@ -113,7 +113,7 @@ public enum EntityName {
     ZOMBIE_HORSE("Cavalo Zumbi"),
     ZOMBIE_VILLAGER("Aldeão Zumbi");
 
-    private String name;
+    private final String name;
 
     EntityName(String name) {
         this.name = name;

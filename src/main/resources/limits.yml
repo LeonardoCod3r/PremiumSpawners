@@ -1,5 +1,0 @@
-Limits:
-  default:
-    - "member.vip.prime:100000"
-    - "member.member:1000"
-  max: 100000000000 #Retire essa área para infinito

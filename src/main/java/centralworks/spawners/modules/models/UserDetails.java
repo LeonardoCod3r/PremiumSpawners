@@ -1,8 +1,8 @@
 package centralworks.spawners.modules.models;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import com.google.common.collect.Lists;
@@ -30,7 +30,7 @@ public class UserDetails extends Storable<UserDetails> {
     private Double buyLimit = 1.0;
     private Double sellLimit = 1.0;
 
-    public UserDetails(OfflinePlayer p){
+    public UserDetails(OfflinePlayer p) {
         this.user = p.getName();
     }
 
@@ -68,7 +68,7 @@ public class UserDetails extends Storable<UserDetails> {
 
     public void fixLimits() {
         if (Bukkit.getPlayer(user) != null) {
-            final Double l = Double.valueOf(Main.getLimits().getList("Limits.default", false).stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
+            final Double l = Double.valueOf(Main.getDropStorage().getList("Limits.default", false).stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
             if (getBuyLimit() < l) setBuyLimit(l);
             if (getSellLimit() < l) setSellLimit(l);
         }

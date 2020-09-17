@@ -16,11 +16,15 @@ import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
 import com.google.gson.Gson;
 import de.tr7zw.nbtinjector.NBTInjector;
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.IronGolem;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Villager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -29,52 +33,29 @@ public class Main extends JavaPlugin {
 
     private static Main me;
     private static Gson gson;
+    @Getter
     private static Configuration configuration;
+    @Getter
     private static Configuration spawners;
+    @Getter
     private static Configuration entities;
-    private static Configuration limits;
+    @Getter
+    private static Configuration dropStorage;
+    @Getter
     private static Configuration data;
+    @Getter
     private static Configuration messages;
+    @Getter
     private static Economy economy;
+    private static Logger LOGGER;
 
     public static Gson getGson() {
         return gson == null ? gson = new Gson() : gson;
     }
 
-    public static Economy getEconomy() {
-        return economy;
-    }
-
-    public static Configuration getSpawners() {
-        return spawners;
-    }
-
-    public static Configuration getEntities() {
-        return entities;
-    }
-
-    public static Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public static Configuration getLimits() {
-        return limits;
-    }
-
-    public static Configuration getMessages() {
-        return messages;
-    }
-
-    public static Configuration getData() {
-        return data;
-    }
-
     public static Main get() {
         return me;
     }
-
-    private static Logger LOGGER;
-
 
     @Override
     public void onLoad() {
@@ -105,7 +86,7 @@ public class Main extends JavaPlugin {
         configuration = new Configuration("configuration");
         spawners = new Configuration("spawners");
         entities = new Configuration("entities");
-        limits = new Configuration("limits");
+        dropStorage = new Configuration("dropstorage");
         data = new Configuration("data");
         economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
         FormatBalance.suffix = configuration.getList("Settings.format", true).stream().map(s -> s.replace(s.split(",")[1], "").replace(",", "")).toArray(String[]::new);
@@ -115,37 +96,53 @@ public class Main extends JavaPlugin {
 
     public void reload() {
         distribution();
-        final QuestLoader questLoader = QuestLoader.get();
-        questLoader.setLoaded(false);
-        questLoader.run();
+        if (questsSystemIsActive()) {
+            final QuestLoader questLoader = QuestLoader.get();
+            questLoader.setLoaded(false);
+            questLoader.run();
+        }
+        if (dropStorageSystemIsActive()) LootData.get().load();
         final ImpulseLoader impulseLoader = ImpulseLoader.get();
         impulseLoader.setLoaded(false);
         impulseLoader.run();
-        final LimitLoader limitLoader = LimitLoader.get();
-        limitLoader.setLoaded(false);
-        limitLoader.run();
+        if (limitSystemIsActive()) {
+            final LimitLoader limitLoader = LimitLoader.get();
+            limitLoader.setLoaded(false);
+            limitLoader.run();
+        }
         MenusSettings.newInstance();
-        LootData.get().load();
         SICached.get().load();
     }
 
     public void registerOtherCommands() {
         final SimpleCommandMap map = ((CraftServer) getServer()).getCommandMap();
         map.register("booster", new BoosterCommand());
-        map.register("limit", new LimitCommand());
+        if (limitSystemIsActive()) map.register("limit", new LimitCommand());
     }
 
     private void boot() {
         LOGGER.info("Inicializando o plug-in...");
         distribution();
         ApplicationCommons.boot();
-        ApplicationDropStorage.boot();
         ApplicationSpawner.boot();
-        ApplicationQuest.boot();
+        if (dropStorageSystemIsActive()) ApplicationDropStorage.boot();
+        if (questsSystemIsActive()) ApplicationQuest.boot();
         registerOtherCommands();
         Main.getData().set("Answered", true);
         Main.getData().save();
         LOGGER.info("Plug-in inicializado e pronto para uso.");
+    }
+
+    public boolean questsSystemIsActive() {
+        return getConfiguration().is("Settings.quests");
+    }
+
+    public boolean dropStorageSystemIsActive() {
+        return getConfiguration().is("Settings.dropStorage");
+    }
+
+    public boolean limitSystemIsActive() {
+        return getConfiguration().is("Settings.limitSystem");
     }
 
     @Override
@@ -153,8 +150,8 @@ public class Main extends JavaPlugin {
         LOGGER.info("Salvando dados.");
         final long l = System.currentTimeMillis();
         ApplicationSpawner.shutdown();
-        ApplicationQuest.shutdown();
-        ApplicationDropStorage.shutdown();
+        if (questsSystemIsActive()) ApplicationQuest.shutdown();
+        if (dropStorageSystemIsActive()) ApplicationDropStorage.shutdown();
         ApplicationCommons.shutdown();
         LOGGER.info("Dados salvos com sucesso. Atraso: " + (System.currentTimeMillis() - l) + "ms.");
     }

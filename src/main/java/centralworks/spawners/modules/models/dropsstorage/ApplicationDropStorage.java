@@ -14,9 +14,9 @@ public class ApplicationDropStorage {
         QueriesSync.supply(DropStorage.class).getDao().createTable();
         LootData.get().load();
         ((CraftServer) Main.get().getServer()).getCommandMap().register("armazem", new SellCommand());
-        if (Main.getConfiguration().is("Settings.friends.toggle"))
+        if (Main.getDropStorage().is("Settings.friends.toggle"))
             ((CraftServer) Main.get().getServer()).getCommandMap().register("armazemfriends", new DSFriendsCommand());
-        Main.getConfiguration().section("Bonus").forEach(s -> BonusRegistered.put(s.replace("-", "."), Main.getConfiguration().getInt("Bonus." + s)));
+        Main.getDropStorage().section("Bonus").forEach(s -> BonusRegistered.put(s.replace("-", "."), Main.getConfiguration().getInt("Bonus." + s)));
     }
 
     public static void shutdown() {

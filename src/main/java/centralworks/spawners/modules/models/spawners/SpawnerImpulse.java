@@ -36,6 +36,7 @@ public class SpawnerImpulse {
 
     /**
      * no use this
+     *
      * @return object fixed
      */
     public SpawnerImpulse fix() {
@@ -79,7 +80,7 @@ public class SpawnerImpulse {
         spawner.query().commit();
     }
 
-    public void run(Spawner spawner, Runnable callback){
+    public void run(Spawner spawner, Runnable callback) {
         this.idTask = Bukkit.getScheduler().runTaskLater(Main.get(), () -> spawner.query().queue((spawner1, q) -> {
             setValid(false);
             spawner1.removeImpulse(this, callback);

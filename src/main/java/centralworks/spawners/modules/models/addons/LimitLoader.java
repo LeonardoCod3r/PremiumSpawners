@@ -15,14 +15,13 @@ import java.util.Objects;
 public class LimitLoader {
 
     private static LimitLoader me;
+    @Getter
+    @Setter
+    private boolean loaded;
 
     public static LimitLoader get() {
         return me == null ? me = new LimitLoader() : me;
     }
-
-    @Getter
-    @Setter
-    private boolean loaded;
 
     public void run() {
         if (isLoaded()) return;

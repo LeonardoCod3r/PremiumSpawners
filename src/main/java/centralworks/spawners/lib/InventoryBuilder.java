@@ -23,9 +23,9 @@ public class InventoryBuilder implements Listener {
     private final Inventory inventory;
     private final HashMap<Integer, Item> items = Maps.newHashMap();
     private final HashMap<Integer, Character> pattern = Maps.newHashMap();
+    private final List<Integer> schID = new ArrayList<>();
     private Boolean cancellable = false;
     private Boolean upgradeable = false;
-    private final List<Integer> schID = new ArrayList<>();
     private Consumer<InventoryClickEvent> clickEventConsumer;
     private Consumer<InventoryCloseEvent> closeEventConsumer;
 

@@ -17,6 +17,45 @@ public class QueriesSync<T extends Storable<T>> {
     private AbstractDTO<T> dto;
     private AbstractDAO<T> dao;
 
+    public QueriesSync(Class<T> classe) {
+        dto = new AbstractDTO<>(classe);
+        try {
+            final T instance = classe.newInstance();
+            dao = new AbstractDAO<>(classe, instance.getProperties());
+        } catch (Exception ignored) {
+        }
+    }
+
+    public QueriesSync(Class<T> classe, String identifier) {
+        this.identifier = identifier;
+        dto = new AbstractDTO<>(classe);
+        try {
+            final T instance = classe.newInstance();
+            dao = new AbstractDAO<>(classe, instance.getProperties());
+        } catch (Exception ignored) {
+        }
+    }
+
+    public QueriesSync(Class<T> classe, Integer id) {
+        this.id = id;
+        dto = new AbstractDTO<>(classe);
+        try {
+            final T instance = classe.newInstance();
+            dao = new AbstractDAO<>(classe, instance.getProperties());
+        } catch (Exception ignored) {
+        }
+    }
+
+    public QueriesSync(Class<T> classe, T obj) {
+        setObject(obj);
+        dto = new AbstractDTO<>(classe);
+        try {
+            final T instance = classe.newInstance();
+            dao = new AbstractDAO<>(classe, instance.getProperties());
+        } catch (Exception ignored) {
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <A extends Storable<A>> QueriesSync<A> supply(A object) {
         return new QueriesSync<>((Class<A>) object.getClass(), object);
@@ -32,41 +71,6 @@ public class QueriesSync<T extends Storable<T>> {
 
     public static <A extends Storable<A>> QueriesSync<A> supply(Class<A> aClass, Integer id) {
         return new QueriesSync<>(aClass, id);
-    }
-
-    public QueriesSync(Class<T> classe) {
-        dto = new AbstractDTO<>(classe);
-        try {
-            final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
-        }catch (Exception ignored){}
-    }
-
-    public QueriesSync(Class<T> classe, String identifier) {
-        this.identifier = identifier;
-        dto = new AbstractDTO<>(classe);
-        try {
-            final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
-        }catch (Exception ignored){}
-    }
-
-    public QueriesSync(Class<T> classe, Integer id) {
-        this.id = id;
-        dto = new AbstractDTO<>(classe);
-        try {
-            final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
-        }catch (Exception ignored){}
-    }
-
-    public QueriesSync(Class<T> classe, T obj) {
-        setObject(obj);
-        dto = new AbstractDTO<>(classe);
-        try {
-            final T instance = classe.newInstance();
-            dao = new AbstractDAO<>(classe, instance.getProperties());
-        }catch (Exception ignored){}
     }
 
     public T persist() {

@@ -81,11 +81,11 @@ public class DSFriendsCommand extends BukkitCommand {
                     p.sendMessage(messages.getMessage("player-offline"));
                     return true;
                 }
-                final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();;
+                final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();
                 if (args[0].equalsIgnoreCase("add")) {
                     if (dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     if (args[1].equalsIgnoreCase(p.getName())) return true;
-                    if (dropStorage.getFriends().size() == Main.getConfiguration().getInt("Settings.friends.max")) {
+                    if (dropStorage.getFriends().size() == Main.getDropStorage().getInt("Settings.friends.max")) {
                         p.sendMessage(messages.getMessage("friends-max"));
                         return true;
                     }

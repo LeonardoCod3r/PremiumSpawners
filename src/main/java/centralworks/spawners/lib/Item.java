@@ -199,6 +199,20 @@ public class Item {
         return this;
     }
 
+    public String getSkullUrl() {
+        String url = "";
+        try {
+            final SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
+            final Field profileField = skullMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            final String json = ((GameProfile) profileField.get(skullMeta)).getProperties().get("textures").stream().filter(property -> property.getName().equals("textures")).findFirst().get().getValue();
+            final JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+            url = jsonObject.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
+        } catch (Exception ignored) {
+        }
+        return url;
+    }
+
     public Item setSkullUrl(String url) {
         try {
             if (url == null || url.isEmpty()) return this;
@@ -213,20 +227,6 @@ public class Item {
         } catch (Exception ignored) {
         }
         return this;
-    }
-
-    public String getSkullUrl() {
-        String url = "";
-        try {
-            final SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
-            final Field profileField = skullMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            final String json = ((GameProfile) profileField.get(skullMeta)).getProperties().get("textures").stream().filter(property -> property.getName().equals("textures")).findFirst().get().getValue();
-            final JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
-            url = jsonObject.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
-        } catch (Exception ignored) {
-        }
-        return url;
     }
 
     public ItemStack build() {

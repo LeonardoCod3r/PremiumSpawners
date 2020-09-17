@@ -3,14 +3,15 @@ package centralworks.spawners.modules.listeners;
 import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
 import centralworks.spawners.lib.Configuration;
+import centralworks.spawners.modules.animations.AnimationBreak;
 import centralworks.spawners.modules.animations.AnimationPlace;
-import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.menu.InfoSpawnerMenu;
+import centralworks.spawners.modules.models.UserDetails;
+import centralworks.spawners.modules.models.spawners.Spawner;
+import centralworks.spawners.modules.models.spawners.SpawnerItem;
 import centralworks.spawners.modules.models.spawners.cached.DCached;
 import centralworks.spawners.modules.models.spawners.utils.FilteringFunctions;
-import centralworks.spawners.modules.models.spawners.Spawner;
 import centralworks.spawners.modules.models.spawners.utils.SpawnerBuilder;
-import centralworks.spawners.modules.models.spawners.SpawnerItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -68,7 +69,7 @@ public class SpawnerListeners implements Listener {
                 .filter(prd)
                 .map(itemStack -> new SpawnerItem().parse(itemStack))
                 .reduce(SpawnerItem::concat).get();
-        for (int i = 0; i < p.getInventory().getSize(); i ++) {
+        for (int i = 0; i < p.getInventory().getSize(); i++) {
             if (prd.test(p.getInventory().getItem(i))) {
                 p.getInventory().setItem(i, new ItemStack(Material.AIR));
             }
@@ -88,11 +89,10 @@ public class SpawnerListeners implements Listener {
                     spawner1.query().commit(true);
                     AnimationPlace.builder()
                             .radius(1.3)
-                            .ticksToFinalize(60)
-                            .spawner(spawner)
+                            .ticksToFinalize(75)
                             .red(50)
                             .green(168)
-                            .blue(82).build().send();
+                            .blue(82).build().send(spawner);
                 });
             }
         });
@@ -118,6 +118,7 @@ public class SpawnerListeners implements Listener {
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));
             cached.add(p.getName());
+            AnimationBreak.builder().build().send(spawner);
         } else if (new Spawner(location).query().exists()) {
             e.setCancelled(true);
             p.sendMessage(messages.getMessage("isNotOwner"));

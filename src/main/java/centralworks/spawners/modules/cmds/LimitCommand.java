@@ -37,7 +37,8 @@ public class LimitCommand extends BukkitCommand {
                 s.sendMessage("");
                 s.sendMessage("§a/limite - Mostra seu limite de venda atual.");
                 s.sendMessage("§a/limite ajuda - Mostra os comandos do sistema.");
-                if (Permission.hasPermission(s, Permission.GIVE_LIMIT)) s.sendMessage("§a/limite give (player) (id) (amount)");
+                if (Permission.hasPermission(s, Permission.GIVE_LIMIT))
+                    s.sendMessage("§a/limite give (player) (id) (amount)");
             } else Bukkit.dispatchCommand(s, "limite ajuda");
         } else if (args.length == 4) {
             if (args[0].equalsIgnoreCase("give")) {

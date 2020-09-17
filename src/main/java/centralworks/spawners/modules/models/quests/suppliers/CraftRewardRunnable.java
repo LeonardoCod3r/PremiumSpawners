@@ -5,14 +5,13 @@ import centralworks.spawners.modules.models.quests.cached.Runnables;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
 @Data
 @RequiredArgsConstructor
-public class CraftRewardRunnable implements CraftSliceReward<CraftRewardRunnable>{
+public class CraftRewardRunnable implements CraftSliceReward<CraftRewardRunnable> {
 
     private String id;
 

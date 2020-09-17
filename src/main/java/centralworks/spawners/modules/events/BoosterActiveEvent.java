@@ -15,14 +15,14 @@ public class BoosterActiveEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS_LIST = new HandlerList();
     @Getter
-    @Setter
-    private boolean cancelled = false;
-    @Getter
     private final Player player;
     @Getter
     private final SpawnerImpulse spawnerImpulse;
     @Getter
     private final Spawner spawner;
+    @Getter
+    @Setter
+    private boolean cancelled = false;
 
     public BoosterActiveEvent(Player player, SpawnerImpulse spawnerImpulse, Spawner spawner) {
         this.player = player;
@@ -30,12 +30,12 @@ public class BoosterActiveEvent extends Event implements Cancellable {
         this.spawner = spawner;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return HANDLERS_LIST;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return HANDLERS_LIST;
     }
 }

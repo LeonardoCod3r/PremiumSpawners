@@ -43,13 +43,13 @@ public class ApplicationQuest {
         ((CraftServer) Main.get().getServer()).getCommandMap().register("quests", new QuestsCommand());
     }
 
-    public static void shutdown(){
+    public static void shutdown() {
         final QueriesSync<PlayerQuests> q = QueriesSync.supply(PlayerQuests.class);
         q.getDao().saveAll();
         q.getDto().delete();
     }
 
-    public void registerRunnable(String id, Consumer<String> consumer){
+    public void registerRunnable(String id, Consumer<String> consumer) {
         runnablesToAward.add(Runnables.QuestRunnableReward.builder().id(id).toReward(consumer).build());
     }
 

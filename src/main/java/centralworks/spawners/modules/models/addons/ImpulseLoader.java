@@ -14,14 +14,13 @@ import java.util.Objects;
 public class ImpulseLoader {
 
     private static ImpulseLoader me;
+    @Getter
+    @Setter
+    private boolean loaded;
 
     public static ImpulseLoader get() {
         return me == null ? me = new ImpulseLoader() : me;
     }
-
-    @Getter
-    @Setter
-    private boolean loaded;
 
     public void run() {
         if (isLoaded()) return;

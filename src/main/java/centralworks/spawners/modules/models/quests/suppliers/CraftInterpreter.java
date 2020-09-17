@@ -21,7 +21,7 @@ public class CraftInterpreter<T> {
         this.id = id;
     }
 
-    public void commit(){
+    public void commit() {
         Bukkit.getPluginManager().registerEvents(listener, Main.get());
         Interpreters.get().add(this);
     }

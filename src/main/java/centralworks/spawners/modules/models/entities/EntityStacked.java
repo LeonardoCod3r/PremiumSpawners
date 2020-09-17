@@ -93,7 +93,26 @@ public class EntityStacked {
 
     public Double getAmountDrops(ItemStack itemStack) {
         final double m = itemStack.containsEnchantment(Enchantment.LOOT_BONUS_MOBS) ? itemStack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS) + 1 : 1;
-        return Math.ceil(getStack() * m);
+        return Math.ceil(getAmountDrops() * m);
+    }
+
+    public Double getAmountDrops() {
+        return Math.ceil(getStack() * ThreadLocalRandom.current().nextInt(1, 3));
+    }
+
+    public void dropLoot(ItemStack tool, ItemStack loot, Integer max) {
+        final int i = (int) Math.min(max, getAmountDrops(tool));
+        final int times = i / 64;
+        final int rest = i % 64;
+        for (int t = 0; t < times; t++) {
+            final ItemStack it = loot.clone();
+            it.setAmount(64);
+            entity.getLocation().getWorld().dropItem(entity.getLocation(), it);
+        }
+        if (rest > 0) {
+            loot.setAmount(rest);
+            entity.getLocation().getWorld().dropItem(entity.getLocation(), loot);
+        }
     }
 
 }

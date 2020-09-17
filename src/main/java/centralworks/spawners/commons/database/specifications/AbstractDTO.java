@@ -17,12 +17,12 @@ public class AbstractDTO<T extends Storable<T>> {
 
     private final Class<T> clazz;
 
-    public Class<T> getClazz() {
-        return clazz;
-    }
-
     public AbstractDTO(Class<T> clazz) {
         this.clazz = clazz;
+    }
+
+    public Class<T> getClazz() {
+        return clazz;
     }
 
     public void write(T object) {
@@ -54,7 +54,7 @@ public class AbstractDTO<T extends Storable<T>> {
                 Bukkit.getScheduler().runTask(Main.get(), () -> read(id));
             });
             return ts;
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
             return null;
         }
     }
@@ -91,7 +91,7 @@ public class AbstractDTO<T extends Storable<T>> {
             final File database = new File(Main.get().getDataFolder(), "database");
             final File dir = new File(database, getClazz().getSimpleName());
             return Arrays.stream(Objects.requireNonNull(dir.listFiles())).map(file -> new JSONRead<>(getClazz(), file.getName().split(".json")[0]).getObject()).collect(Collectors.toList());
-        }catch (Exception e){
+        } catch (Exception e) {
             return Lists.newArrayList();
         }
     }

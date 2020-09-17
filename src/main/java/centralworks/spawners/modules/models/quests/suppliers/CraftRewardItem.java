@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-public class CraftRewardItem implements CraftSliceReward<CraftRewardItem>{
+public class CraftRewardItem implements CraftSliceReward<CraftRewardItem> {
 
     private Integer item_id;
     private String item_skull_owner;

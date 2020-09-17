@@ -1,8 +1,8 @@
 package centralworks.spawners.modules.models.quests.cached;
 
 import centralworks.spawners.lib.Cache;
-import centralworks.spawners.modules.models.entities.EntityStacked;
 import centralworks.spawners.modules.events.BoosterActiveEvent;
+import centralworks.spawners.modules.models.entities.EntityStacked;
 import centralworks.spawners.modules.models.quests.PlayerQuests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftInterpreter;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;

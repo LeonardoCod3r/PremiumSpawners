@@ -14,6 +14,13 @@ import java.util.HashMap;
 public class InjectBuilder<T> {
 
     private static final HashMap<Class<? extends AbstractModule>, Injector> injectors;
+
+    static {
+        injectors = Maps.newHashMap();
+        register(new ConnectionService());
+        register(new MainClassService());
+    }
+
     private final Injector injector;
     private final T obj;
 
@@ -22,12 +29,6 @@ public class InjectBuilder<T> {
         this.injector = injectors.get(clazz);
         checkFields();
         checkMethods();
-    }
-
-    static {
-        injectors = Maps.newHashMap();
-        register(new ConnectionService());
-        register(new MainClassService());
     }
 
     public static void register(AbstractModule abstractModule) {

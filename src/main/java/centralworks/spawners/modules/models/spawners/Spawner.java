@@ -1,8 +1,8 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
 import centralworks.spawners.lib.FormatBalance;
@@ -118,22 +118,22 @@ public class Spawner extends Storable<Spawner> {
         return animationService != null;
     }
 
-    public void setLocation(Location location) {
-        final Serialize<Location, String> se = new Serialize<>(location.clone());
-        this.locSerialized = se.getResult();
-    }
-
     public Location getLocation() {
         final Serialize<String, Location> se = new Serialize<>(this.locSerialized);
         return se.getResult();
     }
 
-    public void setEntityType(EntityType entityType) {
-        this.entityTypeSerialized = entityType.toString();
+    public void setLocation(Location location) {
+        final Serialize<Location, String> se = new Serialize<>(location.clone());
+        this.locSerialized = se.getResult();
     }
 
     public EntityType getEntityType() {
         return EntityType.valueOf(this.entityTypeSerialized);
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityTypeSerialized = entityType.toString();
     }
 
     public void removeImpulse(SpawnerImpulse impulse) {
@@ -287,6 +287,13 @@ public class Spawner extends Storable<Spawner> {
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    public void cancelAnimation() {
+        if (animationService==null) return;
+        animationService.setCancelled(true);
+        animationService = null;
+        query().commit();
     }
 
 }

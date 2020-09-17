@@ -7,9 +7,9 @@ import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.menu.settings.MenusSettings;
 import centralworks.spawners.modules.menu.settings.UtilitiesMenuS;
 import centralworks.spawners.modules.models.UserDetails;
-import centralworks.spawners.modules.models.spawners.TaskType;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import centralworks.spawners.modules.models.spawners.SpawnerItem;
+import centralworks.spawners.modules.models.spawners.TaskType;
 import centralworks.spawners.modules.models.spawners.cached.TCached;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public class UtilitiesMenu extends InventoryBuilder {
                 p.closeInventory();
                 return;
             }
-            if (spawner1.concat(e.getCurrentItem())){
+            if (spawner1.concat(e.getCurrentItem())) {
                 p.getInventory().setItem(e.getSlot(), new ItemStack(Material.AIR));
                 spawner1.query().commit();
             }

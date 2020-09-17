@@ -7,7 +7,6 @@ import centralworks.spawners.modules.models.ActionBarMessage;
 import centralworks.spawners.modules.models.dropsstorage.DropPlayer;
 import centralworks.spawners.modules.models.dropsstorage.DropStorage;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
-import centralworks.spawners.lib.ItemName;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,7 +29,7 @@ public class SellCommand extends BukkitCommand {
     public boolean execute(CommandSender s, String lbl, String[] args) {
         if (s instanceof Player) {
             final Player p = (Player) s;
-            final Configuration configuration = Main.getConfiguration();
+            final Configuration configuration = Main.getDropStorage();
             if (args.length == 0) {
                 final DropStorage dropStorage = new DropStorage(p).query().persist();
                 openSellInventory(p, dropStorage, configuration);

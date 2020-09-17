@@ -17,15 +17,15 @@ public enum Permission {
         this.permission = permission;
     }
 
+    public static boolean hasPermission(CommandSender cs, Permission permission) {
+        return permission.hasPermission(cs);
+    }
+
     public String getPermission() {
         return permission;
     }
 
-    public boolean hasPermission(CommandSender cs){
+    public boolean hasPermission(CommandSender cs) {
         return cs.hasPermission(ADMIN.getPermission()) || cs.hasPermission(getPermission());
-    }
-
-    public static boolean hasPermission(CommandSender cs, Permission permission){
-        return permission.hasPermission(cs);
     }
 }

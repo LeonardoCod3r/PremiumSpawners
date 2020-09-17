@@ -43,8 +43,7 @@ public class SpawnersCommand extends BukkitCommand {
                             return true;
                         }
                         Main.get().reload();
-                    }
-                    else new MainMenu(((Player) s));
+                    } else new MainMenu(((Player) s));
                 }
                 break;
             case 5:

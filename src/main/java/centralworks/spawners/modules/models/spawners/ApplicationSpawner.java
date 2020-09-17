@@ -4,7 +4,6 @@ import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.QueriesSync;
 import centralworks.spawners.modules.cmds.SpawnersCommand;
 import centralworks.spawners.modules.hook.DynmapHook;
-import centralworks.spawners.modules.hook.PlaceHolderHook;
 import centralworks.spawners.modules.listeners.EntityListeners;
 import centralworks.spawners.modules.listeners.PlayerListeners;
 import centralworks.spawners.modules.listeners.SpawnerListeners;
@@ -38,12 +37,11 @@ public class ApplicationSpawner {
         }
         SICached.get().load();
         SpawnerRanking.get().updateAsync();
-        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.get(), () -> SpawnerRanking.get().updateAsync(), 20L * 60 * 5, 20L * 60 * 8);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(Main.get(), () -> SpawnerRanking.get().updateAsync(), 20L * 60 * 5, 20L * 60 * 7);
         ((CraftServer) Main.get().getServer()).getCommandMap().register("spawners", new SpawnersCommand());
         Bukkit.getPluginManager().registerEvents(new SpawnerListeners(), Main.get());
         Bukkit.getPluginManager().registerEvents(new EntityListeners(), Main.get());
         Bukkit.getPluginManager().registerEvents(new PlayerListeners(), Main.get());
-        new PlaceHolderHook().register();
     }
 
     public static void shutdown() {

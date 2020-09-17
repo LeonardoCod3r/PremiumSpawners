@@ -702,7 +702,7 @@ public enum ItemName {
     RECORD_11__0("Disco de música"),
     RECORD_12__0("Disco de música");
 
-    private String name;
+    private final String name;
 
     ItemName(String name) {
         this.name = name;

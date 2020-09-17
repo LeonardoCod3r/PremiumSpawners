@@ -2,7 +2,6 @@ package centralworks.spawners.modules.models.quests.suppliers;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.quests.cached.Quests;
-import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,14 +19,13 @@ import java.util.stream.Collectors;
 public class QuestLoader {
 
     private static QuestLoader me;
+    @Getter
+    @Setter
+    private boolean loaded;
 
     public static QuestLoader get() {
         return me == null ? me = new QuestLoader() : me;
     }
-
-    @Getter
-    @Setter
-    private boolean loaded;
 
     public void run() {
         if (isLoaded()) return;

@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.models.quests;
 
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuestSettings;
@@ -61,7 +61,7 @@ public class PlayerQuests extends Storable<PlayerQuests> {
         return Bukkit.getPlayer(name);
     }
 
-    public OfflinePlayer getOfflinePlayer(){
+    public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(name);
     }
 

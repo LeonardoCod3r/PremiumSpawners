@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,7 @@ public class ItemSettings {
     private List<String> item_lore;
     private List<String> item_enchants;
 
-    public ItemStack getAsItem(Function<String, String> loreReplacement){
+    public ItemStack getAsItem(Function<String, String> loreReplacement) {
         final Item item = new Item(Material.getMaterial(item_id), item_amount, item_data.shortValue());
         item.name(item_name.replace("&", "§"));
         item.lore(item_lore.stream().map(s -> s.replace("&", "§")).map(loreReplacement).collect(Collectors.toList()));

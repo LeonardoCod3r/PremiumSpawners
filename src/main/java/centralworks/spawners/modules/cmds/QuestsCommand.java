@@ -14,7 +14,7 @@ public class QuestsCommand extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender s, String lbl, String[] args) {
-        if (s instanceof Player){
+        if (s instanceof Player) {
             new QuestsMenu(((Player) s), 1);
         }
         return true;

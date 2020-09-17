@@ -18,11 +18,16 @@ import java.util.Properties;
 @Data
 public class AbstractDAO<T extends Storable<T>> {
 
+    private final Class<T> clazz;
+    private final Properties properties;
     @Inject
     private Connection connection;
 
-    private final Class<T> clazz;
-    private final Properties properties;
+    public AbstractDAO(Class<T> clazz, Properties properties) {
+        this.clazz = clazz;
+        this.properties = properties;
+        new InjectBuilder<>(this, ConnectionService.class);
+    }
 
     public String getProperty(String key) {
         return getProperties().getProperty(key);
@@ -42,12 +47,6 @@ public class AbstractDAO<T extends Storable<T>> {
 
     public String getTable() {
         return getProperty(PropertyType.TABLE_NAME.getId());
-    }
-
-    public AbstractDAO(Class<T> clazz, Properties properties) {
-        this.clazz = clazz;
-        this.properties = properties;
-        new InjectBuilder<>(this, ConnectionService.class);
     }
 
     public void createTable() {

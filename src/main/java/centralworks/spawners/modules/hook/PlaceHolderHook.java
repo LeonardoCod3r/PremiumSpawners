@@ -29,7 +29,7 @@ public class PlaceHolderHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer p, String identifier) {
-        if(identifier.equals("compra")){
+        if (identifier.equals("compra")) {
             final UserDetails userDetails = new UserDetails(p).query().persist();
             return FormatBalance.format(userDetails.getBuyLimit());
         }

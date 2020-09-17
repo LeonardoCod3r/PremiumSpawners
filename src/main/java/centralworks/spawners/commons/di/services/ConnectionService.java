@@ -16,7 +16,8 @@ public class ConnectionService extends AbstractModule {
 
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public synchronized Connection provideConnection() {
         try {
             final Configuration configuration = Main.getData();

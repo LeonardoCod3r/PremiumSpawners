@@ -2,7 +2,6 @@ package centralworks.spawners.lib;
 
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -53,7 +52,9 @@ public class Cache<T> {
         list.removeIf(query);
     }
 
-    public void clear() { list.clear(); }
+    public void clear() {
+        list.clear();
+    }
 
 
 }

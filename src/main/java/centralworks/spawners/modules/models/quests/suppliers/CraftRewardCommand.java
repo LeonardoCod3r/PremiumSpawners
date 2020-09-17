@@ -5,14 +5,13 @@ import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
 @Data
 @RequiredArgsConstructor
-public class CraftRewardCommand implements CraftSliceReward<CraftRewardCommand>{
+public class CraftRewardCommand implements CraftSliceReward<CraftRewardCommand> {
 
     private String command;
 

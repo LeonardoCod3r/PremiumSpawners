@@ -35,7 +35,7 @@ public class MenusSettings {
         return menusSettings;
     }
 
-    public static MenusSettings newInstance(){
+    public static MenusSettings newInstance() {
         try {
             final File file = new File(Main.get().getDataFolder(), "inventory.json");
             if (!file.exists())

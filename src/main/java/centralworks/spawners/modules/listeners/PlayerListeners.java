@@ -75,46 +75,47 @@ public class PlayerListeners implements Listener {
                 });
             });
         } catch (Exception ignored) {
-            for (Limit limit : LimitCached.get().getList()) {
-                if (!item.isSimilar(limit.getItemStack().getAsItem(s -> s))) continue;
-                e.setCancelled(true);
-                final LimitType type = limit.getLimitType();
-                if (!limit.hasPermission(p)) {
-                    p.sendMessage(messages.getMessage("permissionErrorLimit").replace("{type}", type.getName()));
+            if (Main.get().limitSystemIsActive()) {
+                for (Limit limit : LimitCached.get().getList()) {
+                    if (!item.isSimilar(limit.getItemStack().getAsItem(s -> s))) continue;
+                    e.setCancelled(true);
+                    final LimitType type = limit.getLimitType();
+                    if (!limit.hasPermission(p)) {
+                        p.sendMessage(messages.getMessage("permissionErrorLimit").replace("{type}", type.getName()));
+                        return;
+                    }
+                    final UserDetails userDetails = new UserDetails(p).query().persist();
+                    final Double max = Main.getDropStorage().getDouble("Limits.max");
+                    Double adder;
+                    Double v;
+                    if (type == LimitType.BUY) {
+                        if (userDetails.getBuyLimit() >= max) {
+                            p.sendMessage(messages.getMessage("limitMax").replace("{type}", type.getName()));
+                            return;
+                        }
+                        if (userDetails.getBuyLimit() + limit.getValue() > max)
+                            adder = limit.getValue() - (userDetails.getBuyLimit() + limit.getValue() - max);
+                        else adder = limit.getValue();
+                        userDetails.addBuyLimit(adder);
+                        v = userDetails.getBuyLimit();
+                    } else if (type == LimitType.SELL) {
+                        if (userDetails.getSellLimit() >= max) {
+                            p.sendMessage(messages.getMessage("limitMax").replace("{type}", type.getName()));
+                            return;
+                        }
+                        if (userDetails.getSellLimit() + limit.getValue() > max)
+                            adder = limit.getValue() - (userDetails.getSellLimit() + limit.getValue() - max);
+                        else adder = limit.getValue();
+                        userDetails.addSellLimit(adder);
+                        v = userDetails.getSellLimit();
+                    } else return;
+                    userDetails.query().commit();
+                    if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
+                    else p.setItemInHand(new ItemStack(Material.AIR));
+                    p.sendMessage(messages.getMessage("limitUsed").replace("{type}", type.getName()).replace("{limit-value}", FormatBalance.format(adder)).replace("{player-limit-value}", FormatBalance.format(v)));
                     return;
                 }
-                final UserDetails userDetails = new UserDetails(p).query().persist();
-                final Double max = Main.getLimits().getDouble("Limits.max");
-                Double adder;
-                Double v;
-                if (type == LimitType.BUY) {
-                    if (userDetails.getBuyLimit() >= max) {
-                        p.sendMessage(messages.getMessage("limitMax").replace("{type}", type.getName()));
-                        return;
-                    }
-                    if (userDetails.getBuyLimit() + limit.getValue() > max)
-                        adder = limit.getValue() - (userDetails.getBuyLimit() + limit.getValue() - max);
-                    else adder = limit.getValue();
-                    userDetails.addBuyLimit(adder);
-                    v = userDetails.getBuyLimit();
-                } else if (type == LimitType.SELL) {
-                    if (userDetails.getSellLimit() >= max) {
-                        p.sendMessage(messages.getMessage("limitMax").replace("{type}", type.getName()));
-                        return;
-                    }
-                    if (userDetails.getSellLimit() + limit.getValue() > max)
-                        adder = limit.getValue() - (userDetails.getSellLimit() + limit.getValue() - max);
-                    else adder = limit.getValue();
-                    userDetails.addSellLimit(adder);
-                    v = userDetails.getSellLimit();
-                } else return;
-                userDetails.query().commit();
-                if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
-                else p.setItemInHand(new ItemStack(Material.AIR));
-                p.sendMessage(messages.getMessage("limitUsed").replace("{type}", type.getName()).replace("{limit-value}", FormatBalance.format(adder)).replace("{player-limit-value}", FormatBalance.format(v)));
-                return;
             }
-
             for (Impulse booster : ICached.get().getList()) {
                 if (!item.isSimilar(booster.getAsItem())) continue;
                 e.setCancelled(true);
@@ -216,7 +217,7 @@ public class PlayerListeners implements Listener {
                         p.sendMessage(messages.getMessage("invalidNumber").replace("{number}", msg));
                         return;
                     }
-                    if (user.getBuyLimit() < value) {
+                    if (Main.get().limitSystemIsActive() && user.getBuyLimit() < value) {
                         p.sendMessage(messages.getMessage("insufficientLimit").replace("{amount}", FormatBalance.format(user.getBuyLimit())));
                         return;
                     }
@@ -260,8 +261,15 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        new UserDetails(e.getPlayer()).query().commit(true);
-        new PlayerQuests(e.getPlayer()).query().commit(true);
-        new DropStorage(e.getPlayer()).query().commit(true);
+        final String name = e.getPlayer().getName();
+        final QueriesSync<UserDetails> query = new UserDetails(name).query();
+        query.persist();
+        query.commit(true);
+        final QueriesSync<PlayerQuests> query2 = new PlayerQuests(name).query();
+        query2.persist();
+        query2.commit(true);
+        final QueriesSync<DropStorage> query3 = new DropStorage(name).query();
+        query3.persist();
+        query3.commit(true);
     }
 }
