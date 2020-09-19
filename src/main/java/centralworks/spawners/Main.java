@@ -14,6 +14,8 @@ import centralworks.spawners.modules.models.quests.ApplicationQuest;
 import centralworks.spawners.modules.models.quests.suppliers.QuestLoader;
 import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
+import centralworks.spawners.test.Testing;
+import centralworks.spawners.test.TestingRepositoryImpl;
 import com.google.gson.Gson;
 import de.tr7zw.nbtinjector.NBTInjector;
 import lombok.Getter;
@@ -75,12 +77,6 @@ public class Main extends JavaPlugin {
 
     public void distribution() {
         LOGGER.info("Distribuindo valores para produção.");
-        /*InjectBuilder.register(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(Main.class).toInstance(Main.this);
-            }
-        });*/
         me = this;
         messages = new Configuration("messages");
         configuration = new Configuration("configuration");

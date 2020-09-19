@@ -1,36 +1,62 @@
 package centralworks.spawners.modules.models.dropsstorage;
 
 import centralworks.spawners.Main;
+import centralworks.spawners.commons.database.repositories.DropStorageRepository;
+import centralworks.spawners.commons.database.specifications.Repository;
 import centralworks.spawners.commons.database.Storable;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import com.google.common.collect.Lists;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
-@Data
-public class DropStorage extends Storable<DropStorage> {
+@Entity
+public class DropStorage extends Storable<DropStorage> implements Serializable {
 
+    @Id
+    @Getter
+    @Setter
     private String owner;
+    @Getter
+    @Setter
     private Double multiplier = 1.0;
+    @Getter
+    @Setter
     private boolean autoSell = false;
+    @Getter
+    @Setter
     private Integer bonus = 0;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner")
+    @Getter
+    @Setter
     private List<BoosterPlayer> boostersActive = Lists.newArrayList();
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner")
+    @Getter
+    @Setter
     private List<DropPlayer> dropPlayers = Lists.newArrayList();
+    @ElementCollection
+    @JoinColumn(name = "owner")
+    @Getter
+    @Setter
     private List<String> friends = Lists.newArrayList();
+    @Getter
+    private transient Repository<DropStorage, String> repository = DropStorageRepository.require();
 
     public DropStorage(OfflinePlayer p) {
         this.owner = p.getName();
@@ -38,16 +64,6 @@ public class DropStorage extends Storable<DropStorage> {
 
     public DropStorage(String owner) {
         this.owner = owner;
-    }
-
-    @Override
-    public Properties getProperties() {
-        final Properties properties = new Properties();
-        properties.put(PropertyType.KEY_NAME.getId(), "owner");
-        properties.put(PropertyType.KEY_AUTOINCREMENT.getId(), false);
-        properties.put(PropertyType.KEY_DATATYPE.getId(), "VARCHAR(16)");
-        properties.put(PropertyType.TABLE_NAME.getId(), "dropstorage");
-        return properties;
     }
 
     @Override
@@ -76,7 +92,7 @@ public class DropStorage extends Storable<DropStorage> {
         LootData.get().getList().forEach(drop -> {
             if (getDropPlayers().stream().noneMatch(dropPlayer -> dropPlayer.getKeyDrop().equalsIgnoreCase(drop.getKeyDrop()))) {
                 final List<DropPlayer> list = new ArrayList<>(getDropPlayers());
-                list.add(new DropPlayer(drop.getKeyDrop(), 0D));
+                list.add(new DropPlayer(owner, drop.getKeyDrop(), 0D));
                 setDropPlayers(list);
             }
         });

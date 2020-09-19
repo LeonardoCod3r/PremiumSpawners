@@ -3,9 +3,11 @@ package centralworks.spawners.modules.models.quests;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +15,19 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Data
+@AllArgsConstructor
 @RequiredArgsConstructor
+@Entity
 public class QuestData {
 
+    @Id
+    @Column(length = 16)
+    private String userName;
     private String identifier;
     private boolean active = false;
     private Long startedAt = System.currentTimeMillis();
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "userName")
     private LinkedList<QuestRule> data = Lists.newLinkedList();
 
     public CraftQuest getQuest() {

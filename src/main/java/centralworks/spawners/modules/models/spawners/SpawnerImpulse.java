@@ -2,24 +2,45 @@ package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.addons.ImpulseType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.bukkit.Bukkit;
 
-@Data
-@Builder
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Entity(name = "spawnerimpulse")
 public class SpawnerImpulse {
 
+    @Id
+    @Column(length = 150)
+    @Getter
+    @Setter
+    private String locSerialized;
+    @Enumerated
+    @Getter
+    @Setter
     private ImpulseType impulseType;
+    @Getter
+    @Setter
     private Double value = 1.0;
+    @Getter
+    @Setter
     private Long startedAt = System.currentTimeMillis();
+    @Getter
+    @Setter
     private Long finish;
+    @Getter
+    @Setter
     private Long delay;
+    @Getter
+    @Setter
     private boolean valid;
+    @Getter
+    @Setter
     private Integer idTask = 0;
 
     /**

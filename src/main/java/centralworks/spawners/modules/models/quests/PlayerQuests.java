@@ -1,33 +1,45 @@
 package centralworks.spawners.modules.models.quests;
 
+import centralworks.spawners.commons.database.specifications.Repository;
+import centralworks.spawners.commons.database.repositories.UserQuestsRepository;
 import centralworks.spawners.commons.database.Storable;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuestSettings;
 import com.google.common.collect.Lists;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@AllArgsConstructor
 @RequiredArgsConstructor
-public class PlayerQuests extends Storable<PlayerQuests> {
+@Entity
+public class PlayerQuests extends Storable<PlayerQuests> implements Serializable {
 
+    @Id
+    @Column(length = 16)
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "username")
     private String lastCompletedId = "";
+    @Getter
+    @Setter
     private LinkedList<QuestData> compounds = Lists.newLinkedList();
+    @Getter
+    private transient Repository<PlayerQuests, String> repository = UserQuestsRepository.require();
 
     public PlayerQuests(OfflinePlayer player) {
         this.name = player.getName();
@@ -35,16 +47,6 @@ public class PlayerQuests extends Storable<PlayerQuests> {
 
     public PlayerQuests(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Properties getProperties() {
-        final Properties properties = new Properties();
-        properties.put(PropertyType.KEY_NAME.getId(), "name");
-        properties.put(PropertyType.KEY_AUTOINCREMENT.getId(), false);
-        properties.put(PropertyType.KEY_DATATYPE.getId(), "VARCHAR(16)");
-        properties.put(PropertyType.TABLE_NAME.getId(), "playerquest");
-        return properties;
     }
 
     @Override

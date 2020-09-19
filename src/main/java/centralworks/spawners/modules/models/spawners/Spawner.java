@@ -1,8 +1,9 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
+import centralworks.spawners.commons.database.specifications.Repository;
+import centralworks.spawners.commons.database.repositories.SpawnerRepository;
 import centralworks.spawners.commons.database.Storable;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
 import centralworks.spawners.lib.FormatBalance;
@@ -24,26 +25,50 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.LinkedList;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 @RequiredArgsConstructor
-@Builder
 @AllArgsConstructor
-public class Spawner extends Storable<Spawner> {
+@Entity
+public class Spawner extends Storable<Spawner> implements Serializable {
 
+    @Id
+    @Column(length = 150)
+    @Getter
+    @Setter
     private String locSerialized;
+    @Getter
+    @Setter
     private String owner;
+    @Getter
+    @Setter
     private String entityTypeSerialized;
+    @Getter
+    @Setter
     private Double amount = 1.0;
-    private LinkedList<String> friends = Lists.newLinkedList();
-    private LinkedList<SpawnerImpulse> impulsesOfGeneration = Lists.newLinkedList();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn(name = "locSerialized")
+    @Getter
+    @Setter
+    private List<String> friends = Lists.newLinkedList();
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "locSerialized")
+    @Getter
+    @Setter
+    private List<SpawnerImpulse> impulsesOfGeneration = Lists.newLinkedList();
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "locSerialized")
+    @Getter
+    @Setter
     private AnimationService animationService;
+    @Getter
+    private final transient Repository<Spawner, String> repository = SpawnerRepository.require();
+    @Getter
+    @Setter
     private Long hologramId;
 
     public Spawner(String locSerialized) {
@@ -52,16 +77,6 @@ public class Spawner extends Storable<Spawner> {
 
     public Spawner(Location location) {
         setLocation(location);
-    }
-
-    @Override
-    public Properties getProperties() {
-        final Properties properties = new Properties();
-        properties.put(PropertyType.KEY_NAME.getId(), "locSerialized");
-        properties.put(PropertyType.KEY_AUTOINCREMENT.getId(), false);
-        properties.put(PropertyType.KEY_DATATYPE.getId(), "VARCHAR(150)");
-        properties.put(PropertyType.TABLE_NAME.getId(), "spawners");
-        return properties;
     }
 
     @Override
@@ -209,10 +224,10 @@ public class Spawner extends Storable<Spawner> {
             spawnerBlock.update();
             pullHologram();
             impulsesForceRun();
-            callback.accept(this);
+            if (callback!=null) callback.accept(this);
+            final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+            dynmapHook.view(this);
         });
-        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
-        dynmapHook.view(this);
     }
 
     public void pullHologram() {

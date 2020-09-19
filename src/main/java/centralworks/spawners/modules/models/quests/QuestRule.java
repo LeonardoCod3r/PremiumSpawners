@@ -1,12 +1,22 @@
 package centralworks.spawners.modules.models.quests;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 @Data
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Entity
 public class QuestRule {
 
+    @Id
+    @Column(length = 16)
+    private String userName;
     private String id;
     private String interpreter;
     private boolean completed = false;

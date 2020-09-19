@@ -1,7 +1,8 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.QueriesSync;
+import centralworks.spawners.commons.database.repositories.SpawnerRepository;
+import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.cmds.SpawnersCommand;
 import centralworks.spawners.modules.hook.DynmapHook;
 import centralworks.spawners.modules.listeners.EntityListeners;
@@ -26,9 +27,8 @@ public class ApplicationSpawner {
     public static void boot() {
         dynmapHook = new DynmapHook();
         if (Bukkit.getPluginManager().isPluginEnabled("dynmap")) dynmapHook.boot();
-        final QueriesSync<Spawner> queriesSync = QueriesSync.supply(Spawner.class);
-        queriesSync.getDao().createTable();
-        for (Spawner spawner : queriesSync.getDao().loadAll()) {
+        final SyncRequests<Spawner, String> queriesSync = SyncRequests.supply(SpawnerRepository.require());
+        for (Spawner spawner : queriesSync.getRepository().findAll()) {
             spawner.query().queue((spawner1, q) -> {
                 spawner1.getLocation().getChunk().load();
                 spawner1.appear(null);
@@ -36,7 +36,8 @@ public class ApplicationSpawner {
             });
         }
         SICached.get().load();
-        SpawnerRanking.get().updateAsync();
+        final SpawnerRanking ranking = SpawnerRanking.get();
+        ranking.updateAsync();
         Bukkit.getScheduler().runTaskTimerAsynchronously(Main.get(), () -> SpawnerRanking.get().updateAsync(), 20L * 60 * 5, 20L * 60 * 7);
         ((CraftServer) Main.get().getServer()).getCommandMap().register("spawners", new SpawnersCommand());
         Bukkit.getPluginManager().registerEvents(new SpawnerListeners(), Main.get());
@@ -45,7 +46,7 @@ public class ApplicationSpawner {
     }
 
     public static void shutdown() {
-        final QueriesSync<Spawner> q = QueriesSync.supply(Spawner.class);
+        final SyncRequests<Spawner, String> q = SyncRequests.supply(SpawnerRepository.require());
         q.getDto().findAllFiles().forEach(spawner -> {
             spawner.getImpulsesOfGeneration().forEach(SpawnerImpulse::stop);
             spawner.query().commit(true);

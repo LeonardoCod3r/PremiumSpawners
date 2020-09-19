@@ -13,7 +13,6 @@ import centralworks.spawners.modules.models.spawners.TaskType;
 import centralworks.spawners.modules.models.spawners.cached.TCached;
 import org.bukkit.entity.Player;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class FriendsMenu extends InventoryBuilder {
@@ -52,7 +51,7 @@ public class FriendsMenu extends InventoryBuilder {
             }
         }, exception -> p.closeInventory())));
 
-        final LinkedList<String> friends = spawner.getFriends();
+        final List<String> friends = spawner.getFriends();
         final List<Integer> slots = menu.getSlots();
         if (friends.size() > 0) {
             final double pages = Math.ceil(friends.size() / (0D + slots.size()));

@@ -1,34 +1,48 @@
 package centralworks.spawners.modules.models;
 
 import centralworks.spawners.Main;
+import centralworks.spawners.commons.database.specifications.Repository;
+import centralworks.spawners.commons.database.repositories.UserRepository;
 import centralworks.spawners.commons.database.Storable;
-import centralworks.spawners.commons.database.specifications.PropertyType;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import com.google.common.collect.Lists;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 @RequiredArgsConstructor
-public class UserDetails extends Storable<UserDetails> {
+@AllArgsConstructor
+@Entity
+public class UserDetails extends Storable<UserDetails> implements Serializable {
 
+    @Id
+    @Column(length = 16)
+    @Getter
+    @Setter
     private String user;
+    @ElementCollection
+    @JoinColumn(name = "user")
+    @Getter
+    @Setter
     private List<String> locationsSerialized = Lists.newArrayList();
+    @Getter
+    @Setter
     private Double buyLimit = 1.0;
+    @Getter
+    @Setter
     private Double sellLimit = 1.0;
+    @Getter
+    private final transient Repository<UserDetails, String> repository = UserRepository.require();
 
     public UserDetails(OfflinePlayer p) {
         this.user = p.getName();
@@ -36,16 +50,6 @@ public class UserDetails extends Storable<UserDetails> {
 
     public UserDetails(String user) {
         this.user = user;
-    }
-
-    @Override
-    public Properties getProperties() {
-        final Properties properties = new Properties();
-        properties.put(PropertyType.KEY_NAME.getId(), "user");
-        properties.put(PropertyType.KEY_AUTOINCREMENT.getId(), false);
-        properties.put(PropertyType.KEY_DATATYPE.getId(), "VARCHAR(16)");
-        properties.put(PropertyType.TABLE_NAME.getId(), "users");
-        return properties;
     }
 
     @Override

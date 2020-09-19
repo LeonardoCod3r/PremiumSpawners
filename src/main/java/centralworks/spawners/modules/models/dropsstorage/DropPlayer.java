@@ -3,20 +3,27 @@ package centralworks.spawners.modules.models.dropsstorage;
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
-@Data
+@Entity
 public class DropPlayer {
 
+    @Id
+    @Getter
+    @Setter
+    private String owner;
+    @Getter
+    @Setter
     private String keyDrop;
+    @Getter
+    @Setter
     private Double amount;
 
     public void sell(Player p, DropStorage storage) {

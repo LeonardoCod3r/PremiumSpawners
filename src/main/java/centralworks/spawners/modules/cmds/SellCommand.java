@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.cmds;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.QueriesSync;
+import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.lib.*;
 import centralworks.spawners.modules.models.ActionBarMessage;
 import centralworks.spawners.modules.models.dropsstorage.DropPlayer;
@@ -34,7 +34,7 @@ public class SellCommand extends BukkitCommand {
                 final DropStorage dropStorage = new DropStorage(p).query().persist();
                 openSellInventory(p, dropStorage, configuration);
             } else if (args.length == 1) {
-                final QueriesSync<DropStorage> q = new DropStorage(args[0]).query();
+                final SyncRequests<DropStorage, Object> q = new DropStorage(args[0]).query();
                 q.ifExists(dropStorage -> {
                     if (dropStorage.getFriends().stream().anyMatch(s1 -> s1.equalsIgnoreCase(p.getName())) || args[0].equalsIgnoreCase(p.getName())) {
                         openSellInventory(p, dropStorage, configuration);

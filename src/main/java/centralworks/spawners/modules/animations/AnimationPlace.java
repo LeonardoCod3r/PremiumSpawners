@@ -7,27 +7,24 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class AnimationPlace implements AnimationService {
+public class AnimationPlace extends AnimationService {
 
     private float red = 255;
     private float green = 0;
     private float blue = 0;
-    private double radius = 0.7;
     private int ticksToFinalize = 60;
-    private boolean cancelled = false;
 
     public void send(Spawner spawner) {
+        setAnimationType(AnimationType.PLACE);
         final Location location = spawner.getLocation().add(0.5, 0.0, 0.5);
         spawner.setAnimationService(this);
         spawner.query().commit();
@@ -35,24 +32,38 @@ public class AnimationPlace implements AnimationService {
         new BukkitRunnable() {
             int duration = 0;
             double time = 0;
-
             @Override
             public void run() {
                 if (isCancelled()) {
-                    spawner.cancelAnimation();
+                    final Spawner s = spawner.query().queue().getTarget();
+                    s.cancelAnimation();
+                    s.query().commit();
                     cancel();
                     return;
                 }
                 if (ticksToFinalize == duration) {
-                    final PacketContainer packet = pManager.createPacket(PacketType.Play.Server.WORLD_PARTICLES);
-                    packet.getModifier().writeDefaults();
-                    packet.getParticles().write(0, EnumWrappers.Particle.EXPLOSION_NORMAL);
-                    packet.getFloat()
-                            .write(0, (float) (location.getX()))
-                            .write(1, (float) location.getY() + 2)
-                            .write(2, (float) (location.getZ()));
-                    pManager.broadcastServerPacket(packet);
-                    spawner.cancelAnimation();
+                    new BukkitRunnable() {
+                        int times = 4;
+                        @Override
+                        public void run() {
+                            if (times == 0) {
+                                cancel();
+                                return;
+                            }
+                            final PacketContainer packet = pManager.createPacket(PacketType.Play.Server.WORLD_PARTICLES);
+                            packet.getModifier().writeDefaults();
+                            packet.getParticles().write(0, EnumWrappers.Particle.CLOUD);
+                            packet.getFloat()
+                                    .write(0, (float) (location.getX()))
+                                    .write(1, (float) location.getY() + 1)
+                                    .write(2, (float) (location.getZ()));
+                            pManager.broadcastServerPacket(packet);
+                            times--;
+                        }
+                    }.runTaskTimer(Main.get(), 0, 5);
+                    final Spawner s = spawner.query().queue().getTarget();
+                    s.cancelAnimation();
+                    s.query().commit();
                     cancel();
                     return;
                 }
@@ -60,7 +71,7 @@ public class AnimationPlace implements AnimationService {
                 final double z = radius * Math.cos(time);
                 final PacketContainer packet = pManager.createPacket(PacketType.Play.Server.WORLD_PARTICLES);
                 packet.getModifier().writeDefaults();
-                packet.getParticles().write(0, EnumWrappers.Particle.DRAGON_BREATH);
+                packet.getParticles().write(0, EnumWrappers.Particle.VILLAGER_HAPPY);
                 packet.getFloat()
                         .write(0, (float) (location.getX() + x))
                         .write(1, (float) location.getY() + 1)

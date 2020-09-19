@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.listeners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.QueriesSync;
+import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.lib.FormatTime;
@@ -129,7 +129,7 @@ public class PlayerListeners implements Listener {
                     dropStorage.addMultiplier(booster.getValue());
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
                 } else {
-                    dropStorage.addBooster(new BoosterPlayer(booster.getValue(), booster.getTime()));
+                    dropStorage.addBooster(new BoosterPlayer(p.getName(),booster.getValue(), booster.getTime()));
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
                 }
                 dropStorage.query().commit();
@@ -244,13 +244,13 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         final String name = e.getPlayer().getName();
-        final QueriesSync<UserDetails> query = new UserDetails(name).query();
+        final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
         query.persist().fixLimits();
         query.commit(true);
-        final QueriesSync<PlayerQuests> query2 = new PlayerQuests(name).query();
+        final SyncRequests<PlayerQuests, Object> query2 = new PlayerQuests(name).query();
         query2.persist().addQuestsDefaults();
         query2.commit(true);
-        final QueriesSync<DropStorage> query3 = new DropStorage(name).query();
+        final SyncRequests<DropStorage, Object> query3 = new DropStorage(name).query();
         final DropStorage storage = query3.persist();
         storage.fixDrops();
         storage.applyBoostersDefault();
@@ -262,13 +262,13 @@ public class PlayerListeners implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         final String name = e.getPlayer().getName();
-        final QueriesSync<UserDetails> query = new UserDetails(name).query();
+        final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
         query.persist();
         query.commit(true);
-        final QueriesSync<PlayerQuests> query2 = new PlayerQuests(name).query();
+        final SyncRequests<PlayerQuests, Object> query2 = new PlayerQuests(name).query();
         query2.persist();
         query2.commit(true);
-        final QueriesSync<DropStorage> query3 = new DropStorage(name).query();
+        final SyncRequests<DropStorage, Object> query3 = new DropStorage(name).query();
         query3.persist();
         query3.commit(true);
     }

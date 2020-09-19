@@ -5,6 +5,7 @@ import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.commons.utils.JSONRead;
 import centralworks.spawners.commons.utils.JSONWrite;
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -15,14 +16,11 @@ import java.util.stream.Collectors;
 
 public class DTO<T extends Storable<T>> {
 
+    @Getter
     private final Class<T> clazz;
 
     public DTO(Class<T> clazz) {
         this.clazz = clazz;
-    }
-
-    public Class<T> getClazz() {
-        return clazz;
     }
 
     public void write(T object) {
@@ -46,9 +44,9 @@ public class DTO<T extends Storable<T>> {
         return exists(id.toString());
     }
 
-    public List<T> loadAllFiles() {
+    public <O> List<T> loadAllFiles(Repository<T, O> repository) {
         try {
-            final List<T> ts = new DAO<>(clazz, clazz.newInstance().getProperties()).loadAll();
+            final List<T> ts = repository.findAll();
             ts.forEach(t -> {
                 final String id = (String) t.getIdentifier();
                 Bukkit.getScheduler().runTask(Main.get(), () -> read(id));

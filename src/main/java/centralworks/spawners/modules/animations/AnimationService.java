@@ -1,12 +1,31 @@
 package centralworks.spawners.modules.animations;
 
-public interface AnimationService {
+import lombok.*;
 
-    boolean isCancelled();
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
-    void setCancelled(boolean value);
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Entity(name = "animations")
+public class AnimationService {
 
-    double getRadius();
+    @Id
+    @Column(length = 150)
+    @Getter
+    @Setter
+    private String locSerialized;
+    @Getter
+    @Setter
+    public boolean cancelled = false;
+    @Getter
+    @Setter
+    public double radius = 0.8;
+    @Enumerated
+    @Getter
+    @Setter
+    public AnimationType animationType;
 
-    void setRadius(double value);
 }

@@ -1,7 +1,9 @@
 package centralworks.spawners.modules.models.quests;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.QueriesSync;
+import centralworks.spawners.commons.database.specifications.QueryFunctions;
+import centralworks.spawners.commons.database.repositories.UserQuestsRepository;
+import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.cmds.QuestsCommand;
 import centralworks.spawners.modules.models.quests.cached.Interpreters;
 import centralworks.spawners.modules.models.quests.cached.Quests;
@@ -30,8 +32,6 @@ public class ApplicationQuest {
     }
 
     public static void boot() {
-        final QueriesSync<PlayerQuests> q = QueriesSync.supply(PlayerQuests.class);
-        q.getDao().createTable();
         final QuestLoader questLoader = QuestLoader.get();
         questLoader.setDefaults();
         questLoader.run();
@@ -44,8 +44,8 @@ public class ApplicationQuest {
     }
 
     public static void shutdown() {
-        final QueriesSync<PlayerQuests> q = QueriesSync.supply(PlayerQuests.class);
-        q.getDao().saveAll();
+        final SyncRequests<PlayerQuests, String> q = SyncRequests.supply(UserQuestsRepository.require());
+        QueryFunctions.saveAll(q.getRepository());
         q.getDto().delete();
     }
 

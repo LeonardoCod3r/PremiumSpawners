@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.listeners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.QueriesSync;
+import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.modules.animations.AnimationBreak;
 import centralworks.spawners.modules.animations.AnimationPlace;
@@ -41,7 +41,7 @@ public class SpawnerListeners implements Listener {
                 final Spawner spawner = user.getSpawner(location);
                 new InfoSpawnerMenu(spawner, p);
             } else {
-                final QueriesSync<Spawner> q = new Spawner(location).query();
+                final SyncRequests<Spawner, String> q = new Spawner(location).query();
                 if (!q.exists()) return;
                 final Spawner spawner = q.persist();
                 if (spawner.hasPermission(p.getName())) {
@@ -88,11 +88,10 @@ public class SpawnerListeners implements Listener {
                     user.query().commit(true);
                     spawner1.query().commit(true);
                     AnimationPlace.builder()
-                            .radius(1.3)
-                            .ticksToFinalize(75)
+                            .ticksToFinalize(115)
                             .red(50)
                             .green(168)
-                            .blue(82).build().send(spawner);
+                            .blue(82).build().send(spawner1);
                 });
             }
         });
@@ -118,7 +117,7 @@ public class SpawnerListeners implements Listener {
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));
             cached.add(p.getName());
-            AnimationBreak.builder().build().send(spawner);
+            new AnimationBreak().send(spawner);
         } else if (new Spawner(location).query().exists()) {
             e.setCancelled(true);
             p.sendMessage(messages.getMessage("isNotOwner"));
