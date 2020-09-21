@@ -31,12 +31,12 @@ public class Testing extends Storable<Testing> implements Serializable {
     private List<String> lista= Lists.newArrayList();
 
     @Override
-    public Object getIdentifier() {
+    public Object getEntityIdentifier() {
         return null;
     }
 
     @Override
-    public void setIdentifier(Object obj) {
+    public void setEntityIdentifier(Object obj) {
 
     }
 

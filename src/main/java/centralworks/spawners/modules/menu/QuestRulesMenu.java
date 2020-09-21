@@ -24,7 +24,7 @@ public class QuestRulesMenu extends InventoryBuilder {
         setCancellable(true);
         final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();
         final QuestData data = playerQuests.findQuestByCraftQuest(cq).get();
-        final LinkedList<QuestRule> rules = data.getData();
+        final List<QuestRule> rules = data.getData();
         final List<Integer> slots = Arrays.asList(11, 12, 13, 14, 15);
         final double pages = Math.ceil(rules.size() / (0D + slots.size()));
         if (page > pages || page <= 0) {

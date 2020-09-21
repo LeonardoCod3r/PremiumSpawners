@@ -1,5 +1,6 @@
 package centralworks.spawners.modules.animations;
 
+import com.google.gson.annotations.Expose;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -16,16 +17,20 @@ public class AnimationService {
     @Column(length = 150)
     @Getter
     @Setter
+    @Expose
     private String locSerialized;
     @Getter
     @Setter
+    @Expose
     public boolean cancelled = false;
     @Getter
     @Setter
+    @Expose
     public double radius = 0.8;
     @Enumerated
     @Getter
     @Setter
+    @Expose
     public AnimationType animationType;
 
 }

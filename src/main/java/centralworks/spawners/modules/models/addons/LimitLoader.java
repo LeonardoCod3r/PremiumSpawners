@@ -2,6 +2,7 @@ package centralworks.spawners.modules.models.addons;
 
 
 import centralworks.spawners.Main;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +31,7 @@ public class LimitLoader {
         final File dir = new File(Main.get().getDataFolder(), "limits");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
-                final Limit limit = Main.getGson().fromJson(new FileReader(file), Limit.class);
+                final Limit limit = new Gson().fromJson(new FileReader(file), Limit.class);
                 cache.add(limit);
             } catch (Exception ignored) {
             }

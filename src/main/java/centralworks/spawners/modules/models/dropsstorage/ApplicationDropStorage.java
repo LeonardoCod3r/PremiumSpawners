@@ -21,11 +21,11 @@ public class ApplicationDropStorage {
 
     public static void shutdown() {
         final SyncRequests<DropStorage, String> q = SyncRequests.supply(DropStorageRepository.require());
-        q.getDto().findAllFiles().forEach(storage -> {
+        /*q.getDto().findAllFiles().forEach(storage -> {
             storage.getBoostersActive().clear();
-            storage.query().commit(true);
+            storage.query().commit();
         });
-        q.getDto().delete();
+        q.getDto().delete();*/
     }
 
 

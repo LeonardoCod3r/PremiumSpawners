@@ -33,7 +33,7 @@ public class ApplicationCommons {
     public static void shutdown() {
         final SyncRequests<UserDetails, String> q = SyncRequests.supply(UserRepository.require());
         QueryFunctions.saveAll(q.getRepository());
-        q.getDto().delete();
+        /*q.getDto().delete();*/
     }
 
 }

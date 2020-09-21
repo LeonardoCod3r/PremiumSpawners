@@ -7,7 +7,12 @@
                       transaction-type="RESOURCE_LOCAL">
         <class>centralworks.spawners.modules.models.UserDetails</class>
         <class>centralworks.spawners.modules.models.spawners.Spawner</class>
-        <!--<class>centralworks.spawners.modules.models.dropsstorage.DropStorage</class>-->
+        <class>centralworks.spawners.modules.models.dropsstorage.DropStorage</class>
+        <class>centralworks.spawners.modules.models.dropsstorage.DropPlayer</class>
+        <class>centralworks.spawners.modules.models.dropsstorage.BoosterPlayer</class>
+        <class>centralworks.spawners.modules.models.quests.PlayerQuests</class>
+        <class>centralworks.spawners.modules.models.quests.QuestData</class>
+        <class>centralworks.spawners.modules.models.quests.QuestRule</class>
         <class>centralworks.spawners.modules.models.spawners.SpawnerImpulse</class>
         <class>centralworks.spawners.modules.animations.AnimationService</class>
         <!--<class>centralworks.spawners.test.Testing</class>-->

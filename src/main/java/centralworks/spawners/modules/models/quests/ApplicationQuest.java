@@ -46,7 +46,7 @@ public class ApplicationQuest {
     public static void shutdown() {
         final SyncRequests<PlayerQuests, String> q = SyncRequests.supply(UserQuestsRepository.require());
         QueryFunctions.saveAll(q.getRepository());
-        q.getDto().delete();
+        /*q.getDto().delete();*/
     }
 
     public void registerRunnable(String id, Consumer<String> consumer) {

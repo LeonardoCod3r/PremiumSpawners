@@ -2,6 +2,7 @@ package centralworks.spawners.modules.models.quests.suppliers;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.quests.cached.Runnables;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,6 @@ public class CraftRewardRunnable implements CraftSliceReward<CraftRewardRunnable
 
     @Override
     public CraftRewardRunnable parse(JsonObject jsonObject) {
-        return Main.getGson().fromJson(jsonObject, CraftRewardRunnable.class);
+        return new Gson().fromJson(jsonObject, CraftRewardRunnable.class);
     }
 }

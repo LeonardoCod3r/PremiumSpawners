@@ -72,6 +72,7 @@ public class SpawnerImpulse {
      */
     public void go(Spawner spawner) {
         setValid(true);
+        setLocSerialized(spawner.getLocSerialized());
         spawner.addImpulse(this);
         this.idTask = Bukkit.getScheduler().runTaskLater(Main.get(), () -> spawner.query().queue((spawner1, query) -> {
             setValid(false);
@@ -102,6 +103,7 @@ public class SpawnerImpulse {
     }
 
     public void run(Spawner spawner, Runnable callback) {
+        setLocSerialized(spawner.getLocSerialized());
         this.idTask = Bukkit.getScheduler().runTaskLater(Main.get(), () -> spawner.query().queue((spawner1, q) -> {
             setValid(false);
             spawner1.removeImpulse(this, callback);

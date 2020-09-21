@@ -1,6 +1,7 @@
 package centralworks.spawners.modules.models.addons;
 
 import centralworks.spawners.Main;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +30,7 @@ public class ImpulseLoader {
         final File dir = new File(Main.get().getDataFolder(), "impulses");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
-                final Impulse impulse = Main.getGson().fromJson(new FileReader(file), Impulse.class);
+                final Impulse impulse = new Gson().fromJson(new FileReader(file), Impulse.class);
                 cache.add(impulse);
             } catch (Exception ignored) {
             }

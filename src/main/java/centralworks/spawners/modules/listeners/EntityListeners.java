@@ -85,7 +85,7 @@ public class EntityListeners implements Listener {
                     if (drop.getEntityType().equals(mob.getType())) {
                         final Configuration messages = Main.getMessages();
                         if (!dropStorage.isMax()) {
-                            final Double add = Math.floor(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getMultiplier());
+                            final Double add = Math.floor(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getAllMultipliers());
                             if (dropStorage.isMax(add))
                                 dropPlayer.addDropAmount(add - (dropStorage.getAmountAll() + add - dropStorage.getUser().getSellLimit()));
                             else dropPlayer.addDropAmount(add);

@@ -3,6 +3,7 @@ package centralworks.spawners.modules.models.quests.suppliers;
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.models.PlayerCommons;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,6 @@ public class CraftRewardItem implements CraftSliceReward<CraftRewardItem> {
 
     @Override
     public CraftRewardItem parse(JsonObject jsonObject) {
-        return Main.getGson().fromJson(jsonObject, CraftRewardItem.class);
+        return new Gson().fromJson(jsonObject, CraftRewardItem.class);
     }
 }

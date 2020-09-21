@@ -16,24 +16,24 @@ public class CraftQuestRule {
     private String id;
     private String type;
     private Object value;
-    private Object defaultValue;
+    private String defaultValue;
     private JsonObject additionalInformation;
     private ItemSettings inventoryView;
 
     public Double getDefaultValueAsDouble() {
-        return Double.valueOf(getValueAsString());
+        return Double.valueOf(defaultValue);
     }
 
     public Boolean getDefaultValueAsBoolean() {
-        return Boolean.valueOf(getValueAsString());
+        return Boolean.valueOf(getDefaultValueAsString().replace(".0", ""));
     }
 
     public Integer getDefaultValueAsInteger() {
-        return Integer.valueOf(getValueAsString().replace(".0", ""));
+        return Integer.valueOf(getDefaultValueAsString().replace(".0", ""));
     }
 
     public String getDefaultValueAsString() {
-        return String.valueOf(value);
+        return defaultValue;
     }
 
     public Double getValueAsDouble() {

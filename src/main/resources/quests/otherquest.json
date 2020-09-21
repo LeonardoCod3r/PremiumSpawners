@@ -1,21 +1,21 @@
 {
   "settings": {
-    "name": "§eMinerar e construir é bom?",
+    "name": "§eMineiro profissional",
     "description": [
       "§7Está afim de usar droga, mas não tem dinheiro?",
-      "§7Eis aqui uma chance única de conseguir 100.000 coins."
+      "§7Eis aqui uma chance única de conseguir 1.000.000 coins."
     ],
-    "message": "§7Parabéns, você completou a primeira missão do servidor. Boa sorte nessa jornada, bem-vindo.",
-    "identifier": "missaomista1",
-    "position": 1,
-    "needPreviousQuestToRun": false,
+    "message": "§7Parabéns, você completou a segunda missão do servidor.",
+    "identifier": "missaomista2",
+    "position": 2,
+    "needPreviousQuestToRun": true,
     "needQuests": []
   },
   "rules": [
     {
       "id": "one",
       "type": "mining",
-      "value": 10,
+      "value": 10000,
       "additionalInformation": {},
       "defaultValue": "0",
       "inventoryView": {
@@ -28,33 +28,9 @@
         "item_name": "&eMinerar",
         "item_enchants": [],
         "item_lore": [
-          "&7Minerar 10 blocos de qualquer tipo.",
+          "&7Minerar 10.000 blocos de qualquer tipo.",
           "",
           "§fBlocos minerados: §7{value}",
-          "§fCompleta: §7{completed}",
-          "§fCompletada em: §7{completedDay}"
-        ]
-      }
-    },
-    {
-      "id": "two",
-      "type": "place",
-      "value": 10,
-      "additionalInformation": {},
-      "defaultValue": "0",
-      "inventoryView": {
-        "item_id": 1,
-        "item_skull_owner": "",
-        "item_skull_url": "",
-        "item_data": 0,
-        "item_amount": 1,
-        "item_slot": 0,
-        "item_name": "&eColocar blocos",
-        "item_enchants": [],
-        "item_lore": [
-          "&7Colocar 10 blocos de qualquer tipo.",
-          "",
-          "§fBlocos colocados: §7{value}",
           "§fCompleta: §7{completed}",
           "§fCompletada em: §7{completedDay}"
         ]
@@ -66,7 +42,7 @@
       "id": "one",
       "type": "COMMAND",
       "sliceReward": {
-        "command": "money add {player} 100000"
+        "command": "money add {player} 1000000"
       }
     },
     {
@@ -105,5 +81,3 @@
     ]
   }
 }
-
-

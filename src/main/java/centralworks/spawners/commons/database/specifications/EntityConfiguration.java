@@ -2,9 +2,9 @@ package centralworks.spawners.commons.database.specifications;
 
 public interface EntityConfiguration {
 
-    Object getIdentifier();
+    Object getEntityIdentifier();
 
-    void setIdentifier(Object obj);
+    void setEntityIdentifier(Object obj);
 
     <O, T> Repository<O, T> getRepository();
 

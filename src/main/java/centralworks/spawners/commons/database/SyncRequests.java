@@ -1,7 +1,6 @@
 package centralworks.spawners.commons.database;
 
 import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.specifications.DTO;
 import lombok.Data;
 import lombok.val;
 
@@ -14,7 +13,6 @@ public class SyncRequests<O extends Storable<O>, T> {
     private Class<O> classFile;
     private String identifier;
     private Repository<O, T> repository;
-    private DTO<O> dto;
     private O target;
 
     public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository, A object) {
@@ -32,22 +30,19 @@ public class SyncRequests<O extends Storable<O>, T> {
     public SyncRequests(Repository<O, T> repository) {
         this.classFile = repository.getTarget();
         this.repository = repository;
-        this.dto = new DTO<>(classFile);
     }
 
     public SyncRequests(Repository<O, T> repository, String identifier) {
         this.classFile = repository.getTarget();
         this.repository = repository;
-        this.dto = new DTO<>(classFile);
         this.identifier = identifier;
     }
 
     public SyncRequests(Repository<O, T> repository, O target) {
         this.classFile = repository.getTarget();
         this.repository = repository;
-        this.dto = new DTO<>(classFile);
         this.target = target;
-        this.identifier = (String) target.getIdentifier();
+        this.identifier = (String) target.getEntityIdentifier();
     }
 
     public O persist() {
@@ -56,7 +51,7 @@ public class SyncRequests<O extends Storable<O>, T> {
     }
 
     public SyncRequests<O, T> setTarget(O obj) {
-        final String s = (String) obj.getIdentifier();
+        final String s = (String) obj.getEntityIdentifier();
         this.target = obj;
         setIdentifier(s);
         return this;
@@ -64,41 +59,24 @@ public class SyncRequests<O extends Storable<O>, T> {
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> queue() {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else {
             val target = repository.read((T)identifier);
-            target.ifPresent(o -> {
-                dto.write(o);
-                setTarget(o);
-            });
-        }
+            target.ifPresent(this::setTarget);
+
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> queue(Consumer<O> success) {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else {
             val target = repository.read((T)identifier);
-            target.ifPresent(o -> {
-                dto.write(o);
-                setTarget(o);
-            });
-        }
+            target.ifPresent(this::setTarget);
         success.accept(getTarget());
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> queue(BiConsumer<O, SyncRequests<O, T>> success) {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else {
             val target = repository.read((T)identifier);
-            target.ifPresent(o -> {
-                dto.write(o);
-                setTarget(o);
-            });
-        }
+            target.ifPresent(this::setTarget);
         success.accept(getTarget(), this);
         return this;
     }
@@ -106,14 +84,8 @@ public class SyncRequests<O extends Storable<O>, T> {
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> queue(Consumer<O> success, Consumer<Exception> error) {
         try {
-            if (dto.exists(identifier)) setTarget(dto.read(identifier));
-            else {
                 val target = repository.read((T)identifier);
-                target.ifPresent(o -> {
-                    dto.write(o);
-                    setTarget(o);
-                });
-            }
+                target.ifPresent(this::setTarget);
             success.accept(getTarget());
         } catch (Exception e) {
             error.accept(e);
@@ -124,14 +96,8 @@ public class SyncRequests<O extends Storable<O>, T> {
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> queue(Consumer<O> success, BiConsumer<Exception, SyncRequests<O, T>> error) {
         try {
-            if (dto.exists(identifier)) setTarget(dto.read(identifier));
-            else {
                 val target = repository.read((T)identifier);
-                target.ifPresent(o -> {
-                    dto.write(o);
-                    setTarget(o);
-                });
-            }
+                target.ifPresent(this::setTarget);
             success.accept(getTarget());
         } catch (Exception e) {
             error.accept(e, this);
@@ -141,23 +107,20 @@ public class SyncRequests<O extends Storable<O>, T> {
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> lazyQueue() {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else setTarget(repository.read((T)identifier).get());
+        setTarget(repository.read((T)identifier).get());
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> lazyQueue(Consumer<O> success) {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else setTarget(repository.read((T)identifier).get());
+        setTarget(repository.read((T)identifier).get());
         success.accept(getTarget());
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> lazyQueue(BiConsumer<O, SyncRequests<O, T>> success) {
-        if (dto.exists(identifier)) setTarget(dto.read(identifier));
-        else setTarget(repository.read((T) identifier).get());
+        setTarget(repository.read((T) identifier).get());
         success.accept(getTarget(), this);
         return this;
     }
@@ -165,8 +128,7 @@ public class SyncRequests<O extends Storable<O>, T> {
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> lazyQueue(Consumer<O> success, Consumer<Exception> error) {
         try {
-            if (dto.exists(identifier)) setTarget(dto.read(identifier));
-            else setTarget(repository.read((T)identifier).get());
+            setTarget(repository.read((T)identifier).get());
             success.accept(getTarget());
         } catch (Exception e) {
             error.accept(e);
@@ -177,8 +139,7 @@ public class SyncRequests<O extends Storable<O>, T> {
     @SuppressWarnings("unchecked")
     public SyncRequests<O, T> lazyQueue(Consumer<O> success, BiConsumer<Exception, SyncRequests<O, T>> error) {
         try {
-            if (dto.exists(identifier)) setTarget(dto.read(identifier));
-            else setTarget(repository.read((T)identifier).get());
+            setTarget(repository.read((T)identifier).get());
             success.accept(getTarget());
         } catch (Exception e) {
             error.accept(e, this);
@@ -201,28 +162,19 @@ public class SyncRequests<O extends Storable<O>, T> {
         return this;
     }
 
-    public SyncRequests<O, T> delete(Boolean... booleans) {
-        val v = booleans.length > 0 && booleans[0];
-        dto.delete(identifier);
-        if (v) repository.delete(target);
+    public SyncRequests<O, T> delete() {
+        repository.delete(target);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public boolean exists() {
-        return dto.exists(identifier) || repository.exists((T) identifier);
+        return repository.exists((T) identifier);
     }
 
-    public SyncRequests<O, T> commit(Boolean... booleans) {
-        val v = booleans.length > 0 && booleans[0];
-        if (getTarget() == null) queue((t, tQueriesSync) -> {
-            tQueriesSync.dto.write(t);
-            if (v) tQueriesSync.repository.commit(t);
-        });
-        else {
-            dto.write(getTarget());
-            if (v) repository.commit(getTarget());
-        }
+    public SyncRequests<O, T> commit() {
+        if (getTarget() == null) queue((t, tQueriesSync) -> tQueriesSync.repository.commit(t));
+        else repository.commit(getTarget());
         return this;
     }
 

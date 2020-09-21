@@ -28,7 +28,7 @@ public class CrudRepository<O extends Storable<O>, T> implements Repository<O, T
     @Override
     @SuppressWarnings("unchecked")
     public O commit(O obj) {
-        if (exists((T) obj.getIdentifier())) return update(obj);
+        if (exists((T) obj.getEntityIdentifier())) return update(obj);
         final EntityManager em = Storage.getEntityManager();
         em.getTransaction().begin();
         em.persist(obj);
