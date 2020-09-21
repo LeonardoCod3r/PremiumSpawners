@@ -1,27 +1,36 @@
 package centralworks.spawners.modules.models.quests;
 
+import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class QuestRule {
+public class QuestRule implements Serializable {
 
     @Id
-    @Column(length = 16)
-    private String userName;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Expose
+    private Long idKey;
+    @Expose
     private String id;
+    @Expose
     private String interpreter;
+    @Expose
     private boolean completed = false;
+    @Expose
     private Long completedIn = System.currentTimeMillis();
-    private Object value;
+    @ManyToOne
+    @Expose(deserialize = false, serialize = false)
+    private QuestData questData;
+    @Expose
+    private String value;
 
     public QuestRule(boolean completed) {
         this.completed = completed;
@@ -29,14 +38,14 @@ public class QuestRule {
     }
 
     public Double addValueAsDouble(Double value) {
-        final double newValue = getValueAsDouble() + value;
-        setValue(newValue);
+        final Double newValue = getValueAsDouble() + value;
+        setValue(newValue.toString());
         return newValue;
     }
 
     public Integer addValueAsInteger(Integer value) {
-        final int newValue = getValueAsInteger() + value;
-        setValue(newValue);
+        final Integer newValue = getValueAsInteger() + value;
+        setValue(newValue.toString());
         return newValue;
     }
 
@@ -45,7 +54,7 @@ public class QuestRule {
     }
 
     public Boolean getValueAsBoolean() {
-        return Boolean.valueOf(getValueAsString());
+        return Boolean.valueOf(getValueAsString().replace(".0", ""));
     }
 
     public Integer getValueAsInteger() {
@@ -53,7 +62,7 @@ public class QuestRule {
     }
 
     public String getValueAsString() {
-        return String.valueOf(value);
+        return value;
     }
 
 }

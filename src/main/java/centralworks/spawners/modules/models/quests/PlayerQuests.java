@@ -7,14 +7,16 @@ import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuestSettings;
 import com.google.common.collect.Lists;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -29,17 +31,20 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
     @Column(length = 16)
     @Getter
     @Setter
+    @Expose
     private String name;
     @Getter
     @Setter
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "username")
+    @Expose
     private String lastCompletedId = "";
     @Getter
     @Setter
-    private LinkedList<QuestData> compounds = Lists.newLinkedList();
+    @OneToMany(mappedBy = "playerQuests", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @Expose
+    private List<QuestData> compounds = Lists.newLinkedList();
     @Getter
-    private transient Repository<PlayerQuests, String> repository = UserQuestsRepository.require();
+    private final transient Repository<PlayerQuests, String> repository = UserQuestsRepository.require();
 
     public PlayerQuests(OfflinePlayer player) {
         this.name = player.getName();
@@ -50,12 +55,12 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
     }
 
     @Override
-    public Object getIdentifier() {
+    public Object getEntityIdentifier() {
         return this.name;
     }
 
     @Override
-    public void setIdentifier(Object object) {
+    public void setEntityIdentifier(Object object) {
         this.name = object.toString();
     }
 
@@ -103,18 +108,20 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
         for (CraftQuest quest : Quests.get().getList()) {
             final CraftQuestSettings settings = quest.getSettings();
             final String id = settings.getIdentifier();
-            final List<QuestRule> questRules = quest.getRules().stream().map(craftQuestRule -> {
+            final QuestData data = new QuestData();
+            data.setPlayerQuests(this);
+            data.setActive(settings.getPosition() == 1 || (!settings.isNeedPreviousQuestToRun() && settings.getNeedQuests().isEmpty()));
+            data.setIdentifier(id);
+            data.setData(quest.getRules().stream().map(craftQuestRule -> {
                 final QuestRule rule = new QuestRule();
+                rule.setQuestData(data);
                 rule.setId(craftQuestRule.getId());
                 rule.setValue(craftQuestRule.getDefaultValue());
                 rule.setInterpreter(craftQuestRule.getType());
                 return rule;
-            }).collect(Collectors.toList());
-            final QuestData data = new QuestData();
-            data.setActive(settings.getPosition() == 1 || (!settings.isNeedPreviousQuestToRun() && settings.getNeedQuests().isEmpty()));
-            data.setData(Lists.newLinkedList(questRules));
-            data.setIdentifier(id);
+            }).collect(Collectors.toList()));
             addQuest(data);
+            saveInMySQL();
         }
         getCompounds().forEach(q -> {
             final CraftQuest craftQuests = q.getQuest();
@@ -124,7 +131,7 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
                     q.setActive(true);
             }
         });
-        save();
+        saveInMySQL();
     }
 
     public void nextQuest(QuestData previous) {
@@ -156,27 +163,34 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
 
     public void addQuest(String id, List<QuestRule> questRules, Boolean... isActive) {
         final QuestData questData = new QuestData();
+        questData.setPlayerQuests(this);
         questData.setIdentifier(id);
         questData.setActive(isActive.length > 0 && isActive[0]);
         questData.setData(Lists.newLinkedList(questRules));
+        questData.getData().forEach(questRule -> questRule.setQuestData(questData));
         compounds.add(questData);
+        saveInMySQL();
     }
 
     public void addQuest(QuestData questData) {
         if (compounds.stream().noneMatch(questData1 -> questData1.getIdentifier().equals(questData.getIdentifier())))
             compounds.add(questData);
+        saveInMySQL();
     }
 
     public void removeQuest(String id) {
         compounds.removeIf(questData -> questData.getIdentifier().equalsIgnoreCase(id));
+        saveInMySQL();
     }
 
     public void removeQuest(QuestData questData) {
         compounds.remove(questData);
+        saveInMySQL();
     }
 
     public void removeQuestIf(Predicate<QuestData> questDataPredicate) {
         compounds.removeIf(questDataPredicate);
+        saveInMySQL();
     }
 
     public Optional<QuestData> findQuestById(String id) {
@@ -204,7 +218,7 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
     }
 
     public void saveInMySQL() {
-        query().commit(true);
+        query().commit();
     }
 
 }

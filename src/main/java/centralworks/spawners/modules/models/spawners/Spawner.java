@@ -15,6 +15,7 @@ import centralworks.spawners.modules.models.addons.ImpulseType;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.google.common.collect.Lists;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,6 +25,8 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,36 +43,47 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Column(length = 150)
     @Getter
     @Setter
+    @Expose
     private String locSerialized;
     @Getter
     @Setter
+    @Expose
     private String owner;
     @Getter
     @Setter
+    @Expose
     private String entityTypeSerialized;
     @Getter
     @Setter
+    @Expose
     private Double amount = 1.0;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "locSerialized")
     @Getter
     @Setter
+    @Expose
     private List<String> friends = Lists.newLinkedList();
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "locSerialized")
     @Getter
     @Setter
+    @Expose
     private List<SpawnerImpulse> impulsesOfGeneration = Lists.newLinkedList();
     @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(name = "locSerialized")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
+    @Expose
     private AnimationService animationService;
     @Getter
-    private final transient Repository<Spawner, String> repository = SpawnerRepository.require();
-    @Getter
     @Setter
+    @Expose
     private Long hologramId;
+    @Getter
+    private final transient Repository<Spawner, String> repository = SpawnerRepository.require();
 
     public Spawner(String locSerialized) {
         this.locSerialized = locSerialized;
@@ -80,12 +94,12 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     @Override
-    public Object getIdentifier() {
+    public Object getEntityIdentifier() {
         return this.locSerialized;
     }
 
     @Override
-    public void setIdentifier(Object object) {
+    public void setEntityIdentifier(Object object) {
         this.locSerialized = object.toString();
     }
 
@@ -274,7 +288,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         final Location l = getLocation();
         l.getBlock().setType(Material.AIR);
         impulsesOfGeneration.forEach(SpawnerImpulse::stop);
-        query().delete(true);
+        query().delete();
         userDetails.deleteSpawnerLocation(l);
         userDetails.query().commit();
         final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();

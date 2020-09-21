@@ -3,14 +3,20 @@ package centralworks.spawners.modules.models.quests;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import com.google.common.collect.Lists;
+import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import java.util.LinkedList;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -18,17 +24,25 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class QuestData {
+public class QuestData implements Serializable {
 
     @Id
-    @Column(length = 16)
-    private String userName;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Expose
+    private Long id;
+    @Expose
     private String identifier;
+    @Expose
     private boolean active = false;
+    @Expose
     private Long startedAt = System.currentTimeMillis();
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "userName")
-    private LinkedList<QuestRule> data = Lists.newLinkedList();
+    @Expose(deserialize = false, serialize = false)
+    @ManyToOne
+    private PlayerQuests playerQuests;
+    @OneToMany(mappedBy = "questData", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @Expose
+    private List<QuestRule> data = Lists.newLinkedList();
 
     public CraftQuest getQuest() {
         return Quests.get().get(craftQuest -> craftQuest.getSettings().getIdentifier().equals(identifier));
@@ -64,4 +78,5 @@ public class QuestData {
         if (b) setActive(false);
         return b;
     }
+
 }

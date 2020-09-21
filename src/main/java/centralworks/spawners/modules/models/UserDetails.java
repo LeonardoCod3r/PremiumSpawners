@@ -7,6 +7,7 @@ import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import com.google.common.collect.Lists;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,17 +30,21 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     @Column(length = 16)
     @Getter
     @Setter
+    @Expose
     private String user;
     @ElementCollection
     @JoinColumn(name = "user")
     @Getter
     @Setter
+    @Expose
     private List<String> locationsSerialized = Lists.newArrayList();
     @Getter
     @Setter
+    @Expose
     private Double buyLimit = 1.0;
     @Getter
     @Setter
+    @Expose
     private Double sellLimit = 1.0;
     @Getter
     private final transient Repository<UserDetails, String> repository = UserRepository.require();
@@ -53,12 +58,12 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     }
 
     @Override
-    public Object getIdentifier() {
+    public Object getEntityIdentifier() {
         return this.user;
     }
 
     @Override
-    public void setIdentifier(Object object) {
+    public void setEntityIdentifier(Object object) {
         this.user = object.toString();
     }
 

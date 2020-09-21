@@ -47,11 +47,11 @@ public class ApplicationSpawner {
 
     public static void shutdown() {
         final SyncRequests<Spawner, String> q = SyncRequests.supply(SpawnerRepository.require());
-        q.getDto().findAllFiles().forEach(spawner -> {
+        /*q.getDto().findAllFiles().forEach(spawner -> {
             spawner.getImpulsesOfGeneration().forEach(SpawnerImpulse::stop);
-            spawner.query().commit(true);
+            spawner.query().commit();
         });
-        q.getDto().delete();
+        q.getDto().delete();*/
         HologramsAPI.getHolograms(Main.get()).forEach(Hologram::delete);
     }
 }

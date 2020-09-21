@@ -9,6 +9,7 @@ import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import com.google.common.collect.Lists;
+import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,33 +33,40 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Id
     @Getter
     @Setter
+    @Expose
     private String owner;
-    @Getter
     @Setter
+    @Getter
+    @Expose
     private Double multiplier = 1.0;
     @Getter
     @Setter
+    @Expose
     private boolean autoSell = false;
     @Getter
     @Setter
+    @Expose
     private Integer bonus = 0;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner")
+    @OneToMany(mappedBy = "dropStorage",cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
+    @Expose
     private List<BoosterPlayer> boostersActive = Lists.newArrayList();
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner")
+    @OneToMany(mappedBy = "dropStorage",cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
+    @Expose
     private List<DropPlayer> dropPlayers = Lists.newArrayList();
     @ElementCollection
-    @JoinColumn(name = "owner")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
+    @Expose
     private List<String> friends = Lists.newArrayList();
     @Getter
-    private transient Repository<DropStorage, String> repository = DropStorageRepository.require();
+    private final transient Repository<DropStorage, String> repository = DropStorageRepository.require();
 
     public DropStorage(OfflinePlayer p) {
         this.owner = p.getName();
@@ -67,12 +77,12 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     @Override
-    public Object getIdentifier() {
+    public Object getEntityIdentifier() {
         return this.owner;
     }
 
     @Override
-    public void setIdentifier(Object object) {
+    public void setEntityIdentifier(Object object) {
         this.owner = object.toString();
     }
 
@@ -92,7 +102,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
         LootData.get().getList().forEach(drop -> {
             if (getDropPlayers().stream().noneMatch(dropPlayer -> dropPlayer.getKeyDrop().equalsIgnoreCase(drop.getKeyDrop()))) {
                 final List<DropPlayer> list = new ArrayList<>(getDropPlayers());
-                list.add(new DropPlayer(owner, drop.getKeyDrop(), 0D));
+                list.add(new DropPlayer(this, drop.getKeyDrop(), 0D));
                 setDropPlayers(list);
             }
         });
@@ -149,7 +159,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
         return Bukkit.getOfflinePlayer(owner).getName();
     }
 
-    public Double getMultiplier() {
+    public Double getAllMultipliers() {
         return multiplier + getMultiplierBoosters();
     }
 
@@ -170,6 +180,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public void addBooster(BoosterPlayer boosterPlayer) {
+        boosterPlayer.setDropStorage(this);
         getBoostersActive().add(boosterPlayer);
         Bukkit.getScheduler().runTaskLater(Main.get(), () -> query().queue((storage, q) -> {
             final ArrayList<BoosterPlayer> list = new ArrayList<>(storage.getBoostersActive());

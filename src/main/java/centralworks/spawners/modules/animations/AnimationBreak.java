@@ -7,6 +7,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Location;
 
@@ -17,9 +18,11 @@ import org.bukkit.Location;
 @AllArgsConstructor
 public class AnimationBreak extends AnimationService {
 
+    @Expose
     private int ticksToFinalize = 60;
 
     public void send(Spawner spawner) {
+        setLocSerialized(spawner.getLocSerialized());
         setAnimationType(AnimationType.BREAK);
         final Location location = spawner.getLocation().add(0.5, 2.0, 0.5);
         final ProtocolManager pManager = ProtocolLibrary.getProtocolManager();

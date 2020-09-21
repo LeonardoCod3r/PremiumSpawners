@@ -7,6 +7,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,12 +19,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 @AllArgsConstructor
 public class AnimationPlace extends AnimationService {
 
+    @Expose
     private float red = 255;
+    @Expose
     private float green = 0;
+    @Expose
     private float blue = 0;
+    @Expose
     private int ticksToFinalize = 60;
 
     public void send(Spawner spawner) {
+        setLocSerialized(spawner.getLocSerialized());
         setAnimationType(AnimationType.PLACE);
         final Location location = spawner.getLocation().add(0.5, 0.0, 0.5);
         spawner.setAnimationService(this);

@@ -2,6 +2,7 @@ package centralworks.spawners.modules.models.quests.suppliers;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.quests.cached.Quests;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class QuestLoader {
         final File dir = new File(Main.get().getDataFolder(), "quests");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
-                final CraftQuest craftQuest = Main.getGson().fromJson(new FileReader(file), CraftQuest.class);
+                final CraftQuest craftQuest = new Gson().fromJson(new FileReader(file), CraftQuest.class);
                 quests.add(craftQuest);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -50,9 +51,12 @@ public class QuestLoader {
             try {
                 if (!Main.get().getDataFolder().exists()) Main.get().getDataFolder().mkdir();
                 if (!ctx.exists()) ctx.mkdir();
-                final File file = new File(ctx, "examplequest.json");
+                File file = new File(ctx, "examplequest.json");
                 if (!file.exists())
                     Files.copy(Main.get().getClass().getResourceAsStream("/quests/examplequest.json"), file.toPath());
+                file = new File(ctx, "otherquest.json");
+                if (!file.exists())
+                    Files.copy(Main.get().getClass().getResourceAsStream("/quests/otherquest.json"), file.toPath());
             } catch (IOException ignored) {
             }
         }

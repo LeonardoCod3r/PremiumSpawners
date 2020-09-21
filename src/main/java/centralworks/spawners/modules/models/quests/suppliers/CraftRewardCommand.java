@@ -1,6 +1,7 @@
 package centralworks.spawners.modules.models.quests.suppliers;
 
 import centralworks.spawners.Main;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class CraftRewardCommand implements CraftSliceReward<CraftRewardCommand> 
 
     @Override
     public CraftRewardCommand parse(JsonObject jsonObject) {
-        return Main.getGson().fromJson(jsonObject, CraftRewardCommand.class);
+        return new Gson().fromJson(jsonObject, CraftRewardCommand.class);
     }
 }
 

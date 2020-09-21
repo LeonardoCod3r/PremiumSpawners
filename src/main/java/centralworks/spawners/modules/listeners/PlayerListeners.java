@@ -129,7 +129,7 @@ public class PlayerListeners implements Listener {
                     dropStorage.addMultiplier(booster.getValue());
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
                 } else {
-                    dropStorage.addBooster(new BoosterPlayer(p.getName(),booster.getValue(), booster.getTime()));
+                    dropStorage.addBooster(new BoosterPlayer(dropStorage,booster.getValue(), booster.getTime()));
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
                 }
                 dropStorage.query().commit();
@@ -246,16 +246,16 @@ public class PlayerListeners implements Listener {
         final String name = e.getPlayer().getName();
         final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
         query.persist().fixLimits();
-        query.commit(true);
+        query.commit();
         final SyncRequests<PlayerQuests, Object> query2 = new PlayerQuests(name).query();
         query2.persist().addQuestsDefaults();
-        query2.commit(true);
+        query2.commit();
         final SyncRequests<DropStorage, Object> query3 = new DropStorage(name).query();
         final DropStorage storage = query3.persist();
         storage.fixDrops();
         storage.applyBoostersDefault();
         storage.fixBonus(e.getPlayer());
-        query3.commit(true);
+        query3.commit();
     }
 
 
@@ -264,12 +264,12 @@ public class PlayerListeners implements Listener {
         final String name = e.getPlayer().getName();
         final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
         query.persist();
-        query.commit(true);
+        query.commit();
         final SyncRequests<PlayerQuests, Object> query2 = new PlayerQuests(name).query();
         query2.persist();
-        query2.commit(true);
+        query2.commit();
         final SyncRequests<DropStorage, Object> query3 = new DropStorage(name).query();
         query3.persist();
-        query3.commit(true);
+        query3.commit();
     }
 }

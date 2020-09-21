@@ -1,6 +1,7 @@
 package centralworks.spawners.modules.menu.settings;
 
 import centralworks.spawners.Main;
+import com.google.gson.Gson;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,7 @@ public class MenusSettings {
                 if (!file.exists())
                     Files.copy(Main.get().getClass().getResourceAsStream("/inventory.json"), file.toPath());
                 final FileReader fileReader = new FileReader(new File(Main.get().getDataFolder(), "inventory.json"));
-                menusSettings = Main.getGson().fromJson(fileReader, MenusSettings.class);
+                menusSettings = new Gson().fromJson(fileReader, MenusSettings.class);
             } catch (Exception ignored) {
             }
         }
@@ -41,7 +42,7 @@ public class MenusSettings {
             if (!file.exists())
                 Files.copy(Main.get().getClass().getResourceAsStream("/inventory.json"), file.toPath());
             final FileReader fileReader = new FileReader(new File(Main.get().getDataFolder(), "inventory.json"));
-            menusSettings = Main.getGson().fromJson(fileReader, MenusSettings.class);
+            menusSettings = new Gson().fromJson(fileReader, MenusSettings.class);
         } catch (Exception ignored) {
         }
         return menusSettings;

@@ -85,8 +85,8 @@ public class SpawnerListeners implements Listener {
             } else {
                 user.addSpawnerLocation(location);
                 spawner.appear(spawner1 -> {
-                    user.query().commit(true);
-                    spawner1.query().commit(true);
+                    user.query().commit();
+                    spawner1.query().commit();
                     AnimationPlace.builder()
                             .ticksToFinalize(115)
                             .red(50)
