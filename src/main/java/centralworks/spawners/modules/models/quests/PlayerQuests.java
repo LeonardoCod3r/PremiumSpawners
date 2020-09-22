@@ -1,7 +1,9 @@
 package centralworks.spawners.modules.models.quests;
 
+import centralworks.spawners.commons.database.repositories.fast.FastUserQuestsRepository;
+import centralworks.spawners.commons.database.specifications.BindRepository;
 import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.UserQuestsRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaUserQuestsRepository;
 import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
@@ -43,8 +45,13 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
     @LazyCollection(LazyCollectionOption.FALSE)
     @Expose
     private List<QuestData> compounds = Lists.newLinkedList();
-    @Getter
-    private final transient Repository<PlayerQuests, String> repository = UserQuestsRepository.require();
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<PlayerQuests, String> getRepository() {
+        final BindRepository<PlayerQuests, String> bindRepository = new BindRepository<>(PlayerQuests.class, JpaUserQuestsRepository.require(), FastUserQuestsRepository.require());
+        return bindRepository.getRelativeRepository();
+    }
 
     public PlayerQuests(OfflinePlayer player) {
         this.name = player.getName();

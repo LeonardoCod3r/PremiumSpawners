@@ -2,7 +2,7 @@ package centralworks.spawners.modules.models.quests;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.specifications.QueryFunctions;
-import centralworks.spawners.commons.database.repositories.UserQuestsRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaUserQuestsRepository;
 import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.cmds.QuestsCommand;
 import centralworks.spawners.modules.models.quests.cached.Interpreters;
@@ -44,7 +44,7 @@ public class ApplicationQuest {
     }
 
     public static void shutdown() {
-        final SyncRequests<PlayerQuests, String> q = SyncRequests.supply(UserQuestsRepository.require());
+        final SyncRequests<PlayerQuests, String> q = SyncRequests.supply(JpaUserQuestsRepository.require());
         QueryFunctions.saveAll(q.getRepository());
         /*q.getDto().delete();*/
     }

@@ -1,7 +1,5 @@
 package centralworks.spawners;
 
-import centralworks.spawners.commons.database.SyncRequests;
-import centralworks.spawners.commons.database.repositories.SpawnerRepository;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.modules.cmds.BoosterCommand;
@@ -13,10 +11,8 @@ import centralworks.spawners.modules.models.addons.LimitLoader;
 import centralworks.spawners.modules.models.dropsstorage.ApplicationDropStorage;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import centralworks.spawners.modules.models.quests.ApplicationQuest;
-import centralworks.spawners.modules.models.quests.PlayerQuests;
 import centralworks.spawners.modules.models.quests.suppliers.QuestLoader;
 import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
-import centralworks.spawners.modules.models.spawners.Spawner;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -24,7 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.tr7zw.nbtinjector.NBTInjector;
 import lombok.Getter;
-import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -35,7 +30,6 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Villager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Optional;
 import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {

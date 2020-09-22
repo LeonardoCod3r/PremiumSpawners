@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class CrudRepository<O extends Storable<O>, T> implements Repository<O, T> {
+public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T> {
 
     static {
         Storage.create();
@@ -21,7 +21,7 @@ public class CrudRepository<O extends Storable<O>, T> implements Repository<O, T
     @Getter
     private final Class<O> target;
 
-    public CrudRepository(Class<O> target) {
+    public JpaRepository(Class<O> target) {
         this.target = target;
     }
 

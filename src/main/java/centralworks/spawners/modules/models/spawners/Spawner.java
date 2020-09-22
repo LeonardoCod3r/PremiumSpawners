@@ -1,8 +1,10 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
+import centralworks.spawners.commons.database.repositories.fast.FastSpawnerRepository;
+import centralworks.spawners.commons.database.specifications.BindRepository;
 import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.SpawnerRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaSpawnerRepository;
 import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
@@ -73,8 +75,13 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Setter
     @Expose
     private Long hologramId;
-    @Getter
-    private final transient Repository<Spawner, String> repository = SpawnerRepository.require();
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<Spawner, String> getRepository() {
+        final BindRepository<Spawner, String> bindRepository = new BindRepository<>(Spawner.class, JpaSpawnerRepository.require(), FastSpawnerRepository.require());
+        return bindRepository.getRelativeRepository();
+    }
 
     public Spawner(String locSerialized) {
         this.locSerialized = locSerialized;

@@ -1,8 +1,10 @@
 package centralworks.spawners.modules.models;
 
 import centralworks.spawners.Main;
+import centralworks.spawners.commons.database.repositories.fast.FastUserRepository;
+import centralworks.spawners.commons.database.specifications.BindRepository;
 import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.UserRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaUserRepository;
 import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.models.spawners.Spawner;
@@ -46,8 +48,12 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     @Setter
     @Expose
     private Double sellLimit = 1.0;
-    @Getter
-    private final transient Repository<UserDetails, String> repository = UserRepository.require();
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<UserDetails, String> getRepository() {
+        final BindRepository<UserDetails, String> bindRepository = new BindRepository<>(UserDetails.class, JpaUserRepository.require(), FastUserRepository.require());
+        return bindRepository.getRelativeRepository();
+    }
 
     public UserDetails(OfflinePlayer p) {
         this.user = p.getName();

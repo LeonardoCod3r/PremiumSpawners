@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.models.dropsstorage;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.DropStorageRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaDropStorageRepository;
 import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.cmds.DSFriendsCommand;
 import centralworks.spawners.modules.cmds.SellCommand;
@@ -20,7 +20,7 @@ public class ApplicationDropStorage {
     }
 
     public static void shutdown() {
-        final SyncRequests<DropStorage, String> q = SyncRequests.supply(DropStorageRepository.require());
+        final SyncRequests<DropStorage, String> q = SyncRequests.supply(JpaDropStorageRepository.require());
         /*q.getDto().findAllFiles().forEach(storage -> {
             storage.getBoostersActive().clear();
             storage.query().commit();

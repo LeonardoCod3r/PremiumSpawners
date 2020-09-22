@@ -1,7 +1,9 @@
 package centralworks.spawners.modules.models.dropsstorage;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.DropStorageRepository;
+import centralworks.spawners.commons.database.repositories.fast.FastDropStorageRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaDropStorageRepository;
+import centralworks.spawners.commons.database.specifications.BindRepository;
 import centralworks.spawners.commons.database.specifications.Repository;
 import centralworks.spawners.commons.database.Storable;
 import centralworks.spawners.modules.models.UserDetails;
@@ -66,8 +68,13 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Setter
     @Expose
     private List<String> friends = Lists.newArrayList();
-    @Getter
-    private final transient Repository<DropStorage, String> repository = DropStorageRepository.require();
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<DropStorage, String> getRepository() {
+        final BindRepository<DropStorage, String> bindRepository = new BindRepository<>(DropStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
+        return bindRepository.getRelativeRepository();
+    }
 
     public DropStorage(OfflinePlayer p) {
         this.owner = p.getName();

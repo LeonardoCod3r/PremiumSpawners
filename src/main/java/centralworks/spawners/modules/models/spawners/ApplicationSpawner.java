@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.SpawnerRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaSpawnerRepository;
 import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.cmds.SpawnersCommand;
 import centralworks.spawners.modules.hook.DynmapHook;
@@ -27,7 +27,7 @@ public class ApplicationSpawner {
     public static void boot() {
         dynmapHook = new DynmapHook();
         if (Bukkit.getPluginManager().isPluginEnabled("dynmap")) dynmapHook.boot();
-        final SyncRequests<Spawner, String> queriesSync = SyncRequests.supply(SpawnerRepository.require());
+        final SyncRequests<Spawner, String> queriesSync = SyncRequests.supply(JpaSpawnerRepository.require());
         for (Spawner spawner : queriesSync.getRepository().findAll()) {
             spawner.query().queue((spawner1, q) -> {
                 spawner1.getLocation().getChunk().load();
@@ -46,7 +46,7 @@ public class ApplicationSpawner {
     }
 
     public static void shutdown() {
-        final SyncRequests<Spawner, String> q = SyncRequests.supply(SpawnerRepository.require());
+        final SyncRequests<Spawner, String> q = SyncRequests.supply(JpaSpawnerRepository.require());
         /*q.getDto().findAllFiles().forEach(spawner -> {
             spawner.getImpulsesOfGeneration().forEach(SpawnerImpulse::stop);
             spawner.query().commit();

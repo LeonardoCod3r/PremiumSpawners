@@ -5,7 +5,7 @@
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="centralworks.spawners"
                       transaction-type="RESOURCE_LOCAL">
-        <!--<class>centralworks.spawners.modules.models.UserDetails</class>
+        <class>centralworks.spawners.modules.models.UserDetails</class>
         <class>centralworks.spawners.modules.models.spawners.Spawner</class>
         <class>centralworks.spawners.modules.models.dropsstorage.DropStorage</class>
         <class>centralworks.spawners.modules.models.dropsstorage.DropPlayer</class>
@@ -14,8 +14,8 @@
         <class>centralworks.spawners.modules.models.quests.QuestData</class>
         <class>centralworks.spawners.modules.models.quests.QuestRule</class>
         <class>centralworks.spawners.modules.models.spawners.SpawnerImpulse</class>
-        <class>centralworks.spawners.modules.animations.AnimationAbstract</class>-->
-        <class>centralworks.spawners.test.Testing</class>
+        <class>centralworks.spawners.modules.animations.AnimationAbstract</class>
+        <!--<class>centralworks.spawners.test.Testing</class>-->
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.schema-generation.database.action"

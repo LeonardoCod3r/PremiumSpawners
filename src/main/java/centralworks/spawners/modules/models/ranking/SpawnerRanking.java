@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.models.ranking;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.UserRepository;
+import centralworks.spawners.commons.database.repositories.jpa.JpaUserRepository;
 import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.modules.models.UserDetails;
 import com.google.common.collect.Lists;
@@ -30,7 +30,7 @@ public class SpawnerRanking {
         loaded = false;
         final long l = System.currentTimeMillis();
         CompletableFuture
-                .supplyAsync(() -> SyncRequests.supply(UserRepository.require()).getRepository().findAll())
+                .supplyAsync(() -> SyncRequests.supply(JpaUserRepository.require()).getRepository().findAll())
                 .thenApplyAsync(userDetails -> {
                     final List<Supplier> suppliers = Lists.newArrayList();
                     for (UserDetails user : userDetails) {

@@ -105,48 +105,6 @@ public class SyncRequests<O extends Storable<O>, T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public SyncRequests<O, T> lazyQueue() {
-        setTarget(repository.read((T)identifier).get());
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public SyncRequests<O, T> lazyQueue(Consumer<O> success) {
-        setTarget(repository.read((T)identifier).get());
-        success.accept(getTarget());
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public SyncRequests<O, T> lazyQueue(BiConsumer<O, SyncRequests<O, T>> success) {
-        setTarget(repository.read((T) identifier).get());
-        success.accept(getTarget(), this);
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public SyncRequests<O, T> lazyQueue(Consumer<O> success, Consumer<Exception> error) {
-        try {
-            setTarget(repository.read((T)identifier).get());
-            success.accept(getTarget());
-        } catch (Exception e) {
-            error.accept(e);
-        }
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public SyncRequests<O, T> lazyQueue(Consumer<O> success, BiConsumer<Exception, SyncRequests<O, T>> error) {
-        try {
-            setTarget(repository.read((T)identifier).get());
-            success.accept(getTarget());
-        } catch (Exception e) {
-            error.accept(e, this);
-        }
-        return this;
-    }
-
     public SyncRequests<O, T> execute(Consumer<SyncRequests<O, T>> q) {
         q.accept(this);
         return this;
