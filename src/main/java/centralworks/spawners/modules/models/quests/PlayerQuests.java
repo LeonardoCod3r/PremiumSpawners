@@ -59,11 +59,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
         return this.name;
     }
 
-    @Override
-    public void setEntityIdentifier(Object object) {
-        this.name = object.toString();
-    }
-
     public Player getPlayer() {
         return Bukkit.getPlayer(name);
     }

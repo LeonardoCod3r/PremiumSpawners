@@ -8,7 +8,6 @@ import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.EntityName;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.lib.Serialize;
-import centralworks.spawners.modules.animations.AnimationService;
 import centralworks.spawners.modules.hook.DynmapHook;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.addons.ImpulseType;
@@ -64,20 +63,12 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Setter
     @Expose
     private List<String> friends = Lists.newLinkedList();
-    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "spawner", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "locSerialized")
     @Getter
     @Setter
     @Expose
     private List<SpawnerImpulse> impulsesOfGeneration = Lists.newLinkedList();
-    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(name = "locSerialized")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @Getter
-    @Setter
-    @Expose
-    private AnimationService animationService;
     @Getter
     @Setter
     @Expose
@@ -96,11 +87,6 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Override
     public Object getEntityIdentifier() {
         return this.locSerialized;
-    }
-
-    @Override
-    public void setEntityIdentifier(Object object) {
-        this.locSerialized = object.toString();
     }
 
     public Double getPrice() {
@@ -141,10 +127,6 @@ public class Spawner extends Storable<Spawner> implements Serializable {
 
     public String getEntityName() {
         return EntityName.valueOf(getEntityType()).getName();
-    }
-
-    public boolean inAnimation() {
-        return animationService != null;
     }
 
     public Location getLocation() {
@@ -317,12 +299,4 @@ public class Spawner extends Storable<Spawner> implements Serializable {
             return false;
         }
     }
-
-    public void cancelAnimation() {
-        if (animationService==null) return;
-        animationService.setCancelled(true);
-        animationService = null;
-        query().commit();
-    }
-
 }

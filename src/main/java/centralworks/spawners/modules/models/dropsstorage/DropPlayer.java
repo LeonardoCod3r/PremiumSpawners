@@ -18,9 +18,10 @@ import java.util.Optional;
 @Entity
 public class DropPlayer {
 
-    @Setter
     @Expose(serialize = false, deserialize = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @Getter
+    @Setter
     private DropStorage dropStorage;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,11 +29,6 @@ public class DropPlayer {
     @Setter
     @Expose
     private Long id;
-    @Expose
-    @Getter
-    @Setter
-    @Transient
-    private String owner;
     @Getter
     @Setter
     @Expose
@@ -43,15 +39,9 @@ public class DropPlayer {
     private Double amount;
 
     public DropPlayer(DropStorage dropStorage, String keyDrop, Double amount) {
-        this.owner = dropStorage.getOwner();
         this.dropStorage = dropStorage;
         this.keyDrop = keyDrop;
         this.amount = amount;
-    }
-
-    public DropStorage getDropStorage() {
-        final DropStorageRepository repository = DropStorageRepository.require();
-        return SyncRequests.supply(repository, getOwner()).getTarget();
     }
 
     public void sell(Player p, DropStorage storage) {

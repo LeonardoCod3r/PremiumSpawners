@@ -62,11 +62,6 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
         return this.user;
     }
 
-    @Override
-    public void setEntityIdentifier(Object object) {
-        this.user = object.toString();
-    }
-
     public void getSpawners(Consumer<List<Spawner>> callback) {
         CompletableFuture.supplyAsync(() -> locationsSerialized.stream().map(s -> new Spawner(s).query().persist()).collect(Collectors.toList())).thenAccept(callback);
     }

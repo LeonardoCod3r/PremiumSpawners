@@ -13,9 +13,10 @@ import java.util.Optional;
 @Entity
 public class BoosterPlayer {
 
-    @Setter
     @Expose(serialize = false, deserialize = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @Setter
+    @Getter
     private DropStorage dropStorage;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,24 +27,13 @@ public class BoosterPlayer {
     @Expose
     @Getter
     @Setter
-    @Transient
-    private String owner;
-    @Expose
-    @Getter
-    @Setter
     private Double multiplier;
     @Getter
     @Setter
     @Expose
     private Integer time;
 
-    public DropStorage getDropStorage() {
-        final DropStorageRepository repository = DropStorageRepository.require();
-        return SyncRequests.supply(repository, getOwner()).getTarget();
-    }
-
     public BoosterPlayer(DropStorage dropStorage, Double multiplier, Integer time) {
-        this.owner = dropStorage.getOwner();
         this.dropStorage = dropStorage;
         this.multiplier = multiplier;
         this.time = time;

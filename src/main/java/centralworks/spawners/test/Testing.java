@@ -36,11 +36,6 @@ public class Testing extends Storable<Testing> implements Serializable {
     }
 
     @Override
-    public void setEntityIdentifier(Object obj) {
-
-    }
-
-    @Override
     public <O, T> Repository<O, T> getRepository() {
         return null;
     }

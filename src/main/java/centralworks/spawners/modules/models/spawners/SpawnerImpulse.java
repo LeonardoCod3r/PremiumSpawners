@@ -5,14 +5,11 @@ import centralworks.spawners.modules.models.addons.ImpulseType;
 import lombok.*;
 import org.bukkit.Bukkit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Entity(name = "spawnerimpulse")
+@Entity
 public class SpawnerImpulse {
 
     @Id
@@ -42,6 +39,10 @@ public class SpawnerImpulse {
     @Getter
     @Setter
     private Integer idTask = 0;
+    @Getter
+    @Setter
+    @ManyToOne
+    private Spawner spawner;
 
     /**
      * @param impulseType type of impulse

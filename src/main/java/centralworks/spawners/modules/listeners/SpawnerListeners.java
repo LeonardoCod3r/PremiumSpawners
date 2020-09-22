@@ -3,8 +3,6 @@ package centralworks.spawners.modules.listeners;
 import centralworks.spawners.Main;
 import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.modules.animations.AnimationBreak;
-import centralworks.spawners.modules.animations.AnimationPlace;
 import centralworks.spawners.modules.menu.InfoSpawnerMenu;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.spawners.Spawner;
@@ -33,6 +31,7 @@ public class SpawnerListeners implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         final Block block = e.getClickedBlock();
         if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (block.getType() != Material.MOB_SPAWNER) return;
             final Location location = block.getLocation();
             final Player p = e.getPlayer();
             final UserDetails user = new UserDetails(p).query().persist();
@@ -87,11 +86,6 @@ public class SpawnerListeners implements Listener {
                 spawner.appear(spawner1 -> {
                     user.query().commit();
                     spawner1.query().commit();
-                    AnimationPlace.builder()
-                            .ticksToFinalize(115)
-                            .red(50)
-                            .green(168)
-                            .blue(82).build().send(spawner1);
                 });
             }
         });
@@ -101,6 +95,7 @@ public class SpawnerListeners implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         final Block block = e.getBlock();
+        if (block.getType() != Material.MOB_SPAWNER) return;
         final Location location = block.getLocation();
         final Player p = e.getPlayer();
         final Configuration messages = Main.getMessages();
@@ -117,7 +112,6 @@ public class SpawnerListeners implements Listener {
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));
             cached.add(p.getName());
-            new AnimationBreak().send(spawner);
         } else if (new Spawner(location).query().exists()) {
             e.setCancelled(true);
             p.sendMessage(messages.getMessage("isNotOwner"));

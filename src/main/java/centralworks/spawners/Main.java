@@ -1,6 +1,7 @@
 package centralworks.spawners;
 
 import centralworks.spawners.commons.database.SyncRequests;
+import centralworks.spawners.commons.database.repositories.SpawnerRepository;
 import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.FormatBalance;
 import centralworks.spawners.modules.cmds.BoosterCommand;
@@ -15,6 +16,7 @@ import centralworks.spawners.modules.models.quests.ApplicationQuest;
 import centralworks.spawners.modules.models.quests.PlayerQuests;
 import centralworks.spawners.modules.models.quests.suppliers.QuestLoader;
 import centralworks.spawners.modules.models.spawners.ApplicationSpawner;
+import centralworks.spawners.modules.models.spawners.Spawner;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -33,6 +35,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Villager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
@@ -75,7 +78,6 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onLoad() {
-
         LOGGER = getLogger();
         LOGGER.info("Aplicando o NBTInjector...");
         NBTInjector.inject();

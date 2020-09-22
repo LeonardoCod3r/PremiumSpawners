@@ -31,6 +31,7 @@ import java.util.List;
 public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     @Id
+    @Column(length = 16)
     @Getter
     @Setter
     @Expose
@@ -47,13 +48,13 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Setter
     @Expose
     private Integer bonus = 0;
-    @OneToMany(mappedBy = "dropStorage",cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dropStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
     @Expose
     private List<BoosterPlayer> boostersActive = Lists.newArrayList();
-    @OneToMany(mappedBy = "dropStorage",cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dropStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
@@ -79,11 +80,6 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Override
     public Object getEntityIdentifier() {
         return this.owner;
-    }
-
-    @Override
-    public void setEntityIdentifier(Object object) {
-        this.owner = object.toString();
     }
 
     public String isAutoSellResult() {
