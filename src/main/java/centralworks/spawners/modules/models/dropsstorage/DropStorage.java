@@ -176,7 +176,6 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public void addBooster(BoosterPlayer boosterPlayer) {
-        boosterPlayer.setDropStorage(this);
         getBoostersActive().add(boosterPlayer);
         Bukkit.getScheduler().runTaskLater(Main.get(), () -> query().queue((storage, q) -> {
             final ArrayList<BoosterPlayer> list = new ArrayList<>(storage.getBoostersActive());

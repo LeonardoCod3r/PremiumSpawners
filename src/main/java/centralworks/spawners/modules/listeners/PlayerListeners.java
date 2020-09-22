@@ -129,7 +129,7 @@ public class PlayerListeners implements Listener {
                     dropStorage.addMultiplier(booster.getValue());
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
                 } else {
-                    dropStorage.addBooster(new BoosterPlayer(dropStorage,booster.getValue(), booster.getTime()));
+                    dropStorage.addBooster(new BoosterPlayer(dropStorage, booster.getValue(), booster.getTime()));
                     p.sendMessage(messages.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
                 }
                 dropStorage.query().commit();
