@@ -1,14 +1,14 @@
 package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.fast.FastSpawnerRepository;
-import centralworks.spawners.commons.database.specifications.BindRepository;
-import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.jpa.JpaSpawnerRepository;
-import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.lib.database.repositories.fast.FastSpawnerRepository;
+import centralworks.spawners.lib.database.specifications.BindRepository;
+import centralworks.spawners.lib.database.specifications.Repository;
+import centralworks.spawners.lib.database.repositories.jpa.JpaSpawnerRepository;
+import centralworks.spawners.lib.database.Storable;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.EntityName;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.enums.EntityName;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.hook.DynmapHook;
 import centralworks.spawners.modules.models.UserDetails;
@@ -97,7 +97,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public Double getPrice() {
-        return Main.getSpawners().getDouble("List." + getEntityType().toString() + ".price");
+        return Main.getInstance().getSpawners().getDouble("List." + getEntityType().toString() + ".price");
     }
 
     public Double getPriceAll() {
@@ -161,7 +161,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public void impulsesForceRun() {
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = Main.getInstance().getMessages();
         for (SpawnerImpulse si : getImpulsesOfGeneration()) {
             si.fix().setValid(true);
             si.run(this, () -> {
@@ -169,6 +169,11 @@ public class Spawner extends Storable<Spawner> implements Serializable {
                     getPlayer().sendMessage(messages.getMessage("boosterEnd").replace("{type}", si.getImpulseType().name()));
             });
         }
+        query().commit();
+    }
+
+    public void impulsesForceStop() {
+        getImpulsesOfGeneration().forEach(SpawnerImpulse::stop);
         query().commit();
     }
 
@@ -217,7 +222,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public void appear(Consumer<Spawner> callback) {
-        Bukkit.getScheduler().runTask(Main.get(), () -> {
+        Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             final Location l = getLocation();
             l.getBlock().setType(Material.MOB_SPAWNER);
             final CreatureSpawner spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
@@ -225,41 +230,41 @@ public class Spawner extends Storable<Spawner> implements Serializable {
             spawnerBlock.setSpawnedType(getEntityType());
             spawnerBlock.setDelay(20);
             spawnerBlock.update();
-            pullHologram();
+            updateHologram();
             impulsesForceRun();
             if (callback!=null) callback.accept(this);
-            final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+            final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
             dynmapHook.view(this);
         });
     }
 
     public void pullHologram() {
-        final Hologram hologram = HologramsAPI.createHologram(Main.get(), getLocation().add(0.0, 2.50, 0.0).add(0.5, 0.0, 0.5));
+        final Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), getLocation().add(0.0, 2.50, 0.0).add(0.5, 0.0, 0.5));
         setHologramId(hologram.getCreationTimestamp());
-        Main.getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
+        Main.getInstance().getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
                 .replace("{mob}", getEntityName())
-                .replace("{stack}", FormatBalance.format(getAmount()))
+                .replace("{stack}", BalanceFormatter.format(getAmount()))
                 .replace("{owner}", getOwner()))
         );
         hologram.teleport(hologram.getLocation());
-        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
         dynmapHook.view(this);
     }
 
     public void updateHologram() {
-        if (HologramsAPI.getHolograms(Main.get()).stream().anyMatch(hologram -> hologram.getCreationTimestamp() == getHologramId())) {
-            final Hologram hologram = HologramsAPI.getHolograms(Main.get()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().get();
+        if (HologramsAPI.getHolograms(Main.getInstance()).stream().anyMatch(hologram -> hologram.getCreationTimestamp() == getHologramId())) {
+            final Hologram hologram = HologramsAPI.getHolograms(Main.getInstance()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().get();
             hologram.clearLines();
-            Bukkit.getScheduler().runTaskLater(Main.get(), () -> {
-                Main.getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                Main.getInstance().getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
                         .replace("{mob}", getEntityName())
-                        .replace("{stack}", FormatBalance.format(getAmount()))
+                        .replace("{stack}", BalanceFormatter.format(getAmount()))
                         .replace("{owner}", getOwner()))
                 );
                 hologram.teleport(hologram.getLocation());
             }, 2L);
         } else pullHologram();
-        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
         dynmapHook.view(this);
     }
 
@@ -272,7 +277,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public void destroy(UserDetails userDetails) {
-        HologramsAPI.getHolograms(Main.get()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().ifPresent(Hologram::delete);
+        HologramsAPI.getHolograms(Main.getInstance()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().ifPresent(Hologram::delete);
         setHologramId(null);
         final Location l = getLocation();
         l.getBlock().setType(Material.AIR);
@@ -280,7 +285,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         query().delete();
         userDetails.deleteSpawnerLocation(l);
         userDetails.query().commit();
-        final DynmapHook dynmapHook = ApplicationSpawner.getDynmapHook();
+        final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
         dynmapHook.hide(this);
     }
 

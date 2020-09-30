@@ -25,10 +25,10 @@ public class MenusSettings {
     public static MenusSettings get() {
         if (menusSettings == null) {
             try {
-                final File file = new File(Main.get().getDataFolder(), "inventory.json");
+                final File file = new File(Main.getInstance().getDataFolder(), "inventory.json");
                 if (!file.exists())
-                    Files.copy(Main.get().getClass().getResourceAsStream("/inventory.json"), file.toPath());
-                final FileReader fileReader = new FileReader(new File(Main.get().getDataFolder(), "inventory.json"));
+                    Files.copy(Main.getInstance().getClass().getResourceAsStream("/inventory.json"), file.toPath());
+                final FileReader fileReader = new FileReader(new File(Main.getInstance().getDataFolder(), "inventory.json"));
                 menusSettings = new Gson().fromJson(fileReader, MenusSettings.class);
             } catch (Exception ignored) {
             }
@@ -38,10 +38,10 @@ public class MenusSettings {
 
     public static MenusSettings newInstance() {
         try {
-            final File file = new File(Main.get().getDataFolder(), "inventory.json");
+            final File file = new File(Main.getInstance().getDataFolder(), "inventory.json");
             if (!file.exists())
-                Files.copy(Main.get().getClass().getResourceAsStream("/inventory.json"), file.toPath());
-            final FileReader fileReader = new FileReader(new File(Main.get().getDataFolder(), "inventory.json"));
+                Files.copy(Main.getInstance().getClass().getResourceAsStream("/inventory.json"), file.toPath());
+            final FileReader fileReader = new FileReader(new File(Main.getInstance().getDataFolder(), "inventory.json"));
             menusSettings = new Gson().fromJson(fileReader, MenusSettings.class);
         } catch (Exception ignored) {
         }

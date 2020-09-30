@@ -19,10 +19,10 @@ public class Configuration {
 
     public Configuration(String fileName) {
         this.fileName = fileName;
-        if (!new File(Main.get().getDataFolder(), this.fileName + ".yml").exists()) {
-            Main.get().saveResource(this.fileName + ".yml", false);
+        if (!new File(Main.getInstance().getDataFolder(), this.fileName + ".yml").exists()) {
+            Main.getInstance().saveResource(this.fileName + ".yml", false);
         }
-        this.config = YamlConfiguration.loadConfiguration(new File(Main.get().getDataFolder() + File.separator + this.fileName + ".yml"));
+        this.config = YamlConfiguration.loadConfiguration(new File(Main.getInstance().getDataFolder() + File.separator + this.fileName + ".yml"));
     }
 
     public void save() {
@@ -116,7 +116,7 @@ public class Configuration {
     }
 
     public File getFile() {
-        return new File(Main.get().getDataFolder(), this.fileName + ".yml");
+        return new File(Main.getInstance().getDataFolder(), this.fileName + ".yml");
     }
 
 }

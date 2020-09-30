@@ -22,7 +22,7 @@ public class CraftInterpreter<T> {
     }
 
     public void commit() {
-        Bukkit.getPluginManager().registerEvents(listener, Main.get());
+        Bukkit.getPluginManager().registerEvents(listener, Main.getInstance());
         Interpreters.get().add(this);
     }
 

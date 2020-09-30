@@ -1,0 +1,15 @@
+toggle: true
+Spawner:
+  size: 300000 #tamanho
+  expired: 2 #minutos
+User:
+  size: 50000
+  expired: 5
+PlayerQuests:
+  size: 50000
+  expired: 15
+DropStorage:
+  size: 50000
+  expired: 20
+
+

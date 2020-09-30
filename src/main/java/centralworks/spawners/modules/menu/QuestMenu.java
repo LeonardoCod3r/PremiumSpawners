@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class QuestMenu extends InventoryBuilder {
 
     public QuestMenu(Player p, CraftQuest cq) {
-        super(Main.get(), 3, cq.getSettings().getName());
+        super(Main.getInstance(), 3, cq.getSettings().getName());
         clear();
         setCancellable(true);
         final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();

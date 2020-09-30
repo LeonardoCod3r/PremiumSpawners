@@ -2,14 +2,15 @@ package centralworks.spawners.modules.cmds;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.FormatBalance;
-import centralworks.spawners.lib.Permission;
+import centralworks.spawners.lib.BalanceFormatter;
+import centralworks.spawners.lib.enums.Permission;
 import centralworks.spawners.modules.models.PlayerCommons;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.addons.Limit;
 import centralworks.spawners.modules.models.addons.LimitCached;
 import centralworks.spawners.modules.models.addons.LimitType;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -18,19 +19,23 @@ import org.bukkit.entity.Player;
 
 public class LimitCommand extends BukkitCommand {
 
-    public LimitCommand() {
+    private Main plugin;
+
+    @Inject
+    public LimitCommand(Main plugin) {
         super("limit", "Sistema de limite de compras (Geradores)", "§c/limit help", Lists.newArrayList("limite"));
+        this.plugin = plugin;
     }
 
     @Override
     public boolean execute(CommandSender s, String lbl, String[] args) {
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = plugin.getMessages();
         if (args.length == 0) {
             if (s instanceof Player) {
                 final Player p = (Player) s;
                 final UserDetails user = new UserDetails(p).query().persist();
-                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.BUY.getName()).replace("{limit}", FormatBalance.format(user.getBuyLimit())));
-                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.SELL.getName()).replace("{limit}", FormatBalance.format(user.getSellLimit())));
+                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.BUY.getName()).replace("{limit}", BalanceFormatter.format(user.getBuyLimit())));
+                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.SELL.getName()).replace("{limit}", BalanceFormatter.format(user.getSellLimit())));
             }
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("ajuda") || args[0].equalsIgnoreCase("help")) {

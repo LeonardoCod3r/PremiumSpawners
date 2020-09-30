@@ -2,6 +2,7 @@ package centralworks.spawners.modules.menu;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.*;
+import centralworks.spawners.lib.enums.EntityName;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.spawners.TaskType;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
@@ -21,21 +22,21 @@ public class BuySpawnersMenu extends InventoryBuilder {
 
     @SneakyThrows
     public BuySpawnersMenu(Player p) {
-        super(Main.get(), 6, "§8Comprar Geradores");
+        super(Main.getInstance(), 6, "§8Comprar Geradores");
         clear();
         setCancellable(true);
 
         final Double buyLimit = new UserDetails(p).query().persist().getBuyLimit();
-        setItem(4, new Item(Material.getMaterial(397), 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações: ").lore("§fLimite de compra: §7" + FormatBalance.format(buyLimit)));
+        setItem(4, new Item(Material.getMaterial(397), 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações: ").lore("§fLimite de compra: §7" + BalanceFormatter.format(buyLimit)));
 
         final ArrayList<Integer> slots = Lists.newArrayList(19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43);
 
-        final List<String> list = Lists.newArrayList(Main.getSpawners().section("List"));
+        final List<String> list = Lists.newArrayList(Main.getInstance().getSpawners().section("List"));
         for (int i = 0; i < slots.size(); i++) {
             if (list.size() >= (i + 1)) {
                 final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
                 final String s = list.get(i);
-                final Configuration configuration = Main.getSpawners();
+                final Configuration configuration = Main.getInstance().getSpawners();
                 final Boolean value = configuration.is("List." + s + ".toggle");
                 final String s1 = configuration.get("List." + s + ".in", false);
                 if (value && (s1.equals("") || dateFormat.parse(s1).getTime() < System.currentTimeMillis()))
@@ -47,10 +48,10 @@ public class BuySpawnersMenu extends InventoryBuilder {
     }
 
     public Item getSpawnerItem(Player p, EntityType entityType) {
-        final Configuration messages = Main.getMessages();
-        final Double price = Main.getSpawners().getDouble("List." + entityType.name() + ".price");
+        final Configuration messages = Main.getInstance().getMessages();
+        final Double price = Main.getInstance().getSpawners().getDouble("List." + entityType.name() + ".price");
         return new Item(SICached.get().get(item -> item.getEntityType() == entityType).getSpawnerItem().getItem())
-                .lore("§fPreço: §2R$§7" + FormatBalance.format(price), "", "§7Clique para comprar geradores de " + EntityName.valueOf(entityType).getName() + ".")
+                .lore("§fPreço: §2R$§7" + BalanceFormatter.format(price), "", "§7Clique para comprar geradores de " + EntityName.valueOf(entityType).getName() + ".")
                 .onClick(event -> {
                     p.sendMessage(messages.getMessage("talkAmountToBuy"));
                     p.closeInventory();

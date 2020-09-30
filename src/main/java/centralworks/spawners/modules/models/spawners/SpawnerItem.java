@@ -2,8 +2,8 @@ package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.EntityName;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.enums.EntityName;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.models.Settings;
 import com.google.common.collect.Lists;
@@ -42,7 +42,7 @@ public class SpawnerItem implements Cloneable {
         final ItemStack itemStack = item.name(name).lore(
                 lore.stream().map(s -> s
                         .replace("{entity-type}", EntityName.valueOf(entityType).getName())
-                        .replace("{stack}", FormatBalance.format(amountSpawners))
+                        .replace("{stack}", BalanceFormatter.format(amountSpawners))
                 ).collect(Collectors.toList())
         ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).build();
         final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
@@ -162,7 +162,7 @@ public class SpawnerItem implements Cloneable {
     }
 
     public SpawnerItem parse(EntityType entityType) {
-        final Configuration configuration = Main.getSpawners();
+        final Configuration configuration = Main.getInstance().getSpawners();
         final String path = "List." + entityType.toString() + ".item.";
         setEntityType(entityType);
         setId(configuration.getInt(path + "id"));
@@ -177,7 +177,7 @@ public class SpawnerItem implements Cloneable {
     }
 
     public SpawnerItem parse(Spawner spawner) {
-        final Configuration configuration = Main.getSpawners();
+        final Configuration configuration = Main.getInstance().getSpawners();
         final String path = "List." + spawner.getEntityType().toString() + ".item.";
         setEntityType(spawner.getEntityType());
         setId(configuration.getInt(path + "id"));

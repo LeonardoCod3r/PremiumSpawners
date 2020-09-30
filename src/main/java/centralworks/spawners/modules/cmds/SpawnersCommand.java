@@ -2,15 +2,16 @@ package centralworks.spawners.modules.cmds;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.EntityName;
-import centralworks.spawners.lib.FormatBalance;
-import centralworks.spawners.lib.Permission;
+import centralworks.spawners.lib.enums.EntityName;
+import centralworks.spawners.lib.BalanceFormatter;
+import centralworks.spawners.lib.enums.Permission;
 import centralworks.spawners.modules.menu.BuySpawnersMenu;
 import centralworks.spawners.modules.menu.MainMenu;
 import centralworks.spawners.modules.menu.SpawnersMenu;
 import centralworks.spawners.modules.models.spawners.SpawnerItem;
 import centralworks.spawners.modules.models.spawners.cached.SICached;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -20,14 +21,18 @@ import org.bukkit.entity.Player;
 
 public class SpawnersCommand extends BukkitCommand {
 
-    public SpawnersCommand() {
+    private Main plugin;
+
+    @Inject
+    public SpawnersCommand(Main plugin) {
         super("spawners", "Comandos do sistema de spawners", "§c/spawners", Lists.newArrayList("geradores", "spawner", "gerador"));
+        this.plugin = plugin;
     }
 
     @Override
     public boolean execute(CommandSender s, String cmd, String[] args) {
-        final Configuration messages = Main.getMessages();
-        final Configuration configSpawners = Main.getSpawners();
+        final Configuration messages = Main.getInstance().getMessages();
+        final Configuration configSpawners = Main.getInstance().getSpawners();
         switch (args.length) {
             case 0:
                 if (s instanceof Player) new MainMenu(((Player) s));
@@ -42,7 +47,7 @@ public class SpawnersCommand extends BukkitCommand {
                             s.sendMessage(messages.getMessage("permissionError"));
                             return true;
                         }
-                        Main.get().reload();
+                        Main.getInstance().reload();
                     } else new MainMenu(((Player) s));
                 }
                 break;
@@ -81,7 +86,7 @@ public class SpawnersCommand extends BukkitCommand {
                     s.sendMessage(messages.getMessage("deliveredSpawner")
                             .replace("{amount}", "" + i)
                             .replace("{entity-type}", EntityName.valueOf(spawnerItem.getEntityType()).getName())
-                            .replace("{stack}", FormatBalance.format(spawnerItem.getAmountSpawners()))
+                            .replace("{stack}", BalanceFormatter.format(spawnerItem.getAmountSpawners()))
                     );
                 } catch (Exception e) {
                     e.printStackTrace();

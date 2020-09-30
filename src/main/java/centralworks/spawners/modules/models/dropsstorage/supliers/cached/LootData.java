@@ -23,7 +23,7 @@ public class LootData extends Cache<Drop> {
 
     public void load() {
         clear();
-        final Configuration configuration = Main.getDropStorage();
+        final Configuration configuration = Main.getInstance().getDropStorage();
         configuration.section("Drops").forEach(s -> {
             final String path = "Drops." + s + ".";
             final Drop drop = Drop.builder()

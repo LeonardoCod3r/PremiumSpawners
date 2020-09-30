@@ -15,6 +15,6 @@ public class DCached extends Cache<String> {
     @Override
     public void add(String object) {
         getList().add(object);
-        Bukkit.getScheduler().runTaskLater(Main.get(), () -> getList().remove(object), 30 * 20L);
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> getList().remove(object), 30 * 20L);
     }
 }

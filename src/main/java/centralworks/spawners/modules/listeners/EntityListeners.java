@@ -2,8 +2,8 @@ package centralworks.spawners.modules.listeners;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.FormatBalance;
-import centralworks.spawners.lib.ItemName;
+import centralworks.spawners.lib.BalanceFormatter;
+import centralworks.spawners.lib.enums.ItemName;
 import centralworks.spawners.modules.models.ActionBarMessage;
 import centralworks.spawners.modules.models.addons.ImpulseType;
 import centralworks.spawners.modules.models.dropsstorage.DropPlayer;
@@ -12,6 +12,7 @@ import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.LootData;
 import centralworks.spawners.modules.models.entities.EntityStacked;
 import centralworks.spawners.modules.models.spawners.Spawner;
+import com.google.inject.Inject;
 import de.tr7zw.nbtinjector.NBTInjector;
 import org.bukkit.Chunk;
 import org.bukkit.entity.*;
@@ -29,6 +30,8 @@ import java.util.List;
 public class EntityListeners implements Listener {
 
     private final List<EntityType> indeterminate;
+    @Inject
+    private Main plugin;
 
     public EntityListeners() {
         this.indeterminate = Arrays.asList(EntityType.IRON_GOLEM, EntityType.VILLAGER, EntityType.SLIME, EntityType.MAGMA_CUBE);
@@ -42,7 +45,7 @@ public class EntityListeners implements Listener {
 
     @EventHandler
     public void spawn(SpawnerSpawnEvent e) {
-        final Configuration entities = Main.getEntities();
+        final Configuration entities = plugin.getEntities();
         if (entities.getList("Settings.worldBlackList", false).contains(e.getLocation().getWorld().getName())) return;
         final Entity entity = e.getEntity();
         if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
@@ -58,7 +61,7 @@ public class EntityListeners implements Listener {
     @EventHandler
     public void chunkLoadEvent(ChunkLoadEvent e) {
         final Chunk chunk = e.getChunk();
-        final Configuration entities = Main.getEntities();
+        final Configuration entities = plugin.getEntities();
         if (entities.getList("Settings.worldBlackList", false).contains(chunk.getWorld().getName())) return;
         for (Entity entity : chunk.getEntities()) {
             if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
@@ -76,20 +79,20 @@ public class EntityListeners implements Listener {
         if (e.getEntity().getKiller() != null) {
             final Player p = e.getEntity().getKiller();
             final Entity mob = e.getEntity();
-            if (Main.get().dropStorageSystemIsActive()) {
-                if (Main.getDropStorage().getList("Settings.black-list", false).contains(e.getEntity().getWorld().getName()))
+            if (plugin.dropStorageSystemIsActive()) {
+                if (plugin.getDropStorage().getList("Settings.black-list", false).contains(e.getEntity().getWorld().getName()))
                     return;
                 final DropStorage dropStorage = new DropStorage(p).query().persist();
                 for (DropPlayer dropPlayer : dropStorage.getDropPlayers()) {
                     final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
                     if (drop.getEntityType().equals(mob.getType())) {
-                        final Configuration messages = Main.getMessages();
+                        final Configuration messages = plugin.getMessages();
                         if (!dropStorage.isMax()) {
-                            final Double add = Math.floor(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getAllMultipliers());
+                            final Double add = Math.ceil(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getAllMultipliers());
                             if (dropStorage.isMax(add))
                                 dropPlayer.addDropAmount(add - (dropStorage.getAmountAll() + add - dropStorage.getUser().getSellLimit()));
                             else dropPlayer.addDropAmount(add);
-                            new ActionBarMessage(p, messages.getMessage("drops-add").replace("{amount}", FormatBalance.format(add)).replace("{drop-type}", ItemName.valueOf(drop.getDrop()).getName()));
+                            new ActionBarMessage(p, messages.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(drop.getDrop()).getName()));
                         } else new ActionBarMessage(p, messages.getMessage("armazem-max"));
                         if (dropStorage.isAutoSell()) {
                             if (dropPlayer.getAmount() > 0) dropPlayer.sell(p.getPlayer(), dropStorage);

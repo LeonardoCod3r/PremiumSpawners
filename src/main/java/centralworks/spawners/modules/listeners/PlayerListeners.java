@@ -1,11 +1,13 @@
 package centralworks.spawners.modules.listeners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.SyncRequests;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.FormatTime;
+import centralworks.spawners.lib.database.SyncRequests;
+import centralworks.spawners.lib.enums.PluginSystemType;
 import centralworks.spawners.modules.events.BoosterActiveEvent;
+import centralworks.spawners.modules.hook.EconomyContext;
 import centralworks.spawners.modules.models.Settings;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.addons.*;
@@ -17,8 +19,8 @@ import centralworks.spawners.modules.models.spawners.SpawnerImpulse;
 import centralworks.spawners.modules.models.spawners.SpawnerItem;
 import centralworks.spawners.modules.models.spawners.TaskType;
 import centralworks.spawners.modules.models.spawners.cached.TCached;
+import com.google.inject.Inject;
 import de.tr7zw.nbtapi.NBTItem;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,13 +38,16 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerListeners implements Listener {
 
+    @Inject
+    private Main plugin;
+
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         final Player p = e.getPlayer();
         final ItemStack item = e.getItem();
         final Block block = e.getClickedBlock();
         final Settings se = Settings.get();
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = plugin.getMessages();
         if (item == null) return;
         try {
             final NBTItem nbt = new NBTItem(item);
@@ -75,7 +80,7 @@ public class PlayerListeners implements Listener {
                 });
             });
         } catch (Exception ignored) {
-            if (Main.get().limitSystemIsActive()) {
+            if (plugin.limitSystemIsActive()) {
                 for (Limit limit : LimitCached.get().getList()) {
                     if (!item.isSimilar(limit.getItemStack().getAsItem(s -> s))) continue;
                     e.setCancelled(true);
@@ -85,7 +90,7 @@ public class PlayerListeners implements Listener {
                         return;
                     }
                     final UserDetails userDetails = new UserDetails(p).query().persist();
-                    final Double max = Main.getDropStorage().getDouble("Limits.max");
+                    final Double max = plugin.getDropStorage().getDouble("Limits.max");
                     Double adder;
                     Double v;
                     if (type == LimitType.BUY) {
@@ -112,7 +117,7 @@ public class PlayerListeners implements Listener {
                     userDetails.query().commit();
                     if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
                     else p.setItemInHand(new ItemStack(Material.AIR));
-                    p.sendMessage(messages.getMessage("limitUsed").replace("{type}", type.getName()).replace("{limit-value}", FormatBalance.format(adder)).replace("{player-limit-value}", FormatBalance.format(v)));
+                    p.sendMessage(messages.getMessage("limitUsed").replace("{type}", type.getName()).replace("{limit-value}", BalanceFormatter.format(adder)).replace("{player-limit-value}", BalanceFormatter.format(v)));
                     return;
                 }
             }
@@ -147,7 +152,7 @@ public class PlayerListeners implements Listener {
         if (trCached.exists(s -> s.getPlayerName().equalsIgnoreCase(p.getName()))) {
             e.setCancelled(true);
             final String msg = e.getMessage();
-            final Configuration messages = Main.getMessages();
+            final Configuration messages = plugin.getMessages();
             final TCached.TaskObj obj = trCached.get(taskObj -> taskObj.getPlayerName().equalsIgnoreCase(p.getName()));
             if (msg.equalsIgnoreCase("cancelar")) {
                 p.sendMessage(messages.getMessage("cancel"));
@@ -182,7 +187,7 @@ public class PlayerListeners implements Listener {
                         spawnerItem.giveItem(p);
                         spawner.removeStack(v);
                         spawner.updateHologram();
-                        p.sendMessage(messages.getMessage("spawnerRemoved2").replace("{amount}", FormatBalance.format(v)));
+                        p.sendMessage(messages.getMessage("spawnerRemoved2").replace("{amount}", BalanceFormatter.format(v)));
                         spawner.query().commit();
                     } catch (Exception ex) {
                         p.sendMessage(messages.getMessage("invalidNumber").replace("{number}", msg));
@@ -209,30 +214,30 @@ public class PlayerListeners implements Listener {
                 }, exception -> trCached.remove(obj));
             } else if (obj.getTaskType() == TaskType.BUY_SPAWNERS) {
                 final EntityType entityType = EntityType.valueOf(obj.getValue());
-                final Double price = Main.getSpawners().getDouble("List." + entityType.name() + ".price");
+                final Double price = plugin.getSpawners().getDouble("List." + entityType.name() + ".price");
                 try {
                     final Double value = Math.ceil(Double.parseDouble(msg));
                     final UserDetails user = new UserDetails(p).query().persist();
-                    if (value < 0 || value.isNaN()) {
+                    if (value < 1 || value.isNaN()) {
                         p.sendMessage(messages.getMessage("invalidNumber").replace("{number}", msg));
                         return;
                     }
-                    if (Main.get().limitSystemIsActive() && user.getBuyLimit() < value) {
-                        p.sendMessage(messages.getMessage("insufficientLimit").replace("{amount}", FormatBalance.format(user.getBuyLimit())));
+                    if (plugin.limitSystemIsActive() && user.getBuyLimit() < value) {
+                        p.sendMessage(messages.getMessage("insufficientLimit").replace("{amount}", BalanceFormatter.format(user.getBuyLimit())));
                         return;
                     }
                     final double priceAll = value * price;
-                    final Economy eco = Main.getEconomy();
-                    if (eco.getBalance(p) < priceAll) {
-                        p.sendMessage(messages.getMessage("insufficientMoney").replace("{price}", FormatBalance.format(priceAll)));
+                    final EconomyContext.Economy economy = EconomyContext.getContext(PluginSystemType.SPAWNERS_BUY).getEconomy();
+                    if (economy.getBalance(p.getName()) < priceAll) {
+                        p.sendMessage(messages.getMessage("insufficientMoney").replace("{price}", BalanceFormatter.format(priceAll)));
                         return;
                     }
                     final SpawnerItem spawnerItem = new SpawnerItem().parse(entityType);
                     spawnerItem.setAmountSpawners(value);
                     spawnerItem.setAmountItem(1);
                     spawnerItem.giveItem(p);
-                    eco.withdrawPlayer(p, priceAll);
-                    p.sendMessage(messages.getMessage("buySpawner").replace("{price}", FormatBalance.format(priceAll)).replace("{amount}", FormatBalance.format(value)));
+                    economy.removeMoney(p.getName(), priceAll);
+                    p.sendMessage(messages.getMessage("buySpawner").replace("{price}", BalanceFormatter.format(priceAll)).replace("{amount}", BalanceFormatter.format(value)));
                     trCached.remove(obj);
                 } catch (Exception ignored) {
                     p.sendMessage(messages.getMessage("invalidNumber").replace("{number}", msg));

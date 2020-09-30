@@ -28,7 +28,7 @@ public class LimitLoader {
         if (isLoaded()) return;
         final LimitCached cache = LimitCached.get();
         cache.clear();
-        final File dir = new File(Main.get().getDataFolder(), "limits");
+        final File dir = new File(Main.getInstance().getDataFolder(), "limits");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
                 final Limit limit = new Gson().fromJson(new FileReader(file), Limit.class);
@@ -40,14 +40,14 @@ public class LimitLoader {
     }
 
     public void setDefaults() {
-        if (!Main.getData().is("Answered")) {
-            final File ctx = new File(Main.get().getDataFolder(), "limits");
+        if (!Main.getInstance().getData().is("Answered")) {
+            final File ctx = new File(Main.getInstance().getDataFolder(), "limits");
             try {
-                if (!Main.get().getDataFolder().exists()) Main.get().getDataFolder().mkdir();
+                if (!Main.getInstance().getDataFolder().exists()) Main.getInstance().getDataFolder().mkdir();
                 if (!ctx.exists()) ctx.mkdir();
                 final File file = new File(ctx, "examplelimit.json");
                 if (!file.exists())
-                    Files.copy(Main.get().getClass().getResourceAsStream("/limits/examplelimit.json"), file.toPath());
+                    Files.copy(Main.getInstance().getClass().getResourceAsStream("/limits/examplelimit.json"), file.toPath());
             } catch (IOException ignored) {
             }
         }

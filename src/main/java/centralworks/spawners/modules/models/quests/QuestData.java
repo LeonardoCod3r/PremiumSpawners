@@ -4,10 +4,7 @@ import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -27,8 +24,9 @@ import java.util.stream.Collectors;
 public class QuestData implements Serializable {
 
     @Id
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Expose
     private Long id;
     @Expose
     private String identifier;
@@ -36,8 +34,9 @@ public class QuestData implements Serializable {
     private boolean active = false;
     @Expose
     private Long startedAt = System.currentTimeMillis();
-    @Expose(deserialize = false, serialize = false)
     @ManyToOne
+    @Getter(AccessLevel.PRIVATE)
+    @Setter
     private PlayerQuests playerQuests;
     @OneToMany(mappedBy = "questData", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)

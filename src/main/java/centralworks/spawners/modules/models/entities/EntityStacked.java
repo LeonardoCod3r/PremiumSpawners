@@ -2,8 +2,8 @@ package centralworks.spawners.modules.models.entities;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.EntityName;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.enums.EntityName;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.modules.models.Settings;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTEntity;
@@ -47,7 +47,7 @@ public class EntityStacked {
     public void concat(EntityStacked entityStacked) {
         if (entityStacked.getEntity().isDead()) return;
         if (getEntity().getType() != entityStacked.getEntity().getType()) return;
-        final Configuration entities = Main.getEntities();
+        final Configuration entities = Main.getInstance().getEntities();
         final Double maxStack = entities.getDouble("Settings.max-stack");
         final Double amount = entityStacked.getStack();
         if (amount == 0.0) {
@@ -80,8 +80,8 @@ public class EntityStacked {
     }
 
     public EntityStacked updateName() {
-        final Configuration configuration = Main.getEntities();
-        entity.setCustomName(configuration.get("Settings.name", true).replace("{mob}", EntityName.valueOf(entity).getName()).replace("{stack}", FormatBalance.format(getStack())));
+        final Configuration configuration = Main.getInstance().getEntities();
+        entity.setCustomName(configuration.get("Settings.name", true).replace("{mob}", EntityName.valueOf(entity).getName()).replace("{stack}", BalanceFormatter.format(getStack())));
         entity.setCustomNameVisible(true);
         return this;
     }
@@ -93,7 +93,7 @@ public class EntityStacked {
 
     public Double getAmountDrops(ItemStack itemStack) {
         final double m = itemStack.containsEnchantment(Enchantment.LOOT_BONUS_MOBS) ? itemStack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS) + 1 : 1;
-        return Math.ceil(getAmountDrops() * m);
+        return Math.ceil(/*getAmountDrops()*/ getStack() * m);
     }
 
     public Double getAmountDrops() {

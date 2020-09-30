@@ -2,6 +2,7 @@ package centralworks.spawners.modules.models.spawners;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.modules.models.addons.ImpulseType;
+import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Bukkit;
 
@@ -13,33 +14,40 @@ import javax.persistence.*;
 public class SpawnerImpulse {
 
     @Id
-    @Column(length = 150)
-    @Getter
-    @Setter
-    private String locSerialized;
+    @GeneratedValue
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private Long id;
     @Enumerated
     @Getter
     @Setter
+    @Expose
     private ImpulseType impulseType;
     @Getter
     @Setter
+    @Expose
     private Double value = 1.0;
     @Getter
     @Setter
+    @Expose
     private Long startedAt = System.currentTimeMillis();
     @Getter
     @Setter
+    @Expose
     private Long finish;
     @Getter
     @Setter
+    @Expose
     private Long delay;
     @Getter
     @Setter
+    @Expose
     private boolean valid;
     @Getter
     @Setter
+    @Expose
     private Integer idTask = 0;
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     @Setter
     @ManyToOne
     private Spawner spawner;
@@ -73,9 +81,8 @@ public class SpawnerImpulse {
      */
     public void go(Spawner spawner) {
         setValid(true);
-        setLocSerialized(spawner.getLocSerialized());
         spawner.addImpulse(this);
-        this.idTask = Bukkit.getScheduler().runTaskLater(Main.get(), () -> spawner.query().queue((spawner1, query) -> {
+        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> spawner.query().queue((spawner1, query) -> {
             setValid(false);
             spawner1.removeImpulse(this);
             query.commit();
@@ -104,11 +111,11 @@ public class SpawnerImpulse {
     }
 
     public void run(Spawner spawner, Runnable callback) {
-        setLocSerialized(spawner.getLocSerialized());
-        this.idTask = Bukkit.getScheduler().runTaskLater(Main.get(), () -> spawner.query().queue((spawner1, q) -> {
+        setSpawner(spawner);
+        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> spawner.query().ifExists(spawner1 -> {
             setValid(false);
             spawner1.removeImpulse(this, callback);
-            q.commit();
+            spawner1.query().commit();
         }), delay).getTaskId();
     }
 }

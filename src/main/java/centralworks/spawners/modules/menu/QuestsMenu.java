@@ -15,7 +15,7 @@ import java.util.List;
 public class QuestsMenu extends InventoryBuilder {
 
     public QuestsMenu(Player p, int page) {
-        super(Main.get(), 6, "§8Missões");
+        super(Main.getInstance(), 6, "§8Missões");
         clear();
         setCancellable(true);
         final List<CraftQuest> quests = Quests.get().getList();

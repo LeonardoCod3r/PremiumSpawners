@@ -1,8 +1,8 @@
 package centralworks.spawners.modules.models.ranking;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.jpa.JpaUserRepository;
-import centralworks.spawners.commons.database.SyncRequests;
+import centralworks.spawners.lib.database.repositories.jpa.JpaUserRepository;
+import centralworks.spawners.lib.database.SyncRequests;
 import centralworks.spawners.modules.models.UserDetails;
 import com.google.common.collect.Lists;
 import lombok.Data;
@@ -44,7 +44,7 @@ public class SpawnerRanking {
                     setSuppliers(suppliers.stream().sorted((o1, o2) -> o2.getPriceAll().compareTo(o1.getPriceAll())).collect(Collectors.toList()));
                     loaded = true;
                     final long l1 = System.currentTimeMillis() - l;
-                    final Logger logger = Main.get().getLogger();
+                    final Logger logger = Main.getInstance().getLogger();
                     logger.log(Level.INFO, "O ranking de geradores foi carregado com sucesso.");
                     logger.log(Level.INFO, "Tempo de atualização: " + l1 + "ms.");
                 });

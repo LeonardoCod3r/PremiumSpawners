@@ -2,7 +2,7 @@ package centralworks.spawners.modules.menu;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.InventoryBuilder;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.menu.settings.FriendsMenuS;
@@ -18,18 +18,18 @@ import java.util.List;
 public class FriendsMenu extends InventoryBuilder {
 
     public FriendsMenu(Spawner spawner, Player p, int page) {
-        super(Main.get(), 6, "§8Gerador");
+        super(Main.getInstance(), 6, "§8Gerador");
         final FriendsMenuS menu = MenusSettings.get().getFriendsMenuSettings();
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = Main.getInstance().getMessages();
         final TCached cached = TCached.get();
         clear();
         setCancellable(true);
 
         setItem(menu.getSpawner_item().getItem_slot(), new Item(menu.getSpawner_item().getAsItem(s -> s
-                .replace("{coins}", FormatBalance.format(spawner.getPriceAll()))
+                .replace("{coins}", BalanceFormatter.format(spawner.getPriceAll()))
                 .replace("{owner}", spawner.getOwner())
                 .replace("{entity-type}", spawner.getEntityName())
-                .replace("{stack}", FormatBalance.format(spawner.getAmount()))
+                .replace("{stack}", BalanceFormatter.format(spawner.getAmount()))
                 .replace("{location}", "x: " + spawner.getLocation().getBlockX() + " y: " + spawner.getLocation().getBlockY() + " z: " + spawner.getLocation().getBlockZ()))
         ));
 

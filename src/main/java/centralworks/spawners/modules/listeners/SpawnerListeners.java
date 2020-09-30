@@ -1,8 +1,7 @@
 package centralworks.spawners.modules.listeners;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.SyncRequests;
-import centralworks.spawners.lib.Configuration;
+import centralworks.spawners.lib.database.SyncRequests;
 import centralworks.spawners.modules.menu.InfoSpawnerMenu;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.spawners.Spawner;
@@ -10,10 +9,9 @@ import centralworks.spawners.modules.models.spawners.SpawnerItem;
 import centralworks.spawners.modules.models.spawners.cached.DCached;
 import centralworks.spawners.modules.models.spawners.utils.FilteringFunctions;
 import centralworks.spawners.modules.models.spawners.utils.SpawnerBuilder;
-import org.bukkit.Location;
+import com.google.inject.Inject;
+import lombok.var;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -27,44 +25,47 @@ import java.util.function.Predicate;
 
 public class SpawnerListeners implements Listener {
 
+    @Inject
+    private Main plugin;
+
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        final Block block = e.getClickedBlock();
+        var block = e.getClickedBlock();
         if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (block.getType() != Material.MOB_SPAWNER) return;
-            final Location location = block.getLocation();
-            final Player p = e.getPlayer();
-            final UserDetails user = new UserDetails(p).query().persist();
+            var location = block.getLocation();
+            var p = e.getPlayer();
+            var user = new UserDetails(p).query().persist();
             if (user.exists(location)) {
                 e.setCancelled(true);
-                final Spawner spawner = user.getSpawner(location);
+                var spawner = user.getSpawner(location);
                 new InfoSpawnerMenu(spawner, p);
             } else {
                 final SyncRequests<Spawner, String> q = new Spawner(location).query();
                 if (!q.exists()) return;
-                final Spawner spawner = q.persist();
+                var spawner = q.persist();
                 if (spawner.hasPermission(p.getName())) {
                     new InfoSpawnerMenu(spawner, p);
-                } else p.sendMessage(Main.getMessages().getMessage("isNotOwner"));
+                } else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
             }
         }
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
-        final ItemStack item = e.getItemInHand();
+        var item = e.getItemInHand();
         if (!new SpawnerItem().isSpawnerItem(item)) return;
         e.setCancelled(true);
-        final Player p = e.getPlayer();
-        final Location location = e.getBlock().getLocation();
-        final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
+        var p = e.getPlayer();
+        var location = e.getBlock().getLocation();
+        var spawnerItem = new SpawnerItem().parse(item);
         final Predicate<ItemStack> prd = itemStack -> new SpawnerItem().isSpawnerItem(itemStack) && spawnerItem.isSimilar(itemStack);
-        final DCached cached = DCached.get();
+        var cached = DCached.get();
         if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
             p.sendMessage("§cAguarde para poder colocar o gerador novamente.");
             return;
         }
-        final SpawnerItem spawnerItem1 = Arrays.stream(p.getInventory().getContents())
+        var spawnerItem1 = Arrays.stream(p.getInventory().getContents())
                 .filter(prd)
                 .map(itemStack -> new SpawnerItem().parse(itemStack))
                 .reduce(SpawnerItem::concat).get();
@@ -73,12 +74,12 @@ public class SpawnerListeners implements Listener {
                 p.getInventory().setItem(i, new ItemStack(Material.AIR));
             }
         }
-        final Spawner spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
-        final UserDetails user = new UserDetails(p).query().persist();
+        var spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
+        var user = new UserDetails(p).query().persist();
         user.getSpawners(spawners -> {
-            final FilteringFunctions functions = new FilteringFunctions(spawners);
+            var functions = new FilteringFunctions(spawners);
             if (functions.exists(spawner.getEntityType())) {
-                final Spawner spawner1 = functions.get(spawner.getEntityType());
+                var spawner1 = functions.get(spawner.getEntityType());
                 spawner1.concat(spawner);
                 spawner1.query().commit();
             } else {
@@ -94,20 +95,20 @@ public class SpawnerListeners implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-        final Block block = e.getBlock();
+        var block = e.getBlock();
         if (block.getType() != Material.MOB_SPAWNER) return;
-        final Location location = block.getLocation();
-        final Player p = e.getPlayer();
-        final Configuration messages = Main.getMessages();
-        final UserDetails user = new UserDetails(p).query().persist();
-        final DCached cached = DCached.get();
+        var location = block.getLocation();
+        var p = e.getPlayer();
+        var messages = plugin.getMessages();
+        var user = new UserDetails(p).query().persist();
+        var cached = DCached.get();
         if (user.exists(location)) {
             e.setCancelled(true);
             if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
                 p.sendMessage("§cAguarde para poder retirar o gerador novamente.");
                 return;
             }
-            final Spawner spawner = user.getSpawner(location);
+            var spawner = user.getSpawner(location);
             new SpawnerItem().parse(spawner).giveItem(p);
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));

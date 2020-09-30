@@ -1,10 +1,10 @@
 package centralworks.spawners.modules.models.quests;
 
-import centralworks.spawners.commons.database.repositories.fast.FastUserQuestsRepository;
-import centralworks.spawners.commons.database.specifications.BindRepository;
-import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.jpa.JpaUserQuestsRepository;
-import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.lib.database.repositories.fast.FastUserQuestsRepository;
+import centralworks.spawners.lib.database.specifications.BindRepository;
+import centralworks.spawners.lib.database.specifications.Repository;
+import centralworks.spawners.lib.database.repositories.jpa.JpaUserQuestsRepository;
+import centralworks.spawners.lib.database.Storable;
 import centralworks.spawners.modules.models.quests.cached.Quests;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuest;
 import centralworks.spawners.modules.models.quests.suppliers.CraftQuestSettings;

@@ -1,11 +1,11 @@
 package centralworks.spawners.modules.models;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.fast.FastUserRepository;
-import centralworks.spawners.commons.database.specifications.BindRepository;
-import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.repositories.jpa.JpaUserRepository;
-import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.lib.database.repositories.fast.FastUserRepository;
+import centralworks.spawners.lib.database.specifications.BindRepository;
+import centralworks.spawners.lib.database.specifications.Repository;
+import centralworks.spawners.lib.database.repositories.jpa.JpaUserRepository;
+import centralworks.spawners.lib.database.Storable;
 import centralworks.spawners.lib.Serialize;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import com.google.common.collect.Lists;
@@ -78,7 +78,7 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
 
     public void fixLimits() {
         if (Bukkit.getPlayer(user) != null) {
-            final Double l = Double.valueOf(Main.getDropStorage().getList("Limits.default", false).stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
+            final Double l = Double.valueOf(Main.getInstance().getDropStorage().getList("Limits.default", false).stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
             if (getBuyLimit() < l) setBuyLimit(l);
             if (getSellLimit() < l) setSellLimit(l);
         }

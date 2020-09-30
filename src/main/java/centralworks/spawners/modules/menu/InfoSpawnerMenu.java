@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.menu;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.InventoryBuilder;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.menu.settings.InfoSpawnerMenuS;
@@ -12,16 +12,16 @@ import org.bukkit.entity.Player;
 public class InfoSpawnerMenu extends InventoryBuilder {
 
     public InfoSpawnerMenu(Spawner spawner, Player p) {
-        super(Main.get(), 3, "§8Gerador");
+        super(Main.getInstance(), 3, "§8Gerador");
         final InfoSpawnerMenuS mainMenuS = MenusSettings.get().getInfoSpawnerMenuSettings();
         clear();
         setCancellable(true);
 
         setItem(mainMenuS.getSpawner_item().getItem_slot(), new Item(mainMenuS.getSpawner_item().getAsItem(s -> s
-                .replace("{coins}", FormatBalance.format(spawner.getPriceAll()))
+                .replace("{coins}", BalanceFormatter.format(spawner.getPriceAll()))
                 .replace("{owner}", spawner.getOwner())
                 .replace("{entity-type}", spawner.getEntityName())
-                .replace("{stack}", FormatBalance.format(spawner.getAmount()))
+                .replace("{stack}", BalanceFormatter.format(spawner.getAmount()))
                 .replace("{location}", "x: " + spawner.getLocation().getBlockX() + " y: " + spawner.getLocation().getBlockY() + " z: " + spawner.getLocation().getBlockZ()))
         ));
 

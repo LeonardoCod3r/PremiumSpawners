@@ -27,7 +27,7 @@ public class ImpulseLoader {
         if (isLoaded()) return;
         final ICached cache = ICached.get();
         cache.clear();
-        final File dir = new File(Main.get().getDataFolder(), "impulses");
+        final File dir = new File(Main.getInstance().getDataFolder(), "impulses");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
                 final Impulse impulse = new Gson().fromJson(new FileReader(file), Impulse.class);
@@ -39,14 +39,14 @@ public class ImpulseLoader {
     }
 
     public void setDefaults() {
-        if (!Main.getData().is("Answered")) {
-            final File ctx = new File(Main.get().getDataFolder(), "impulses");
+        if (!Main.getInstance().getData().is("Answered")) {
+            final File ctx = new File(Main.getInstance().getDataFolder(), "impulses");
             try {
-                if (!Main.get().getDataFolder().exists()) Main.get().getDataFolder().mkdir();
+                if (!Main.getInstance().getDataFolder().exists()) Main.getInstance().getDataFolder().mkdir();
                 if (!ctx.exists()) ctx.mkdir();
                 final File file = new File(ctx, "exampleimpulse.json");
                 if (!file.exists())
-                    Files.copy(Main.get().getClass().getResourceAsStream("/impulses/exampleimpulse.json"), file.toPath());
+                    Files.copy(Main.getInstance().getClass().getResourceAsStream("/impulses/exampleimpulse.json"), file.toPath());
             } catch (IOException ignored) {
             }
         }

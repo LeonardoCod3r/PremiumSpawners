@@ -31,7 +31,7 @@ public class InventoryBuilder implements Listener {
 
     public InventoryBuilder() {
         this.inventory = Bukkit.createInventory(null, 6, "");
-        Bukkit.getPluginManager().registerEvents(this, Main.get());
+        Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
     }
 
     public InventoryBuilder(Plugin plugin, Integer rows, String name) {

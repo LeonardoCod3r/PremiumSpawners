@@ -2,12 +2,13 @@ package centralworks.spawners.modules.cmds;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Configuration;
-import centralworks.spawners.lib.Permission;
+import centralworks.spawners.lib.enums.Permission;
 import centralworks.spawners.modules.models.PlayerCommons;
 import centralworks.spawners.modules.models.addons.ICached;
 import centralworks.spawners.modules.models.addons.Impulse;
 import centralworks.spawners.modules.models.dropsstorage.DropStorage;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -15,13 +16,17 @@ import org.bukkit.entity.Player;
 
 public class BoosterCommand extends BukkitCommand {
 
-    public BoosterCommand() {
+    private Main plugin;
+
+    @Inject
+    public BoosterCommand(Main plugin) {
         super("booster", "Comandos do sistema de impulsos para Spawners.", "§c/booster help", Lists.newArrayList("multiplicador", "boosters"));
+        this.plugin = plugin;
     }
 
     @Override
     public boolean execute(CommandSender s, String lbl, String[] args) {
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = plugin.getMessages();
         if (s instanceof Player && args.length == 0) {
             final Player p = (Player) s;
             final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();

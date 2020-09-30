@@ -23,12 +23,12 @@ import java.util.List;
 public class BoosterMenu extends InventoryBuilder {
 
     public BoosterMenu(Spawner spawner, Player p) {
-        super(Main.get(), 3, "§8Gerador");
+        super(Main.getInstance(), 3, "§8Gerador");
         clear();
         setCancellable(true);
 
         final BoosterMenuS menu = MenusSettings.get().getBoosterMenuSettings();
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = Main.getInstance().getMessages();
         final Settings se = Settings.get();
 
         setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> spawner.query().ifExists(spawner1 -> {

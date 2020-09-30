@@ -18,9 +18,9 @@ import org.bukkit.inventory.ItemStack;
 public class UtilitiesMenu extends InventoryBuilder {
 
     public UtilitiesMenu(Spawner spawner, Player p) {
-        super(Main.get(), 3, "§8Gerador");
+        super(Main.getInstance(), 3, "§8Gerador");
         final UtilitiesMenuS menu = MenusSettings.get().getUtilsMenuSettings();
-        final Configuration messages = Main.getMessages();
+        final Configuration messages = Main.getInstance().getMessages();
         final TCached trCached = TCached.get();
         clear();
         setCancellable(true);

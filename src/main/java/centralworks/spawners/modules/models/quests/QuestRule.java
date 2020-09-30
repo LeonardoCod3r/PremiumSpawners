@@ -1,9 +1,7 @@
 package centralworks.spawners.modules.models.quests;
 
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,8 +13,9 @@ import java.io.Serializable;
 public class QuestRule implements Serializable {
 
     @Id
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Expose
     private Long idKey;
     @Expose
     private String id;
@@ -27,7 +26,8 @@ public class QuestRule implements Serializable {
     @Expose
     private Long completedIn = System.currentTimeMillis();
     @ManyToOne
-    @Expose(deserialize = false, serialize = false)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter
     private QuestData questData;
     @Expose
     private String value;

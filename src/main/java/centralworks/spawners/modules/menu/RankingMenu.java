@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.menu;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.InventoryBuilder;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.menu.settings.MenusSettings;
@@ -16,7 +16,7 @@ import java.util.List;
 public class RankingMenu extends InventoryBuilder {
 
     public RankingMenu(Spawner spawner, Player p) {
-        super(Main.get(), 3, "§8Ranking");
+        super(Main.getInstance(), 3, "§8Ranking");
         final RankingMenuS menu = MenusSettings.get().getRankingMenuSettings();
         clear();
         setCancellable(true);
@@ -43,7 +43,7 @@ public class RankingMenu extends InventoryBuilder {
                 final SpawnerRanking.Supplier supplier = suppliers.get(count);
                 final ItemSettings item = menu.getPlayer();
                 final int position = count + 1;
-                setItem(slots.get(count), new Item(item.getAsItem(s -> s.replace("{position}", "" + position).replace("{price}", FormatBalance.format(supplier.getPriceAll()))))
+                setItem(slots.get(count), new Item(item.getAsItem(s -> s.replace("{position}", "" + position).replace("{price}", BalanceFormatter.format(supplier.getPriceAll()))))
                         .setSkullOwner(item.getItem_skull_owner().replace("{player}", supplier.getUser()))
                         .name(item.getItem_name().replace("{player}", supplier.getUser()))
                 );

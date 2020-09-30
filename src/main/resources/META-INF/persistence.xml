@@ -14,8 +14,6 @@
         <class>centralworks.spawners.modules.models.quests.QuestData</class>
         <class>centralworks.spawners.modules.models.quests.QuestRule</class>
         <class>centralworks.spawners.modules.models.spawners.SpawnerImpulse</class>
-        <class>centralworks.spawners.modules.animations.AnimationAbstract</class>
-        <!--<class>centralworks.spawners.test.Testing</class>-->
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.schema-generation.database.action"
@@ -29,7 +27,7 @@
             <property name="hibernate.hikari.minimumIdle" value="5" />
             <property name="hibernate.hikari.maximumPoolSize" value="50" />
             <property name="hibernate.hikari.idleTimeout" value="30000" />
-            <property name="hibernate.hbm2dll.auto" value="update"/>
+            <property name="hibernate.hbm2dll.auto" value="create"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
         </properties>

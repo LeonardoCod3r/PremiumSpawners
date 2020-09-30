@@ -1,6 +1,6 @@
 package centralworks.spawners.modules.hook;
 
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.modules.models.spawners.Spawner;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public class DynmapHook {
                 getMarkerAPI().getMarkerIcon("star"),
                 false
         );
-        marker.setDescription("Dono: " + spawner.getOwner() + "<br/> Pilha: " + FormatBalance.format(spawner.getAmount()) + "<br/> Valor: " + FormatBalance.format(spawner.getPriceAll()));
+        marker.setDescription("Dono: " + spawner.getOwner() + "<br/> Pilha: " + BalanceFormatter.format(spawner.getAmount()) + "<br/> Valor: " + BalanceFormatter.format(spawner.getPriceAll()));
     }
 
     public void hide(Spawner spawner) {

@@ -32,7 +32,7 @@ public class QuestLoader {
         if (isLoaded()) return;
         final Quests quests = Quests.get();
         quests.clear();
-        final File dir = new File(Main.get().getDataFolder(), "quests");
+        final File dir = new File(Main.getInstance().getDataFolder(), "quests");
         Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
             try {
                 final CraftQuest craftQuest = new Gson().fromJson(new FileReader(file), CraftQuest.class);
@@ -46,17 +46,17 @@ public class QuestLoader {
     }
 
     public void setDefaults() {
-        if (!Main.getData().is("Answered")) {
-            final File ctx = new File(Main.get().getDataFolder(), "quests");
+        if (!Main.getInstance().getData().is("Answered")) {
+            final File ctx = new File(Main.getInstance().getDataFolder(), "quests");
             try {
-                if (!Main.get().getDataFolder().exists()) Main.get().getDataFolder().mkdir();
+                if (!Main.getInstance().getDataFolder().exists()) Main.getInstance().getDataFolder().mkdir();
                 if (!ctx.exists()) ctx.mkdir();
                 File file = new File(ctx, "examplequest.json");
                 if (!file.exists())
-                    Files.copy(Main.get().getClass().getResourceAsStream("/quests/examplequest.json"), file.toPath());
+                    Files.copy(Main.getInstance().getClass().getResourceAsStream("/quests/examplequest.json"), file.toPath());
                 file = new File(ctx, "otherquest.json");
                 if (!file.exists())
-                    Files.copy(Main.get().getClass().getResourceAsStream("/quests/otherquest.json"), file.toPath());
+                    Files.copy(Main.getInstance().getClass().getResourceAsStream("/quests/otherquest.json"), file.toPath());
             } catch (IOException ignored) {
             }
         }

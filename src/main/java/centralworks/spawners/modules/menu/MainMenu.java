@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class MainMenu extends InventoryBuilder {
 
     public MainMenu(Player p) {
-        super(Main.get(), 3, "§8Rede Nitro - Geradores");
+        super(Main.getInstance(), 3, "§8Rede Nitro - Geradores");
         clear();
         setCancellable(true);
 

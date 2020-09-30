@@ -2,9 +2,14 @@ package centralworks.spawners.modules.models.spawners.cached;
 
 import centralworks.spawners.Main;
 import centralworks.spawners.lib.Cache;
+import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.modules.models.spawners.SpawnerItem;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.entity.EntityType;
 
 public class SICached extends Cache<SICached.LoadedSpawnerItem> {
@@ -17,9 +22,8 @@ public class SICached extends Cache<SICached.LoadedSpawnerItem> {
 
     public void load() {
         clear();
-        Main.getSpawners().section("List").stream().map(EntityType::valueOf).forEach(entityType -> add(new LoadedSpawnerItem(entityType)));
+        Main.getInstance().getSpawners().section("List").stream().map(EntityType::valueOf).forEach(entityType -> add(new LoadedSpawnerItem(entityType)));
     }
-
 
     @Data
     @RequiredArgsConstructor

@@ -19,7 +19,7 @@ import java.util.List;
 public class QuestRulesMenu extends InventoryBuilder {
 
     public QuestRulesMenu(Player p, CraftQuest cq, int page) {
-        super(Main.get(), 3, "§8Objetivos");
+        super(Main.getInstance(), 3, "§8Objetivos");
         clear();
         setCancellable(true);
         final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();

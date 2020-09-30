@@ -1,5 +1,5 @@
 Answered: false #no edit this
-Database: LOCAL #LOCAL for small servers or MYSQL for large servers.
+Database: MYSQL #LOCAL for small servers or MYSQL for large servers.
 MySQL:
   User: "root"
   Password: "123"

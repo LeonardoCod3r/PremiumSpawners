@@ -1,7 +1,7 @@
 package centralworks.spawners.modules.menu;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.lib.FormatBalance;
+import centralworks.spawners.lib.BalanceFormatter;
 import centralworks.spawners.lib.InventoryBuilder;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.menu.settings.InfoSpawnerMenuS;
@@ -17,7 +17,7 @@ import java.util.List;
 public class SpawnersMenu extends InventoryBuilder {
 
     public SpawnersMenu(Player p, int page) {
-        super(Main.get(), 3, "§8Seus geradores");
+        super(Main.getInstance(), 3, "§8Seus geradores");
         final InfoSpawnerMenuS mainMenuS = MenusSettings.get().getInfoSpawnerMenuSettings();
         clear();
         setCancellable(true);
@@ -41,10 +41,10 @@ public class SpawnersMenu extends InventoryBuilder {
                 int count = 0;
                 for (Spawner spawner : subListSpawners) {
                     setItem(slots.get(count), new Item(mainMenuS.getSpawner_item().getAsItem(s -> s
-                            .replace("{coins}", FormatBalance.format(spawner.getPriceAll()))
+                            .replace("{coins}", BalanceFormatter.format(spawner.getPriceAll()))
                             .replace("{owner}", spawner.getOwner())
                             .replace("{entity-type}", spawner.getEntityName())
-                            .replace("{stack}", FormatBalance.format(spawner.getAmount()))
+                            .replace("{stack}", BalanceFormatter.format(spawner.getAmount()))
                             .replace("{location}", "x: " + spawner.getLocation().getBlockX() + " y: " + spawner.getLocation().getBlockY() + " z: " + spawner.getLocation().getBlockZ()))
                     ).name("§aGerador §f#" + (spawners.indexOf(spawner) + 1)).onClick(event -> new InfoSpawnerMenu(spawner, p)));
                     count++;

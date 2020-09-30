@@ -1,11 +1,11 @@
 package centralworks.spawners.modules.models.dropsstorage;
 
 import centralworks.spawners.Main;
-import centralworks.spawners.commons.database.repositories.fast.FastDropStorageRepository;
-import centralworks.spawners.commons.database.repositories.jpa.JpaDropStorageRepository;
-import centralworks.spawners.commons.database.specifications.BindRepository;
-import centralworks.spawners.commons.database.specifications.Repository;
-import centralworks.spawners.commons.database.Storable;
+import centralworks.spawners.lib.database.repositories.fast.FastDropStorageRepository;
+import centralworks.spawners.lib.database.repositories.jpa.JpaDropStorageRepository;
+import centralworks.spawners.lib.database.specifications.BindRepository;
+import centralworks.spawners.lib.database.specifications.Repository;
+import centralworks.spawners.lib.database.Storable;
 import centralworks.spawners.modules.models.UserDetails;
 import centralworks.spawners.modules.models.dropsstorage.supliers.Drop;
 import centralworks.spawners.modules.models.dropsstorage.supliers.cached.BonusRegistered;
@@ -116,7 +116,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public void applyBoostersDefault() {
-        final Double b = Double.valueOf(Main.getDropStorage().getList("Boosters.default", false).stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
+        final Double b = Double.valueOf(Main.getInstance().getDropStorage().getList("Boosters.default", false).stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
         if (getMultiplier() < b) setMultiplier(b);
     }
 
@@ -184,7 +184,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     public void addBooster(BoosterPlayer boosterPlayer) {
         getBoostersActive().add(boosterPlayer);
-        Bukkit.getScheduler().runTaskLater(Main.get(), () -> query().queue((storage, q) -> {
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> query().queue((storage, q) -> {
             final ArrayList<BoosterPlayer> list = new ArrayList<>(storage.getBoostersActive());
             list.remove(boosterPlayer);
             storage.setBoostersActive(list);

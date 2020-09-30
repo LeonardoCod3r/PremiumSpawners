@@ -5,6 +5,7 @@ import centralworks.spawners.lib.Configuration;
 import centralworks.spawners.lib.InventoryBuilder;
 import centralworks.spawners.lib.Item;
 import centralworks.spawners.modules.models.dropsstorage.DropStorage;
+import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -17,13 +18,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DSFriendsCommand extends BukkitCommand {
+    
+    private Main plugin;
 
-    public DSFriendsCommand() {
+    @Inject
+    public DSFriendsCommand(Main plugin) {
         super("armazemfriends", "Sistema de amigos", "/armazemfriends", Arrays.asList("friendsarmazem", "armazemamigos"));
+        this.plugin = plugin;
     }
 
     public void openFriendsInventory(Player p, DropStorage dropStorage, int page) {
-        final InventoryBuilder inventoryBuilder = new InventoryBuilder(Main.get(), 3, "§8Amigos");
+        final InventoryBuilder inventoryBuilder = new InventoryBuilder(plugin, 3, "§8Amigos");
         final List<String> friends = dropStorage.getFriends();
         inventoryBuilder.clear();
         inventoryBuilder.setCancellable(true);
@@ -63,7 +68,7 @@ public class DSFriendsCommand extends BukkitCommand {
     public boolean execute(CommandSender s, String lbl, String[] args) {
         if (s instanceof Player) {
             final Player p = (Player) s;
-            final Configuration messages = Main.getMessages();
+            final Configuration messages = plugin.getMessages();
             if (args.length == 0) {
                 final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();
                 if (dropStorage.getFriends().size() > 0) {
@@ -85,7 +90,7 @@ public class DSFriendsCommand extends BukkitCommand {
                 if (args[0].equalsIgnoreCase("add")) {
                     if (dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     if (args[1].equalsIgnoreCase(p.getName())) return true;
-                    if (dropStorage.getFriends().size() == Main.getDropStorage().getInt("Settings.friends.max")) {
+                    if (dropStorage.getFriends().size() == plugin.getDropStorage().getInt("Settings.friends.max")) {
                         p.sendMessage(messages.getMessage("friends-max"));
                         return true;
                     }
