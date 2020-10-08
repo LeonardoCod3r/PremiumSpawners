@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>centralworks.spawners</groupId>
     <artifactId>PremiumSpawners</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.1</version>
     <name>NitroSpawners</name>
     <organization>
         <name>CentralWorks</name>
@@ -50,25 +50,22 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>centralworks.spawners.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>NitroSpawners_V${version}</finalName>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>javax.persistence</pattern>
+                                    <shadedPattern>javax.shaded.persistence</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

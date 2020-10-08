@@ -1,4 +1,3 @@
-toggle: true
 Spawner:
   size: 300000 #tamanho
   expired: 2 #minutos

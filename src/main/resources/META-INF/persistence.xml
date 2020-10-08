@@ -3,17 +3,17 @@
              xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-    <persistence-unit name="centralworks.spawners"
+    <persistence-unit name="centralworks.core.spawners"
                       transaction-type="RESOURCE_LOCAL">
-        <class>centralworks.spawners.modules.models.UserDetails</class>
-        <class>centralworks.spawners.modules.models.spawners.Spawner</class>
-        <class>centralworks.spawners.modules.models.dropsstorage.DropStorage</class>
-        <class>centralworks.spawners.modules.models.dropsstorage.DropPlayer</class>
-        <class>centralworks.spawners.modules.models.dropsstorage.BoosterPlayer</class>
-        <class>centralworks.spawners.modules.models.quests.PlayerQuests</class>
-        <class>centralworks.spawners.modules.models.quests.QuestData</class>
-        <class>centralworks.spawners.modules.models.quests.QuestRule</class>
-        <class>centralworks.spawners.modules.models.spawners.SpawnerImpulse</class>
+        <class>centralworks.core.commons.models.UserDetails</class>
+        <class>centralworks.core.spawners.models.Spawner</class>
+        <class>centralworks.core.dropstorage.models.DropStorage</class>
+        <class>centralworks.core.dropstorage.models.DropPlayer</class>
+        <class>centralworks.core.dropstorage.models.BoosterPlayer</class>
+        <class>centralworks.core.quests.models.PlayerQuests</class>
+        <class>centralworks.core.quests.models.QuestData</class>
+        <class>centralworks.core.quests.models.QuestRule</class>
+        <class>centralworks.core.spawners.models.SpawnerImpulse</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.schema-generation.database.action"

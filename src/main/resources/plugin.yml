@@ -1,5 +1,5 @@
 name: NitroSpawners
-main: centralworks.spawners.Main
+main: centralworks.Main
 author: <Leonardo/>
 version: 1.2.0
 description: A advanced plug-in of Spawners system
