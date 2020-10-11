@@ -1,6 +1,7 @@
 package centralworks.core.spawners.models;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.repositories.json.FastSpawnerRepository;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
@@ -15,6 +16,7 @@ import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.enums.ImpulseType;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import lombok.*;
@@ -169,12 +171,10 @@ public class Spawner extends Storable<Spawner> implements Serializable {
                     getPlayer().sendMessage(messages.getMessage("boosterEnd").replace("{type}", si.getImpulseType().name()));
             });
         }
-        query().commit();
     }
 
     public void impulsesForceStop() {
         getImpulsesOfGeneration().forEach(SpawnerImpulse::stop);
-        query().commit();
     }
 
     public Player getPlayer() {
@@ -282,9 +282,10 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         final Location l = getLocation();
         l.getBlock().setType(Material.AIR);
         impulsesOfGeneration.forEach(SpawnerImpulse::stop);
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        cache.invalidate(getLocSerialized());
         query().delete();
         userDetails.deleteSpawnerLocation(l);
-        userDetails.query().commit();
         final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
         dynmapHook.hide(this);
     }
@@ -295,7 +296,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         addFriend(spawner.getFriends());
         spawner.getImpulsesOfGeneration().forEach(i -> {
             i.stop();
-            i.go(this);
+            i.in(this);
         });
         updateHologram();
     }

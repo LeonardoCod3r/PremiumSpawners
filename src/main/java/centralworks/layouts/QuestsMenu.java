@@ -1,11 +1,13 @@
 package centralworks.layouts;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.lib.InventoryBuilder;
 import centralworks.lib.Item;
 import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.quests.cache.Quests;
 import centralworks.core.quests.other.CraftQuest;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,7 +46,8 @@ public class QuestsMenu extends InventoryBuilder {
     }
 
     public Item getInfoPlayer(Player p) {
-        final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();
+        final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
+        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
         return new Item(Material.SKULL_ITEM, 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações").lore(
                 "§fUsuário: §7" + p.getName(),
                 "§fÚltima missão completada: §7" +

@@ -25,7 +25,7 @@ public class Caches {
 
     @SuppressWarnings("unchecked")
     public static <T extends Storable<T>> LoadingCache<String, T> getCache(Class<T> clazz) {
-        return (LoadingCache<String, T>) caches.get(clazz);
+        return (LoadingCache<String, T>) caches.get(clazz).getCache();
     }
 
     static {
@@ -51,7 +51,7 @@ public class Caches {
                 };
                 loadingCache = CacheBuilder.newBuilder()
                         .maximumSize(config.getLong(path + "size"))
-                        .expireAfterAccess(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, Spawner>() {
                             @Override
@@ -88,7 +88,7 @@ public class Caches {
                 };
                 loadingCache = CacheBuilder.newBuilder()
                         .maximumSize(config.getLong(path + "size"))
-                        .expireAfterAccess(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, UserDetails>() {
                             @Override
@@ -125,7 +125,7 @@ public class Caches {
                 };
                 loadingCache = CacheBuilder.newBuilder()
                         .maximumSize(config.getLong(path + "size"))
-                        .expireAfterAccess(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, DropStorage>() {
                             @Override
@@ -162,7 +162,7 @@ public class Caches {
                 };
                 loadingCache = CacheBuilder.newBuilder()
                         .maximumSize(config.getLong(path + "size"))
-                        .expireAfterAccess(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, PlayerQuests>() {
                             @Override

@@ -1,9 +1,12 @@
 package centralworks.hooks;
 
+import centralworks.cache.Caches;
 import centralworks.lib.BalanceFormatter;
 import centralworks.core.commons.models.UserDetails;
+import com.google.common.cache.LoadingCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceHolderHook extends PlaceholderExpansion {
 
@@ -29,14 +32,10 @@ public class PlaceHolderHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer p, String identifier) {
-        if (identifier.equals("compra")) {
-            final UserDetails userDetails = new UserDetails(p).query().persist();
-            return BalanceFormatter.format(userDetails.getBuyLimit());
-        }
-        if (identifier.equalsIgnoreCase("venda")) {
-            final UserDetails userDetails = new UserDetails(p).query().persist();
-            return BalanceFormatter.format(userDetails.getSellLimit());
-        }
+        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
+        final UserDetails user = cache.getUnchecked(p.getName());
+        if (identifier.equals("compra")) return BalanceFormatter.format(user.getBuyLimit());
+        if (identifier.equalsIgnoreCase("venda")) return BalanceFormatter.format(user.getSellLimit());
         return null;
     }
 }

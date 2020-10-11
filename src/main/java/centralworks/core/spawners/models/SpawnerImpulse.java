@@ -1,12 +1,15 @@
 package centralworks.core.spawners.models;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.core.commons.models.enums.ImpulseType;
+import com.google.common.cache.LoadingCache;
 import com.google.gson.annotations.Expose;
 import lombok.*;
 import org.bukkit.Bukkit;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -79,15 +82,14 @@ public class SpawnerImpulse {
     /**
      * @param spawner to apply
      */
-    public void go(Spawner spawner) {
+    public void in(Spawner spawner) {
         setValid(true);
         spawner.addImpulse(this);
-        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> spawner.query().queue((spawner1, query) -> {
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
             setValid(false);
             spawner1.removeImpulse(this);
-            query.commit();
         }), delay).getTaskId();
-        spawner.query().commit();
     }
 
     public void stop() {
@@ -103,19 +105,18 @@ public class SpawnerImpulse {
      * @param spawner  to apply
      * @param callback which will be accepted if it ends
      */
-    public void go(Spawner spawner, Runnable callback) {
+    public void in(Spawner spawner, Runnable callback) {
         setValid(true);
         spawner.addImpulse(this);
         run(spawner, callback);
-        spawner.query().commit();
     }
 
     public void run(Spawner spawner, Runnable callback) {
         setSpawner(spawner);
-        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> spawner.query().ifExists(spawner1 -> {
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        this.idTask = Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
             setValid(false);
             spawner1.removeImpulse(this, callback);
-            spawner1.query().commit();
         }), delay).getTaskId();
     }
 }

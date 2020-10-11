@@ -111,6 +111,8 @@ public class Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //noinspection ResultOfMethodCallIgnored
+        Caches.getCaches();
     }
 
 }

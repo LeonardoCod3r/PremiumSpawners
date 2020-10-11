@@ -1,6 +1,7 @@
 package centralworks.core.commons.cmds;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.lib.Configuration;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.enums.Permission;
@@ -9,6 +10,7 @@ import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.Limit;
 import centralworks.core.commons.cache.LimitCached;
 import centralworks.core.commons.models.enums.LimitType;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +34,8 @@ public class LimitCommand extends BukkitCommand {
         if (args.length == 0) {
             if (s instanceof Player) {
                 final Player p = (Player) s;
-                final UserDetails user = new UserDetails(p).query().persist();
+                final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
+                final UserDetails user = cache.getUnchecked(p.getName());
                 p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.BUY.getName()).replace("{limit}", BalanceFormatter.format(user.getBuyLimit())));
                 p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.SELL.getName()).replace("{limit}", BalanceFormatter.format(user.getSellLimit())));
             }

@@ -1,29 +1,25 @@
 package centralworks.core.commons.listeners;
 
+import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.database.SyncRequests;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Optional;
+
 public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
         final String name = e.getPlayer().getName();
-        final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
-        query.persist().fixLimits();
-        query.commit();
-    }
-
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        final String name = e.getPlayer().getName();
-        final SyncRequests<UserDetails, Object> query = new UserDetails(name).query();
-        query.persist();
-        query.commit();
+        final UserDetails user = Optional.ofNullable(cache.getIfPresent(name)).orElse(new UserDetails(name));
+        user.fixLimits();
+        cache.put(name, user);
     }
 
 }

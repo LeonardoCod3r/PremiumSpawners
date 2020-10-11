@@ -1,6 +1,7 @@
 package centralworks.core.dropstorage.listeners;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.core.dropstorage.cache.LootData;
 import centralworks.core.dropstorage.models.Drop;
 import centralworks.core.dropstorage.models.DropPlayer;
@@ -10,6 +11,7 @@ import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
 import centralworks.lib.enums.ItemName;
 import centralworks.core.stackmobs.models.EntityStacked;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +30,8 @@ public class EntityListeners implements Listener {
             if (plugin.dropStorageSystemIsActive()) {
                 if (plugin.getDropStorage().getList("Settings.black-list", false).contains(e.getEntity().getWorld().getName()))
                     return;
-                final DropStorage dropStorage = new DropStorage(p).query().persist();
+                final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+                final DropStorage dropStorage = cache.getUnchecked(p.getName());
                 for (DropPlayer dropPlayer : dropStorage.getDropPlayers()) {
                     final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
                     if (drop.getEntityType().equals(mob.getType())) {
@@ -43,7 +46,6 @@ public class EntityListeners implements Listener {
                         if (dropStorage.isAutoSell()) {
                             if (dropPlayer.getAmount() > 0) dropPlayer.sell(p.getPlayer(), dropStorage);
                         }
-                        dropStorage.query().commit();
                         e.getDrops().clear();
                         return;
                     }

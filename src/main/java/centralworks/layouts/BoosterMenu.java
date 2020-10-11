@@ -57,7 +57,7 @@ public class BoosterMenu extends InventoryBuilder {
         setItem(menu.getBoosters().getItem_slot(), new Item(menu.getBoosters().getAsItem(s -> s)).addLines(lore));
 
         onClickPlayerInv(e -> {
-            Optional.ofNullable(cache.getUnchecked(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+            Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
                 if (spawner1.isOwner(p.getName())) {
                     try {
                         final ItemStack item = e.getCurrentItem();
@@ -75,10 +75,9 @@ public class BoosterMenu extends InventoryBuilder {
                         if (item.getAmount() == 1) p.getInventory().setItem(e.getSlot(), new ItemStack(Material.AIR));
                         else item.setAmount(item.getAmount() - 1);
                         p.sendMessage(messages.getMessage("boosterActivated").replace("{type}", type.name()));
-                        new SpawnerImpulse(type, delay, multiplier).go(spawner1, () -> {
+                        new SpawnerImpulse(type, delay, multiplier).in(spawner1, () -> {
                             if (Bukkit.getPlayer(name) != null)
                                 Bukkit.getPlayer(name).sendMessage(messages.getMessage("boosterEnd").replace("{type}", type.name()));
-                            spawner1.query().commit();
                         });
                     } catch (Exception ignored) {
                     }

@@ -46,7 +46,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         mining.commit();
@@ -68,7 +67,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         place.commit();
@@ -90,7 +88,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         activeBoosterSpawner.commit();
@@ -113,7 +110,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                             });
                         }
                     });
-                    playerQuests.save();
                 }
             }
         });
@@ -138,7 +134,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                             });
                         }
                     });
-                    playerQuests.save();
                 }
             }
         });
@@ -162,7 +157,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         craft.commit();
@@ -189,7 +183,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         miningSpecific.commit();
@@ -216,7 +209,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                         });
                     }
                 });
-                playerQuests.save();
             }
         });
         placeSpecific.commit();
@@ -244,7 +236,6 @@ public class Interpreters extends Cache<CraftInterpreter<?>> {
                             });
                         }
                     });
-                    playerQuests.save();
                 }
             }
         });

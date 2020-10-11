@@ -1,6 +1,7 @@
 package centralworks.core.dropstorage.models;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.repositories.json.FastDropStorageRepository;
 import centralworks.repositories.mysql.JpaDropStorageRepository;
 import centralworks.database.specifications.BindRepository;
@@ -9,6 +10,7 @@ import centralworks.database.Storable;
 import centralworks.core.dropstorage.cache.BonusRegistered;
 import centralworks.core.dropstorage.cache.LootData;
 import centralworks.core.commons.models.UserDetails;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -121,7 +124,6 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     public void sellAll() {
         getDropPlayers().forEach(dropPlayer -> dropPlayer.sell(getOwnerPlayer(), this));
-        query().commit();
     }
 
     public DropPlayer getDropPlayer(String keyDrop) {
@@ -142,15 +144,16 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public UserDetails getUser() {
-        return new UserDetails(getOwner()).query().persist();
+        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
+        return cache.getUnchecked(getOwner());
     }
 
     public boolean isMax() {
-        return getAmountAll() >= new UserDetails(getOwner()).query().persist().getSellLimit();
+        return getAmountAll() >= getUser().getSellLimit();
     }
 
     public boolean isMax(Double amount) {
-        return getAmountAll() + amount > new UserDetails(getOwner()).query().persist().getSellLimit();
+        return getAmountAll() + amount > getUser().getSellLimit();
     }
 
     public Player getOwnerPlayer() {
@@ -183,11 +186,11 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     public void addBooster(BoosterPlayer boosterPlayer) {
         getBoostersActive().add(boosterPlayer);
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> query().queue((storage, q) -> {
+        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Optional.ofNullable(cache.getIfPresent(getOwner())).ifPresent(storage -> {
             final ArrayList<BoosterPlayer> list = new ArrayList<>(storage.getBoostersActive());
             list.remove(boosterPlayer);
             storage.setBoostersActive(list);
-            q.commit();
         }), 20L * boosterPlayer.getTime());
     }
 

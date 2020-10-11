@@ -123,7 +123,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
                 return rule;
             }).collect(Collectors.toList()));
             addQuest(data);
-            saveInMySQL();
         }
         getCompounds().forEach(q -> {
             final CraftQuest craftQuests = q.getQuest();
@@ -133,7 +132,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
                     q.setActive(true);
             }
         });
-        saveInMySQL();
     }
 
     public void nextQuest(QuestData previous) {
@@ -160,7 +158,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
                     q.setActive(true);
             }
         });
-        save();
     }
 
     public void addQuest(String id, List<QuestRule> questRules, Boolean... isActive) {
@@ -171,28 +168,23 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
         questData.setData(Lists.newLinkedList(questRules));
         questData.getData().forEach(questRule -> questRule.setQuestData(questData));
         compounds.add(questData);
-        saveInMySQL();
     }
 
     public void addQuest(QuestData questData) {
         if (compounds.stream().noneMatch(questData1 -> questData1.getIdentifier().equals(questData.getIdentifier())))
             compounds.add(questData);
-        saveInMySQL();
     }
 
     public void removeQuest(String id) {
         compounds.removeIf(questData -> questData.getIdentifier().equalsIgnoreCase(id));
-        saveInMySQL();
     }
 
     public void removeQuest(QuestData questData) {
         compounds.remove(questData);
-        saveInMySQL();
     }
 
     public void removeQuestIf(Predicate<QuestData> questDataPredicate) {
         compounds.removeIf(questDataPredicate);
-        saveInMySQL();
     }
 
     public Optional<QuestData> findQuestById(String id) {
@@ -213,14 +205,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
 
     public List<QuestData> findQuestsByInterpreter(String interpreter) {
         return compounds.stream().filter(questData -> questData.findRuleByInterpreter(interpreter).isPresent()).collect(Collectors.toList());
-    }
-
-    public void save() {
-        query().commit();
-    }
-
-    public void saveInMySQL() {
-        query().commit();
     }
 
 }

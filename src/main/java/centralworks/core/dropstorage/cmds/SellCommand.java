@@ -1,18 +1,15 @@
 package centralworks.core.dropstorage.cmds;
 
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
 import centralworks.Main;
-import centralworks.database.SyncRequests;
-import centralworks.lib.enums.ItemName;
-import centralworks.lib.enums.Permission;
-import centralworks.lib.ActionBarMessage;
+import centralworks.cache.Caches;
+import centralworks.core.dropstorage.cache.LootData;
+import centralworks.core.dropstorage.models.Drop;
 import centralworks.core.dropstorage.models.DropPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
-import centralworks.core.dropstorage.models.Drop;
-import centralworks.core.dropstorage.cache.LootData;
+import centralworks.lib.*;
+import centralworks.lib.enums.ItemName;
+import centralworks.lib.enums.Permission;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -22,10 +19,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SellCommand extends BukkitCommand {
-    
+
     private final Main plugin;
 
     public SellCommand() {
@@ -38,16 +36,19 @@ public class SellCommand extends BukkitCommand {
         if (s instanceof Player) {
             final Player p = (Player) s;
             final Configuration configuration = plugin.getDropStorage();
+            final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
             if (args.length == 0) {
-                final DropStorage dropStorage = new DropStorage(p).query().persist();
+                final DropStorage dropStorage = cache.getUnchecked(p.getName());
                 openSellInventory(p, dropStorage, configuration);
             } else if (args.length == 1) {
-                final SyncRequests<DropStorage, Object> q = new DropStorage(args[0]).query();
-                q.ifExists(dropStorage -> {
+                final Optional<DropStorage> optional = Optional.ofNullable(cache.getIfPresent(args[0]));
+                final boolean present = optional.isPresent();
+                optional.ifPresent(dropStorage -> {
                     if (dropStorage.getFriends().stream().anyMatch(s1 -> s1.equalsIgnoreCase(p.getName())) || args[0].equalsIgnoreCase(p.getName())) {
                         openSellInventory(p, dropStorage, configuration);
                     }
-                }, exception -> p.sendMessage(plugin.getMessages().getMessage("drops-no-friend")));
+                });
+                if (!present) p.sendMessage(plugin.getMessages().getMessage("drops-no-friend"));
             }
         }
         return true;
@@ -58,6 +59,7 @@ public class SellCommand extends BukkitCommand {
         final List<Integer> slots = new ArrayList<>();
         final LootData cached = LootData.get();
         final Configuration messages = plugin.getMessages();
+        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
         Arrays.asList(configuration.get("Inventory.sell.slotsDropSell", true).split(",")).forEach(s1 -> slots.add(Integer.parseInt(s1)));
         inventoryBuilder.setCancellable(true);
         inventoryBuilder.clear();
@@ -87,15 +89,14 @@ public class SellCommand extends BukkitCommand {
                                     .collect(Collectors.toList()))
                             .onClick(inventoryClickEvent -> {
                                 if (!Permission.hasPermission(p, Permission.SELL_ALL)) return;
-                                dropStorage.query().queue(storage -> {
-                                    if (storage.getAmountAll() > 0) {
-                                        new ActionBarMessage(p, messages.getMessage("drops-sellall")
-                                                .replace("{amount}", BalanceFormatter.format(dropStorage.getAmountAll()))
-                                                .replace("{price}", BalanceFormatter.format(storage.getPriceWithBonus())));
-                                        storage.sellAll();
-                                        Bukkit.dispatchCommand(p, "drops " + dropStorage.getOwner());
-                                    }
-                                });
+                                final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
+                                if (storage.getAmountAll() > 0) {
+                                    new ActionBarMessage(p, messages.getMessage("drops-sellall")
+                                            .replace("{amount}", BalanceFormatter.format(dropStorage.getAmountAll()))
+                                            .replace("{price}", BalanceFormatter.format(storage.getPriceWithBonus())));
+                                    storage.sellAll();
+                                    Bukkit.dispatchCommand(p, "drops " + dropStorage.getOwner());
+                                }
                             }));
         }
         path = "Inventory.sell.items.autoSell.";
@@ -109,13 +110,12 @@ public class SellCommand extends BukkitCommand {
                                     .replace("{state}", dropStorage.isAutoSellResult())
                                     .replace("{future-state}", "" + (!dropStorage.isAutoSell() ? "ativar" : "desativar")))
                                     .collect(Collectors.toList()))
-                            .onClick(inventoryClickEvent -> dropStorage.query().queue((storage, q) -> {
-                                if (!Permission.hasPermission(p, Permission.AUTO_SELL)) {
-                                    storage.setAutoSell(false);
-                                } else storage.setAutoSell(!storage.isAutoSell());
-                                q.commit();
+                            .onClick(inventoryClickEvent -> {
+                                final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
+                                if (!Permission.hasPermission(p, Permission.AUTO_SELL)) storage.setAutoSell(false);
+                                else storage.setAutoSell(!storage.isAutoSell());
                                 Bukkit.dispatchCommand(p, "drops " + storage.getOwner());
-                            })));
+                            }));
         }
         final List<DropPlayer> dropsPlayer = dropStorage.getDropPlayers().stream().filter(dropPlayer -> dropPlayer.getAmount() > 0).collect(Collectors.toList());
         if (dropsPlayer.size() != 0) {
@@ -131,7 +131,8 @@ public class SellCommand extends BukkitCommand {
                                         .replace("{amount}", BalanceFormatter.format(dropPlayer.getAmount()))
                                         .replace("{price-sell-all}", BalanceFormatter.format(dropPlayer.getPrice(dropStorage))))
                                         .collect(Collectors.toList()))
-                                .onClick(inventoryClickEvent -> dropStorage.query().queue((storage, q) -> {
+                                .onClick(event -> {
+                                    final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
                                     final DropPlayer dp = storage.getDropPlayer(dropPlayer.getKeyDrop());
                                     if (dp.getAmount() > 0) {
                                         new ActionBarMessage(p, messages.getMessage("drops-sell")
@@ -140,9 +141,8 @@ public class SellCommand extends BukkitCommand {
                                                 .replace("{price}", BalanceFormatter.format(dp.getPrice(storage))));
                                         dp.sell(p, storage);
                                     }
-                                    q.commit();
                                     Bukkit.dispatchCommand(p, "drops " + dropStorage.getOwner());
-                                })));
+                                }));
             }
         }
         inventoryBuilder.open(p);

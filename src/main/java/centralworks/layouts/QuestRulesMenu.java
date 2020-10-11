@@ -1,6 +1,7 @@
 package centralworks.layouts;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.lib.Date;
 import centralworks.lib.InventoryBuilder;
 import centralworks.lib.Item;
@@ -9,6 +10,7 @@ import centralworks.core.quests.models.QuestData;
 import centralworks.core.quests.models.QuestRule;
 import centralworks.core.quests.other.CraftQuest;
 import centralworks.core.quests.other.CraftQuestRule;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -21,7 +23,8 @@ public class QuestRulesMenu extends InventoryBuilder {
         super(Main.getInstance(), 3, "§8Objetivos");
         clear();
         setCancellable(true);
-        final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();
+        final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
+        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
         final QuestData data = playerQuests.findQuestByCraftQuest(cq).get();
         final List<QuestRule> rules = data.getData();
         final List<Integer> slots = Arrays.asList(11, 12, 13, 14, 15);

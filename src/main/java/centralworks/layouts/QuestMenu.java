@@ -1,6 +1,8 @@
 package centralworks.layouts;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
+import centralworks.lib.Cache;
 import centralworks.lib.Date;
 import centralworks.lib.InventoryBuilder;
 import centralworks.lib.Item;
@@ -8,6 +10,7 @@ import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.quests.models.QuestData;
 import centralworks.core.quests.other.CraftQuest;
 import centralworks.core.quests.other.CraftQuestSettings;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -20,7 +23,8 @@ public class QuestMenu extends InventoryBuilder {
         super(Main.getInstance(), 3, cq.getSettings().getName());
         clear();
         setCancellable(true);
-        final PlayerQuests playerQuests = new PlayerQuests(p).query().persist();
+        final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
+        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
         playerQuests.findQuestByCraftQuest(cq).ifPresent(questData -> {
             setItem(10, getCraftQuestInfoItem(cq));
             setItem(13, getCraftQuestStatusItem(playerQuests, cq));

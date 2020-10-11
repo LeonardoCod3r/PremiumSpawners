@@ -1,12 +1,16 @@
 package centralworks.core.stackmobs.listeners;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.stackmobs.models.EntityStacked;
 import centralworks.lib.Configuration;
 import centralworks.core.spawners.models.Spawner;
+import centralworks.lib.Serialize;
+import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtinjector.NBTInjector;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +22,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class EntityListeners implements Listener {
 
@@ -42,7 +47,9 @@ public class EntityListeners implements Listener {
         final Entity entity = e.getEntity();
         if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
             final EntityStacked entityStacked = new EntityStacked(entity).noAI();
-            new Spawner(e.getSpawner().getLocation()).query().ifExists(spawner -> entityStacked.setStack(spawner.getAmount() * spawner.getMultiplierOf(ImpulseType.GENERATION)));
+            final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+            Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(e.getSpawner().getLocation()).getResult()))
+                    .ifPresent(spawner -> entityStacked.setStack(spawner.getAmount() * spawner.getMultiplierOf(ImpulseType.GENERATION)));
             for (Entity nearbyEntity : entity.getNearbyEntities(entities.getDouble("Settings.area.x"), entities.getDouble("Settings.area.y"), entities.getDouble("Settings.area.z"))) {
                 if (!nearbyEntity.hasMetadata("NPC") && nearbyEntity instanceof Animals || nearbyEntity instanceof Monster || indeterminate.contains(nearbyEntity.getType()))
                     new EntityStacked(nearbyEntity).concat(entityStacked);

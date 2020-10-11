@@ -1,10 +1,12 @@
 package centralworks.core.dropstorage.cmds;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.lib.Configuration;
 import centralworks.lib.InventoryBuilder;
 import centralworks.lib.Item;
 import centralworks.core.dropstorage.models.DropStorage;
+import com.google.common.cache.LoadingCache;
 import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -68,8 +70,9 @@ public class DSFriendsCommand extends BukkitCommand {
         if (s instanceof Player) {
             final Player p = (Player) s;
             final Configuration messages = plugin.getMessages();
+            final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
             if (args.length == 0) {
-                final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();
+                final DropStorage dropStorage = cache.getIfPresent(p.getName());
                 if (dropStorage.getFriends().size() > 0) {
                     openFriendsInventory(p, dropStorage, 1);
                 } else p.sendMessage(messages.getMessage("friends-0"));
@@ -85,7 +88,7 @@ public class DSFriendsCommand extends BukkitCommand {
                     p.sendMessage(messages.getMessage("player-offline"));
                     return true;
                 }
-                final DropStorage dropStorage = new DropStorage(p.getName()).query().persist();
+                final DropStorage dropStorage = cache.getUnchecked(p.getName());
                 if (args[0].equalsIgnoreCase("add")) {
                     if (dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     if (args[1].equalsIgnoreCase(p.getName())) return true;
@@ -95,14 +98,12 @@ public class DSFriendsCommand extends BukkitCommand {
                     }
                     dropStorage.getFriends().add(args[1].toLowerCase());
                     p.sendMessage(messages.getMessage("friends-add").replace("{player}", p.getName()));
-                    dropStorage.query().commit();
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     if (!dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     final List<String> friends = new ArrayList<>(dropStorage.getFriends());
                     friends.remove(args[1].toLowerCase());
                     dropStorage.setFriends(friends);
                     p.sendMessage(messages.getMessage("friends-remove").replace("{player}", p.getName()));
-                    dropStorage.query().commit();
                 }
             }
         }

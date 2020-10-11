@@ -1,15 +1,18 @@
 package centralworks.core.spawners.listeners;
 
 import centralworks.Main;
-import centralworks.database.SyncRequests;
-import centralworks.layouts.InfoSpawnerMenu;
+import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
-import centralworks.core.spawners.models.Spawner;
-import centralworks.core.spawners.models.SpawnerItem;
 import centralworks.core.spawners.cache.DCached;
-import centralworks.core.spawners.utils.FilteringFunctions;
+import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerBuilder;
+import centralworks.core.spawners.models.SpawnerItem;
+import centralworks.core.spawners.utils.FilteringFunctions;
+import centralworks.layouts.InfoSpawnerMenu;
+import centralworks.lib.Serialize;
+import com.google.common.cache.LoadingCache;
 import lombok.var;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +23,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class SpawnerListeners implements Listener {
@@ -37,18 +41,17 @@ public class SpawnerListeners implements Listener {
             if (block.getType() != Material.MOB_SPAWNER) return;
             var location = block.getLocation();
             var p = e.getPlayer();
-            var user = new UserDetails(p).query().persist();
+            var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
             if (user.exists(location)) {
                 e.setCancelled(true);
                 var spawner = user.getSpawner(location);
                 new InfoSpawnerMenu(spawner, p);
             } else {
-                final SyncRequests<Spawner, String> q = new Spawner(location).query();
-                if (!q.exists()) return;
-                var spawner = q.persist();
-                if (spawner.hasPermission(p.getName())) {
-                    new InfoSpawnerMenu(spawner, p);
-                } else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
+                var cache = Caches.getCache(Spawner.class);
+                Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(location).getResult())).ifPresent(spawner -> {
+                    if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p);
+                    else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
+                });
             }
         }
     }
@@ -61,6 +64,7 @@ public class SpawnerListeners implements Listener {
         var p = e.getPlayer();
         var location = e.getBlock().getLocation();
         var spawnerItem = new SpawnerItem().parse(item);
+        var cache = Caches.getCache(Spawner.class);
         final Predicate<ItemStack> prd = itemStack -> new SpawnerItem().isSpawnerItem(itemStack) && spawnerItem.isSimilar(itemStack);
         var cached = DCached.get();
         if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
@@ -77,19 +81,15 @@ public class SpawnerListeners implements Listener {
             }
         }
         var spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
-        var user = new UserDetails(p).query().persist();
+        var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
         user.getSpawners(spawners -> {
             var functions = new FilteringFunctions(spawners);
             if (functions.exists(spawner.getEntityType())) {
                 var spawner1 = functions.get(spawner.getEntityType());
                 spawner1.concat(spawner);
-                spawner1.query().commit();
             } else {
                 user.addSpawnerLocation(location);
-                spawner.appear(spawner1 -> {
-                    user.query().commit();
-                    spawner1.query().commit();
-                });
+                spawner.appear(spawner1 -> cache.put(spawner1.getLocSerialized(), spawner1));
             }
         });
         cached.add(p.getName());
@@ -102,8 +102,9 @@ public class SpawnerListeners implements Listener {
         var location = block.getLocation();
         var p = e.getPlayer();
         var messages = plugin.getMessages();
-        var user = new UserDetails(p).query().persist();
+        var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
         var cached = DCached.get();
+
         if (user.exists(location)) {
             e.setCancelled(true);
             if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
@@ -115,9 +116,11 @@ public class SpawnerListeners implements Listener {
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));
             cached.add(p.getName());
-        } else if (new Spawner(location).query().exists()) {
-            e.setCancelled(true);
-            p.sendMessage(messages.getMessage("isNotOwner"));
+        } else {
+            Optional.ofNullable(Caches.getCache(Spawner.class).getUnchecked(new Serialize<Location, String>(location).getResult())).ifPresent(spawner -> {
+                e.setCancelled(true);
+                p.sendMessage(messages.getMessage("isNotOwner"));
+            });
         }
     }
 

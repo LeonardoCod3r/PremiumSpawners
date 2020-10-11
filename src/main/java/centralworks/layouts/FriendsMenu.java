@@ -1,19 +1,18 @@
 package centralworks.layouts;
 
 import centralworks.Main;
-import centralworks.lib.Configuration;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
-import centralworks.layouts.settings.FriendsMenuS;
-import centralworks.layouts.settings.MenusSettings;
-import centralworks.lib.ItemSettings;
+import centralworks.cache.Caches;
+import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.enums.TaskType;
-import centralworks.core.spawners.cache.TCached;
+import centralworks.layouts.settings.FriendsMenuS;
+import centralworks.layouts.settings.MenusSettings;
+import centralworks.lib.*;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FriendsMenu extends InventoryBuilder {
 
@@ -22,6 +21,7 @@ public class FriendsMenu extends InventoryBuilder {
         final FriendsMenuS menu = MenusSettings.get().getFriendsMenuSettings();
         final Configuration messages = Main.getInstance().getMessages();
         final TCached cached = TCached.get();
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
         clear();
         setCancellable(true);
 
@@ -33,23 +33,24 @@ public class FriendsMenu extends InventoryBuilder {
                 .replace("{location}", "x: " + spawner.getLocation().getBlockX() + " y: " + spawner.getLocation().getBlockY() + " z: " + spawner.getLocation().getBlockZ()))
         ));
 
-        setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> spawner.query().ifExists(spawner1 -> {
-            if (!spawner1.isOwner(p.getName())) {
-                p.closeInventory();
-                return;
-            }
-            new InfoSpawnerMenu(spawner1, p);
-        }, exception -> p.closeInventory())));
-
-        setItem(menu.getAdd().getItem_slot(), new Item(menu.getAdd().getAsItem(s -> s)).onClick(e -> spawner.query().ifExists(spawner1 -> {
+        setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
             p.closeInventory();
-            if (!spawner1.isOwner(p.getName())) return;
-            if (!cached.exists(s -> s.getPlayerName().equalsIgnoreCase(p.getName()))) {
-                cached.add(new TCached.TaskObj(p.getName(), spawner1.getLocSerialized(), TaskType.ADD_FRIEND));
-                p.sendMessage(messages.getMessage("taskAdd"));
-                p.closeInventory();
-            }
-        }, exception -> p.closeInventory())));
+            Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+                if (!spawner1.isOwner(p.getName())) return;
+                new InfoSpawnerMenu(spawner1, p);
+            });
+        }));
+
+        setItem(menu.getAdd().getItem_slot(), new Item(menu.getAdd().getAsItem(s -> s)).onClick(e -> {
+            p.closeInventory();
+            Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+                if (!spawner1.isOwner(p.getName())) return;
+                if (!cached.exists(s -> s.getPlayerName().equalsIgnoreCase(p.getName()))) {
+                    cached.add(new TCached.TaskObj(p.getName(), spawner1.getLocSerialized(), TaskType.ADD_FRIEND));
+                    p.sendMessage(messages.getMessage("taskAdd"));
+                }
+            });
+        }));
 
         final List<String> friends = spawner.getFriends();
         final List<Integer> slots = menu.getSlots();
@@ -57,23 +58,23 @@ public class FriendsMenu extends InventoryBuilder {
             final double pages = Math.ceil(friends.size() / (0D + slots.size()));
 
             if (page != pages) {
-                setItem(menu.getNext_page().getItem_slot(), new Item(menu.getNext_page().getAsItem(s -> s)).onClick(e -> spawner.query().ifExists(spawner1 -> {
-                    if (!spawner1.isOwner(p.getName())) {
-                        p.closeInventory();
-                        return;
-                    }
-                    new FriendsMenu(spawner1, p, page + 1);
-                }, exception -> p.closeInventory())));
+                setItem(menu.getNext_page().getItem_slot(), new Item(menu.getNext_page().getAsItem(s -> s)).onClick(e -> {
+                    p.closeInventory();
+                    Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+                        if (!spawner1.isOwner(p.getName())) return;
+                        new FriendsMenu(spawner1, p, page + 1);
+                    });
+                }));
             }
 
             if (page != 1) {
-                setItem(menu.getBack_page().getItem_slot(), new Item(menu.getBack_page().getAsItem(s -> s)).onClick(e -> spawner.query().ifExists(spawner1 -> {
-                    if (!spawner1.isOwner(p.getName())) {
-                        p.closeInventory();
-                        return;
-                    }
-                    new FriendsMenu(spawner1, p, page - 1);
-                }, exception -> p.closeInventory())));
+                setItem(menu.getBack_page().getItem_slot(), new Item(menu.getBack_page().getAsItem(s -> s)).onClick(e -> {
+                    p.closeInventory();
+                    Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+                        if (!spawner1.isOwner(p.getName())) return;
+                        new FriendsMenu(spawner1, p, page - 1);
+                    });
+                }));
             }
 
             final List<String> list = friends.subList(slots.size() * (page - 1), Math.min(friends.size(), slots.size() * (page + 1)));
@@ -83,18 +84,16 @@ public class FriendsMenu extends InventoryBuilder {
                 setItem(slots.get(count), new Item(item.getAsItem(s -> s))
                         .setSkullOwner(item.getItem_skull_owner().replace("{player}", friend))
                         .name(item.getItem_name().replace("{player}", friend))
-                        .onClick(e -> spawner.query().ifExists(spawner1 -> {
-                            if (!spawner1.isOwner(p.getName())) {
-                                p.closeInventory();
-                                return;
-                            }
-                            spawner1.removeFriend(friend);
-                            spawner1.query().commit();
-                            new FriendsMenu(spawner1, p, 1);
-                        }, exception -> p.closeInventory()))
+                        .onClick(e -> {
+                            p.closeInventory();
+                            Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
+                                if (!spawner1.isOwner(p.getName())) return;
+                                spawner1.removeFriend(friend);
+                                new FriendsMenu(spawner1, p, 1);
+                            });
+                        })
                 );
             }
-
         }
 
         open(p);

@@ -1,6 +1,7 @@
 package centralworks.layouts;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.InventoryBuilder;
 import centralworks.lib.Item;
@@ -21,7 +22,7 @@ public class SpawnersMenu extends InventoryBuilder {
         final InfoSpawnerMenuS mainMenuS = MenusSettings.get().getInfoSpawnerMenuSettings();
         clear();
         setCancellable(true);
-        final UserDetails user = new UserDetails(p).query().persist();
+        final UserDetails user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
         user.getSpawners(spawners -> {
             if (!spawners.isEmpty()) {
                 final List<Integer> slots = Lists.newArrayList(11, 12, 13, 14, 15);

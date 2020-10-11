@@ -1,22 +1,24 @@
 package centralworks.core.dropstorage.listeners;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.core.commons.cache.ICached;
 import centralworks.core.commons.cache.LimitCached;
 import centralworks.core.commons.models.Impulse;
 import centralworks.core.commons.models.Limit;
+import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.commons.models.enums.LimitType;
 import centralworks.core.dropstorage.models.BoosterPlayer;
+import centralworks.core.dropstorage.models.DropPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
+import centralworks.core.spawners.cache.TCached;
+import centralworks.core.spawners.models.Spawner;
+import centralworks.core.spawners.models.enums.TaskType;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;
-import centralworks.database.SyncRequests;
-import centralworks.core.commons.models.UserDetails;
-import centralworks.core.spawners.models.Spawner;
-import centralworks.core.spawners.models.enums.TaskType;
-import centralworks.core.spawners.cache.TCached;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,33 +27,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerListeners implements Listener {
-    
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        final SyncRequests<DropStorage, Object> query = new DropStorage(event.getPlayer()).query();
-        final DropStorage storage = query.persist();
+        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+        final String name = event.getPlayer().getName();
+        final DropStorage storage = Optional.ofNullable(cache.getIfPresent(name)).orElse(new DropStorage(name));
         storage.fixDrops();
         storage.applyBoostersDefault();
         storage.fixBonus(event.getPlayer());
-        query.commit();
-    }
-    
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event){
-        final SyncRequests<DropStorage, Object> query = new DropStorage(event.getPlayer()).query();
-        query.persist();
-        query.commit();
+        cache.put(name, storage);
     }
 
     @EventHandler
     public void onTalk(AsyncPlayerChatEvent e) {
         final Player p = e.getPlayer();
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
         final TCached trCached = TCached.get();
         if (trCached.exists(s -> s.getPlayerName().equalsIgnoreCase(p.getName()))) {
             e.setCancelled(true);
@@ -64,11 +62,10 @@ public class PlayerListeners implements Listener {
                 return;
             }
             if (obj.getTaskType() == TaskType.ADD_FRIEND) {
-                new Spawner(obj.getValue()).query().ifExists(spawner -> {
-                    if (!spawner.isOwner(p.getName())) {
-                        trCached.remove(obj);
-                        return;
-                    }
+                trCached.remove(obj);
+
+                Optional.ofNullable(cache.getIfPresent(obj.getValue())).ifPresent(spawner -> {
+                    if (!spawner.isOwner(p.getName())) return;
                     if (Bukkit.getPlayer(msg) == null) {
                         p.sendMessage(messages.getMessage("offlinePlayer").replace("{player}", msg));
                         return;
@@ -78,22 +75,22 @@ public class PlayerListeners implements Listener {
                         return;
                     }
                     spawner.addFriend(msg);
-                    spawner.query().commit();
                     p.sendMessage(messages.getMessage("friendAdded").replace("{player}", msg));
-                    trCached.remove(obj);
-                }, exception -> trCached.remove(obj));
+                });
             }
         }
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event){
+    public void onInteract(PlayerInteractEvent event) {
         final Player p = event.getPlayer();
         final ItemStack item = event.getItem();
         final Configuration messages = Main.getInstance().getMessages();
         if (item == null) return;
 
         if (Main.getInstance().limitSystemIsActive()) {
+            final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
+            final UserDetails userDetails = cache.getUnchecked(p.getName());
             for (Limit limit : LimitCached.get().getList()) {
                 if (!item.isSimilar(limit.getItemStack().getAsItem(s -> s))) continue;
                 event.setCancelled(true);
@@ -102,7 +99,6 @@ public class PlayerListeners implements Listener {
                     p.sendMessage(messages.getMessage("permissionErrorLimit").replace("{type}", type.getName()));
                     return;
                 }
-                final UserDetails userDetails = new UserDetails(p).query().persist();
                 final Double max = Main.getInstance().getDropStorage().getDouble("Limits.max");
                 if (type == LimitType.SELL) {
                     if (userDetails.getSellLimit() >= max) {
@@ -115,17 +111,19 @@ public class PlayerListeners implements Listener {
 
                     userDetails.addSellLimit(adder);
                     final Double v = userDetails.getSellLimit();
-                    userDetails.query().commit();
                     if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
                     else p.setItemInHand(new ItemStack(Material.AIR));
                     p.sendMessage(messages.getMessage("limitUsed")
-                                    .replace("{type}", type.getName())
-                                    .replace("{limit-value}", BalanceFormatter.format(adder))
-                                    .replace("{player-limit-value}", BalanceFormatter.format(v)));
+                            .replace("{type}", type.getName())
+                            .replace("{limit-value}", BalanceFormatter.format(adder))
+                            .replace("{player-limit-value}", BalanceFormatter.format(v)));
                     return;
                 }
             }
         }
+
+        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+        final DropStorage dropStorage = cache.getUnchecked(p.getName());
 
         for (Impulse booster : ICached.get().getList()) {
             if (!item.isSimilar(booster.getAsItem())) continue;
@@ -135,7 +133,6 @@ public class PlayerListeners implements Listener {
                 p.sendMessage(messages.getMessage("permission-error-booster"));
                 return;
             }
-            final DropStorage dropStorage = new DropStorage(p).query().persist();
             if (booster.getTime() == 0) {
                 dropStorage.addMultiplier(booster.getValue());
                 p.sendMessage(messages.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
@@ -143,7 +140,6 @@ public class PlayerListeners implements Listener {
                 dropStorage.addBooster(new BoosterPlayer(dropStorage, booster.getValue(), booster.getTime()));
                 p.sendMessage(messages.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
             }
-            dropStorage.query().commit();
             if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
             else p.setItemInHand(new ItemStack(Material.AIR));
             return;

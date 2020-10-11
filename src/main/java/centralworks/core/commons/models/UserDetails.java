@@ -1,6 +1,7 @@
 package centralworks.core.commons.models;
 
 import centralworks.Main;
+import centralworks.cache.Caches;
 import centralworks.repositories.json.FastUserRepository;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
@@ -8,6 +9,7 @@ import centralworks.repositories.mysql.JpaUserRepository;
 import centralworks.database.Storable;
 import centralworks.lib.Serialize;
 import centralworks.core.spawners.models.Spawner;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import lombok.*;
@@ -69,11 +71,13 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     }
 
     public void getSpawners(Consumer<List<Spawner>> callback) {
-        CompletableFuture.supplyAsync(() -> locationsSerialized.stream().map(s -> new Spawner(s).query().persist()).collect(Collectors.toList())).thenAccept(callback);
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        CompletableFuture.supplyAsync(() -> locationsSerialized.stream().map(cache::getUnchecked).collect(Collectors.toList())).thenAccept(callback);
     }
 
     public List<Spawner> getSpawners() {
-        return locationsSerialized.stream().map(s -> new Spawner(s).query().persist()).collect(Collectors.toList());
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        return locationsSerialized.stream().map(cache::getUnchecked).collect(Collectors.toList());
     }
 
     public void fixLimits() {
@@ -117,7 +121,8 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     }
 
     public Spawner getSpawner(Location location) {
-        return new Spawner(locationsSerialized.stream().filter(location1 -> location1.equals(new Serialize<Location, String>(location).getResult())).findFirst().get()).query().persist();
+        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        return cache.getUnchecked(locationsSerialized.stream().filter(location1 -> location1.equals(new Serialize<Location, String>(location).getResult())).findFirst().get());
     }
 
     public boolean exists(Location location) {
