@@ -1,14 +1,14 @@
 Spawner:
-  size: 300000 #tamanho
-  expired: 2 #minutos
+  size: 700000 #tamanho
+  expired: 10 #minutos
 User:
-  size: 50000
-  expired: 5
+  size: 300000
+  expired: 15
 PlayerQuests:
-  size: 50000
+  size: 30000
   expired: 15
 DropStorage:
-  size: 50000
+  size: 30000
   expired: 20
 
 

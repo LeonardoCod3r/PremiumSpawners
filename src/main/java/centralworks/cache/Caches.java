@@ -54,6 +54,7 @@ public class Caches {
                         .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, Spawner>() {
+
                             @Override
                             public Spawner load(@NotNull String s) {
                                 return SyncRequests.supply(repository, s).persist();

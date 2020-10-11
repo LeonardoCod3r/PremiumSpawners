@@ -65,13 +65,13 @@ public class ServiceModule extends AbstractModule {
         settings.put(Environment.USER, data.get("MySQL.User", false));
         settings.put(Environment.PASS, data.get("MySQL.Password", false));
         settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-        settings.put(Environment.SHOW_SQL, "true");
+        settings.put(Environment.SHOW_SQL, data.get("Advanced.showSql", false));
         settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
         settings.put(Environment.HBM2DDL_AUTO, "update");
         settings.put(Environment.CONNECTION_PROVIDER, "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-        settings.put("hibernate.hikari.minimumIdle", "5");
-        settings.put("hibernate.hikari.maximumPoolSize", "50");
-        settings.put("hibernate.hikari.idleTimeout", "30000");
+        settings.put("hibernate.hikari.minimumIdle", data.get("Advanced.minimumIdle", false));
+        settings.put("hibernate.hikari.maximumPoolSize", data.get("Advanced.maximumPoolSize", false));
+        settings.put("hibernate.hikari.idleTimeout", data.get("Advanced.idleTimeout", false));
     }
 
     @Provides
