@@ -1,9 +1,10 @@
-package centralworks.lib;
+package centralworks.lib.inventory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import lombok.Getter;
 import org.apache.commons.codec.binary.Base64;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -25,10 +26,15 @@ import java.util.function.Consumer;
 
 public class Item {
 
+    @Getter
     private ItemStack itemStack;
-    private Boolean closeable = false;
-    private Boolean editable = true;
-    private Boolean cancellable = false;
+    @Getter
+    private boolean closeable = false;
+    @Getter
+    private boolean editable = true;
+    @Getter
+    private boolean cancellable = false;
+    @Getter
     private Consumer<InventoryClickEvent> clickEventConsumer;
 
     public Item() {
@@ -52,14 +58,6 @@ public class Item {
         return this;
     }
 
-    public Boolean isCloseable() {
-        return closeable;
-    }
-
-    public Boolean isEditable() {
-        return editable;
-    }
-
     public Item setCloseable(Boolean closeable) {
         this.closeable = closeable;
         return this;
@@ -68,10 +66,6 @@ public class Item {
     public Item setCancel(Boolean b) {
         this.cancellable = b;
         return this;
-    }
-
-    public Boolean isCancellable() {
-        return cancellable;
     }
 
     public Item setEditable(Boolean editable) {
@@ -83,11 +77,6 @@ public class Item {
         this.clickEventConsumer = consumer;
         return this;
     }
-
-    public Consumer<InventoryClickEvent> getClickEventConsumer() {
-        return clickEventConsumer;
-    }
-
 
     public Item durability(Integer durability) {
         itemStack.setDurability(Short.parseShort(durability.toString()));
@@ -229,7 +218,4 @@ public class Item {
         return this;
     }
 
-    public ItemStack build() {
-        return itemStack;
-    }
 }

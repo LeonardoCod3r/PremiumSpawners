@@ -1,6 +1,6 @@
 package centralworks.core.dropstorage.models;
 
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

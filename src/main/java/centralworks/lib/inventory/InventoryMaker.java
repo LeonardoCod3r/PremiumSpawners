@@ -1,67 +1,71 @@
-package centralworks.lib;
+package centralworks.lib.inventory;
 
-import centralworks.Main;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class InventoryBuilder implements Listener {
+public class InventoryMaker {
 
+    @Getter
     private final Inventory inventory;
+    @Getter
     private final HashMap<Integer, Item> items = Maps.newHashMap();
     private final HashMap<Integer, Character> pattern = Maps.newHashMap();
+    @Getter
     private final List<Integer> schID = new ArrayList<>();
-    private Boolean cancellable = false;
-    private Boolean upgradeable = false;
-    private Consumer<InventoryClickEvent> clickEventConsumer;
-    private Consumer<InventoryCloseEvent> closeEventConsumer;
+    @Getter
+    private boolean cancellable = false;
+    @Getter
+    private boolean upgradeable = false;
 
-    public InventoryBuilder() {
+    public InventoryMaker() {
         this.inventory = Bukkit.createInventory(null, 6, "");
-        Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
     }
 
-    public InventoryBuilder(Plugin plugin, Integer rows, String name) {
+    public InventoryMaker(Integer rows, String name) {
         this.inventory = Bukkit.createInventory(null, rows * 9, name);
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public void setCancellable(Boolean cancellable) {
         this.cancellable = cancellable;
     }
 
-    public InventoryBuilder setItem(Integer slot, Item item) {
+    public InventoryMaker setItem(Integer slot, Item item) {
         this.items.put(slot, item);
-        this.inventory.setItem(slot, item.build());
+        this.inventory.setItem(slot, item.getItemStack());
         return this;
     }
 
-    public InventoryBuilder onClose(Consumer<InventoryCloseEvent> consumer) {
-        this.closeEventConsumer = consumer;
+    public InventoryMaker onClose(Consumer<InventoryCloseEvent> consumer) {
+        final InventoryController controller = InventoryController.getInstance();
+        final HashMap<InventoryMaker, Consumer<InventoryCloseEvent>> consumers = controller.getConsumersOnClose();
+        if (consumers.containsKey(this)) consumers.replace(this, consumer);
+        else consumers.put(this, consumer);
         return this;
     }
 
-    private Consumer<InventoryCloseEvent> getCloseEventConsumer() {
-        return closeEventConsumer;
+    public InventoryMaker onClick(Consumer<InventoryClickEvent> consumer) {
+        final InventoryController controller = InventoryController.getInstance();
+        final HashMap<InventoryMaker, Consumer<InventoryClickEvent>> consumers = controller.getConsumersOnClick();
+        if (consumers.containsKey(this)) consumers.replace(this, consumer);
+        else consumers.put(this, consumer);
+        return this;
     }
 
-    public InventoryBuilder addItem(Item item) {
+    public InventoryMaker addItem(Item item) {
         int slot = this.items.size();
         this.items.put(slot, item);
-        this.inventory.setItem(slot, item.build());
+        this.inventory.setItem(slot, item.getItemStack());
         return this;
     }
 
@@ -110,7 +114,7 @@ public class InventoryBuilder implements Listener {
             if (character != 'X') {
                 if (slot >= items1.size()) break;
                 Item item = items1.get(slot);
-                inventory.setItem(integer, item.build());
+                inventory.setItem(integer, item.getItemStack());
                 items.put(integer, item);
                 slot++;
             }
@@ -127,40 +131,4 @@ public class InventoryBuilder implements Listener {
         inventory.clear();
     }
 
-    public InventoryBuilder onClickPlayerInv(Consumer<InventoryClickEvent> consumer) {
-        this.clickEventConsumer = consumer;
-        return this;
-    }
-
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        if (clickEventConsumer != null) {
-            if (event.getClickedInventory() == null) return;
-            if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(inventory)) return;
-            if (event.getClickedInventory().equals(event.getWhoClicked().getInventory())) {
-                clickEventConsumer.accept(event);
-            }
-        }
-        if (this.inventory == null) return;
-        if (this.inventory.equals(event.getInventory())) {
-            if (this.cancellable) event.setCancelled(true);
-            if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR)) return;
-            Item item = this.items.get(event.getRawSlot());
-            if (item == null) return;
-            if (item.isCancellable()) event.setCancelled(true);
-            if (item.getClickEventConsumer() != null) item.getClickEventConsumer().accept(event);
-        }
-    }
-
-    @EventHandler
-    public void onClose(InventoryCloseEvent event) {
-        if (this.inventory == null) return;
-        if (this.upgradeable == null) return;
-        schID.forEach(integer -> Bukkit.getScheduler().cancelTask(integer));
-    }
-
-    @EventHandler
-    public void onClose2(InventoryCloseEvent e) {
-        if (getCloseEventConsumer() != null) getCloseEventConsumer().accept(e);
-    }
 }

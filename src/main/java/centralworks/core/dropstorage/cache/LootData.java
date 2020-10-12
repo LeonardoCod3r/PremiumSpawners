@@ -3,7 +3,7 @@ package centralworks.core.dropstorage.cache;
 import centralworks.Main;
 import centralworks.lib.Cache;
 import centralworks.lib.Configuration;
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import centralworks.core.dropstorage.models.Drop;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

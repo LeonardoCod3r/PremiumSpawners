@@ -1,16 +1,15 @@
 package centralworks.layouts;
 
-import centralworks.Main;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
 import centralworks.layouts.settings.MainMenuS;
 import centralworks.layouts.settings.MenusSettings;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import org.bukkit.entity.Player;
 
-public class MainMenu extends InventoryBuilder {
+public class MainMenu extends InventoryMaker {
 
     public MainMenu(Player p) {
-        super(Main.getInstance(), 3, "§8Rede Nitro - Geradores");
+        super(3, "§8Rede Nitro - Geradores");
         clear();
         setCancellable(true);
 

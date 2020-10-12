@@ -1,6 +1,6 @@
 package centralworks.lib;
 
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -35,7 +35,7 @@ public class ItemSettings {
             final String[] split = s.split(":");
             item.enchant(Enchantment.getByName(split[0]), Integer.valueOf(split[1]));
         });
-        return item.build();
+        return item.getItemStack();
     }
 
 }

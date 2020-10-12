@@ -1,13 +1,17 @@
 package centralworks.layouts;
 
-import centralworks.cache.Caches;
-import centralworks.lib.*;
 import centralworks.Main;
-import centralworks.lib.enums.EntityName;
+import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
-import centralworks.core.spawners.models.enums.TaskType;
 import centralworks.core.spawners.cache.SICached;
 import centralworks.core.spawners.cache.TCached;
+import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Configuration;
+import centralworks.lib.FormatTime;
+import centralworks.lib.enums.EntityName;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
@@ -20,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BuySpawnersMenu extends InventoryBuilder {
+public class BuySpawnersMenu extends InventoryMaker {
 
     @SneakyThrows
     public BuySpawnersMenu(Player p) {
-        super(Main.getInstance(), 6, "§8Comprar Geradores");
+        super(6, "§8Comprar Geradores");
         clear();
         setCancellable(true);
         final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);

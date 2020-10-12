@@ -3,41 +3,44 @@ package centralworks.layouts;
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.layouts.settings.RankingMenuS;
 import centralworks.lib.ItemSettings;
 import centralworks.core.spawners.cache.SpawnerRanking;
 import centralworks.core.spawners.models.Spawner;
+import centralworks.lib.inventory.addons.InventorySpawner;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Optional;
 
-public class RankingMenu extends InventoryBuilder {
+public class RankingMenu extends InventorySpawner {
 
     public RankingMenu(Spawner spawner, Player p) {
-        super(Main.getInstance(), 3, "§8Ranking");
+        super( 3, "§8Ranking");
+        setTarget(spawner);
+        setPlayer(p);
+    }
+
+    @Override
+    public void load() {
         final RankingMenuS menu = MenusSettings.get().getRankingMenuSettings();
-        final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+        final SpawnerRanking ranking = SpawnerRanking.get();
         clear();
         setCancellable(true);
 
         setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
-            p.closeInventory();
-            Optional.ofNullable(cache.getIfPresent(spawner.getLocSerialized())).ifPresent(spawner1 -> {
-                if (!spawner1.hasPermission(p.getName())) return;
-                new InfoSpawnerMenu(spawner1, p);
+            getPlayer().closeInventory();
+            ifPresent(spawner1 -> {
+                if (!spawner1.hasPermission(getPlayer().getName())) return;
+                new InfoSpawnerMenu(spawner1, getPlayer()).load();
             });
         }));
 
-        final SpawnerRanking ranking = SpawnerRanking.get();
-
         if (!ranking.isLoaded()) {
             setItem(menu.getUpdating().getItem_slot(), new Item(menu.getUpdating().getAsItem(s -> s)));
-            open(p);
+            open(getPlayer());
             return;
         }
 
@@ -57,7 +60,6 @@ public class RankingMenu extends InventoryBuilder {
             }
         }
 
-
-        open(p);
+        open(getPlayer());
     }
 }

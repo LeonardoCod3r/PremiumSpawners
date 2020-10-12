@@ -1,24 +1,23 @@
 package centralworks.layouts;
 
-import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
-import centralworks.layouts.settings.InfoSpawnerMenuS;
-import centralworks.layouts.settings.MenusSettings;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.core.spawners.models.Spawner;
+import centralworks.layouts.settings.InfoSpawnerMenuS;
+import centralworks.layouts.settings.MenusSettings;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SpawnersMenu extends InventoryBuilder {
+public class SpawnersMenu extends InventoryMaker {
 
     public SpawnersMenu(Player p, int page) {
-        super(Main.getInstance(), 3, "§8Seus geradores");
+        super(3, "§8Seus geradores");
         final InfoSpawnerMenuS mainMenuS = MenusSettings.get().getInfoSpawnerMenuSettings();
         clear();
         setCancellable(true);
@@ -47,7 +46,7 @@ public class SpawnersMenu extends InventoryBuilder {
                             .replace("{entity-type}", spawner.getEntityName())
                             .replace("{stack}", BalanceFormatter.format(spawner.getAmount()))
                             .replace("{location}", "x: " + spawner.getLocation().getBlockX() + " y: " + spawner.getLocation().getBlockY() + " z: " + spawner.getLocation().getBlockZ()))
-                    ).name("§aGerador §f#" + (spawners.indexOf(spawner) + 1)).onClick(event -> new InfoSpawnerMenu(spawner, p)));
+                    ).name("§aGerador §f#" + (spawners.indexOf(spawner) + 1)).onClick(event -> new InfoSpawnerMenu(spawner, p).load()));
                     count++;
                 }
             } else

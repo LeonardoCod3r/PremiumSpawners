@@ -45,11 +45,11 @@ public class SpawnerListeners implements Listener {
             if (user.exists(location)) {
                 e.setCancelled(true);
                 var spawner = user.getSpawner(location);
-                new InfoSpawnerMenu(spawner, p);
+                new InfoSpawnerMenu(spawner, p).load();
             } else {
                 var cache = Caches.getCache(Spawner.class);
                 Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(location).getResult())).ifPresent(spawner -> {
-                    if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p);
+                    if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p).load();
                     else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
                 });
             }

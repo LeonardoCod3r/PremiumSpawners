@@ -8,6 +8,7 @@ import centralworks.hooks.PlaceHolderHook;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.init.ImpulseLoader;
 import centralworks.init.LimitLoader;
+import centralworks.lib.inventory.InventoryController;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;
@@ -75,14 +76,15 @@ public class Application {
                 final ImpulseLoader impulseLoader = ImpulseLoader.get();
                 impulseLoader.setDefaults();
                 impulseLoader.run();
-                if (Main.getInstance().limitSystemIsActive()) {
+                if (plugin.limitSystemIsActive()) {
                     final LimitLoader limitLoader = LimitLoader.get();
                     limitLoader.setDefaults();
                     limitLoader.run();
                     new PlaceHolderHook().register();
                 }
-                Bukkit.getPluginManager().registerEvents(new PlayerListeners(), Main.getInstance());
-                final SimpleCommandMap map = ((CraftServer) Main.getInstance().getServer()).getCommandMap();
+                Bukkit.getPluginManager().registerEvents(new PlayerListeners(), plugin);
+                Bukkit.getPluginManager().registerEvents(InventoryController.getInstance(), plugin);
+                final SimpleCommandMap map = ((CraftServer) plugin.getServer()).getCommandMap();
                 map.register("booster", new BoosterCommand());
                 if (plugin.limitSystemIsActive()) map.register("limit", new LimitCommand());
             }

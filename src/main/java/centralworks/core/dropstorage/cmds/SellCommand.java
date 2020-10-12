@@ -6,9 +6,13 @@ import centralworks.core.dropstorage.cache.LootData;
 import centralworks.core.dropstorage.models.Drop;
 import centralworks.core.dropstorage.models.DropPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
-import centralworks.lib.*;
+import centralworks.lib.ActionBarMessage;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Configuration;
 import centralworks.lib.enums.ItemName;
 import centralworks.lib.enums.Permission;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -55,17 +59,17 @@ public class SellCommand extends BukkitCommand {
     }
 
     public void openSellInventory(Player p, DropStorage dropStorage, Configuration configuration) {
-        final InventoryBuilder inventoryBuilder = new InventoryBuilder(plugin, configuration.getInt("Inventory.sell.rows"), configuration.get("Inventory.sell.name", true));
+        final InventoryMaker inventory = new InventoryMaker(configuration.getInt("Inventory.sell.rows"), configuration.get("Inventory.sell.name", true));
         final List<Integer> slots = new ArrayList<>();
         final LootData cached = LootData.get();
         final Configuration messages = plugin.getMessages();
         final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
         Arrays.asList(configuration.get("Inventory.sell.slotsDropSell", true).split(",")).forEach(s1 -> slots.add(Integer.parseInt(s1)));
-        inventoryBuilder.setCancellable(true);
-        inventoryBuilder.clear();
+        inventory.setCancellable(true);
+        inventory.clear();
         String path = "Inventory.sell.items.playerStats.";
         if (configuration.is(path + "toggle")) {
-            inventoryBuilder.setItem(configuration.getInt(path + "slot"),
+            inventory.setItem(configuration.getInt(path + "slot"),
                     new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
                             .name(configuration.get(path + "name", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
                             .setSkullUrl(configuration.get(path + "skull-url", false))
@@ -78,7 +82,7 @@ public class SellCommand extends BukkitCommand {
         }
         path = "Inventory.sell.items.sellAll.";
         if (configuration.is(path + "toggle")) {
-            inventoryBuilder.setItem(configuration.getInt(path + "slot"),
+            inventory.setItem(configuration.getInt(path + "slot"),
                     new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
                             .name(configuration.get(path + "name", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
                             .setSkullUrl(configuration.get(path + "skull-url", false))
@@ -101,7 +105,7 @@ public class SellCommand extends BukkitCommand {
         }
         path = "Inventory.sell.items.autoSell.";
         if (configuration.is(path + "toggle")) {
-            inventoryBuilder.setItem(configuration.getInt(path + "slot"),
+            inventory.setItem(configuration.getInt(path + "slot"),
                     new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
                             .name(configuration.get(path + "name", true).replace("{playername}", p.getName()))
                             .setSkullUrl(configuration.get(path + "skull-url", false))
@@ -124,8 +128,8 @@ public class SellCommand extends BukkitCommand {
                 final DropPlayer dropPlayer = dropsPlayer.get(count);
                 final Drop drop = cached.get(dropPlayer.getKeyDrop());
                 final List<String> lore = drop.getMenuItem().getItemMeta().getLore();
-                inventoryBuilder.setItem(slots.get(count),
-                        new Item(drop.getMenuItem().build().clone())
+                inventory.setItem(slots.get(count),
+                        new Item(drop.getMenuItem().getItemStack().clone())
                                 .lore(lore.stream().map(s1 -> s1
                                         .replace("{price-sell-unit}", BalanceFormatter.format(drop.getUnitPrice() + (drop.getUnitPrice() * dropStorage.getBonus() / 100)))
                                         .replace("{amount}", BalanceFormatter.format(dropPlayer.getAmount()))
@@ -145,6 +149,6 @@ public class SellCommand extends BukkitCommand {
                                 }));
             }
         }
-        inventoryBuilder.open(p);
+        inventory.open(p);
     }
 }

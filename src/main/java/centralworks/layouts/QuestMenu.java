@@ -1,15 +1,13 @@
 package centralworks.layouts;
 
-import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.lib.Cache;
-import centralworks.lib.Date;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
 import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.quests.models.QuestData;
 import centralworks.core.quests.other.CraftQuest;
 import centralworks.core.quests.other.CraftQuestSettings;
+import centralworks.lib.Date;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,10 +15,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QuestMenu extends InventoryBuilder {
+public class QuestMenu extends InventoryMaker {
 
     public QuestMenu(Player p, CraftQuest cq) {
-        super(Main.getInstance(), 3, cq.getSettings().getName());
+        super(3, cq.getSettings().getName());
         clear();
         setCancellable(true);
         final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);

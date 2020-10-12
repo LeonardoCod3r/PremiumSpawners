@@ -1,12 +1,11 @@
 package centralworks.layouts;
 
-import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.lib.InventoryBuilder;
-import centralworks.lib.Item;
-import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.quests.cache.Quests;
+import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.quests.other.CraftQuest;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import org.bukkit.Material;
@@ -14,10 +13,10 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class QuestsMenu extends InventoryBuilder {
+public class QuestsMenu extends InventoryMaker {
 
     public QuestsMenu(Player p, int page) {
-        super(Main.getInstance(), 6, "§8Missões");
+        super(6, "§8Missões");
         clear();
         setCancellable(true);
         final List<CraftQuest> quests = Quests.get().getList();

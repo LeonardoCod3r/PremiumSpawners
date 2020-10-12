@@ -2,8 +2,8 @@ package centralworks.database.specifications;
 
 import centralworks.Main;
 import centralworks.database.Storable;
-import centralworks.lib.JSONRead;
-import centralworks.lib.JSONWrite;
+import centralworks.lib.json.JSONRead;
+import centralworks.lib.json.JSONWrite;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 

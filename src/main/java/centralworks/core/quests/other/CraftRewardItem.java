@@ -1,6 +1,6 @@
 package centralworks.core.quests.other;
 
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import centralworks.lib.PlayerCommons;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -39,7 +39,7 @@ public class CraftRewardItem implements CraftSliceReward<CraftRewardItem> {
             final String[] split = s.split(":");
             item.enchant(Enchantment.getByName(split[0]), Integer.valueOf(split[1]));
         });
-        return item.build();
+        return item.getItemStack();
     }
 
     @Override

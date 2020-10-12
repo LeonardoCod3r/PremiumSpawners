@@ -4,7 +4,7 @@ import centralworks.Main;
 import centralworks.lib.Configuration;
 import centralworks.lib.enums.EntityName;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Item;
+import centralworks.lib.inventory.Item;
 import centralworks.core.spawners.Settings;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
@@ -44,7 +44,7 @@ public class SpawnerItem implements Cloneable {
                         .replace("{entity-type}", EntityName.valueOf(entityType).getName())
                         .replace("{stack}", BalanceFormatter.format(amountSpawners))
                 ).collect(Collectors.toList())
-        ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).build();
+        ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).getItemStack();
         final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
         final NBTTagCompound tag = copy.getTag();
         final Settings se = Settings.get();

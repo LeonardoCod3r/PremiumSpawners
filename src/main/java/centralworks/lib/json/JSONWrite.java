@@ -1,4 +1,4 @@
-package centralworks.lib;
+package centralworks.lib.json;
 
 import centralworks.Main;
 
