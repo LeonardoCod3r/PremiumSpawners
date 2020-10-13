@@ -30,13 +30,15 @@ public class RankingMenu extends InventorySpawner {
         clear();
         setCancellable(true);
 
-        setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
-            getPlayer().closeInventory();
-            ifPresent(spawner1 -> {
-                if (!spawner1.hasPermission(getPlayer().getName())) return;
-                new InfoSpawnerMenu(spawner1, getPlayer()).load();
-            });
-        }));
+        if (getTarget()!=null) {
+            setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
+                getPlayer().closeInventory();
+                ifPresent(spawner1 -> {
+                    if (!spawner1.hasPermission(getPlayer().getName())) return;
+                    new InfoSpawnerMenu(spawner1, getPlayer()).load();
+                });
+            }));
+        }
 
         if (!ranking.isLoaded()) {
             setItem(menu.getUpdating().getItem_slot(), new Item(menu.getUpdating().getAsItem(s -> s)));

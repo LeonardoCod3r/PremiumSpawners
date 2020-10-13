@@ -58,7 +58,7 @@ public class InfoSpawnerMenu extends InventorySpawner {
             getPlayer().closeInventory();
             ifPresent(spawner1 -> {
                 if (!spawner1.hasPermission(getPlayer().getName())) return;
-                new RankingMenu(spawner1, getPlayer());
+                new RankingMenu(spawner1, getPlayer()).load();
             });
         }));
 

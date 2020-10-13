@@ -16,37 +16,28 @@ import java.util.function.Consumer;
 
 public class InventoryController implements Listener {
 
-    static {
-        instance = new InventoryController(Main.getInstance());
-    }
+    private static InventoryController instance;
 
-    @Getter
-    private static final InventoryController instance;
+    public static InventoryController getInstance() {
+        return instance == null ? instance = new InventoryController() : instance;
+    }
 
     @Getter
     private final HashMap<InventoryMaker, Consumer<InventoryClickEvent>> consumersOnClick = Maps.newHashMap();
     @Getter
     private final HashMap<InventoryMaker, Consumer<InventoryCloseEvent>> consumersOnClose = Maps.newHashMap();
 
-    private final Main plugin;
-
-    private InventoryController(Main main) {
-        plugin = main;
-    }
-
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        consumersOnClick.forEach((inventoryMaker, consumer) -> {
+        for (InventoryMaker inventoryMaker : consumersOnClick.keySet()) {
+            final Consumer<InventoryClickEvent> consumer = consumersOnClick.get(inventoryMaker);
             final Inventory inventory = inventoryMaker.getInventory();
-            if (consumer != null) {
-                if (event.getClickedInventory() == null) return;
-                if (!event.getWhoClicked().getOpenInventory().getTopInventory().equals(inventory)) return;
-                if (event.getClickedInventory().equals(event.getWhoClicked().getInventory())) {
-                    consumer.accept(event);
-                }
-            }
             if (inventory == null) return;
             if (inventory.equals(event.getInventory())) {
+                if (consumer != null) {
+                    if (event.getClickedInventory() != null && event.getClickedInventory().equals(event.getWhoClicked().getInventory()))
+                        consumer.accept(event);
+                }
                 if (inventoryMaker.isCancellable()) event.setCancelled(true);
                 if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR)) return;
                 final Item item = inventoryMaker.getItems().get(event.getRawSlot());
@@ -54,7 +45,7 @@ public class InventoryController implements Listener {
                 if (item.isCancellable()) event.setCancelled(true);
                 if (item.getClickEventConsumer() != null) item.getClickEventConsumer().accept(event);
             }
-        });
+        }
     }
 
     @EventHandler
@@ -64,10 +55,12 @@ public class InventoryController implements Listener {
             if (consumer != null) consumer.accept(event);
             if (inventoryMaker.isUpgradeable())
                 inventoryMaker.getSchID().forEach(integer -> Bukkit.getScheduler().cancelTask(integer));
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                getConsumersOnClick().remove(inventoryMaker);
-                getConsumersOnClose().remove(inventoryMaker);
-            }, 5L);
+            if (event.getInventory().getViewers().size() == 1) {
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                    getConsumersOnClick().remove(inventoryMaker);
+                    getConsumersOnClose().remove(inventoryMaker);
+                }, 5L);
+            }
         });
     }
 

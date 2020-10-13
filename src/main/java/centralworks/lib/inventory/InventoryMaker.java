@@ -123,6 +123,9 @@ public class InventoryMaker {
 
     public void open(Player player) {
         if (this.inventory == null) return;
+        final InventoryController controller = InventoryController.getInstance();
+        if (!controller.getConsumersOnClick().containsKey(this)) controller.getConsumersOnClick().put(this, null);
+        if (!controller.getConsumersOnClose().containsKey(this)) controller.getConsumersOnClose().put(this, null);
         organize();
         player.openInventory(this.inventory);
     }
@@ -132,3 +135,6 @@ public class InventoryMaker {
     }
 
 }
+
+
+
