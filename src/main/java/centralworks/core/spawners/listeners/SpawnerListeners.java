@@ -9,10 +9,8 @@ import centralworks.core.spawners.models.SpawnerBuilder;
 import centralworks.core.spawners.models.SpawnerItem;
 import centralworks.core.spawners.utils.FilteringFunctions;
 import centralworks.layouts.InfoSpawnerMenu;
-import centralworks.lib.Serialize;
-import com.google.common.cache.LoadingCache;
+import centralworks.lib.Utils;
 import lombok.var;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,7 +46,7 @@ public class SpawnerListeners implements Listener {
                 new InfoSpawnerMenu(spawner, p).load();
             } else {
                 var cache = Caches.getCache(Spawner.class);
-                Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(location).getResult())).ifPresent(spawner -> {
+                Optional.ofNullable(cache.getIfPresent(Utils.locToString(location))).ifPresent(spawner -> {
                     if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p).load();
                     else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
                 });
@@ -117,7 +115,7 @@ public class SpawnerListeners implements Listener {
             p.sendMessage(messages.getMessage("spawnerRemoved"));
             cached.add(p.getName());
         } else {
-            Optional.ofNullable(Caches.getCache(Spawner.class).getUnchecked(new Serialize<Location, String>(location).getResult())).ifPresent(spawner -> {
+            Optional.ofNullable(Caches.getCache(Spawner.class).getUnchecked(Utils.locToString(location))).ifPresent(spawner -> {
                 e.setCancelled(true);
                 p.sendMessage(messages.getMessage("isNotOwner"));
             });

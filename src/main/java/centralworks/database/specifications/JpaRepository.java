@@ -18,18 +18,19 @@ import java.util.stream.Collectors;
 
 public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T> {
 
-    static {
-        final Injector injector = Main.getInstance().getInjector();;
-        session = injector.getInstance(Session.class);
-        em = injector.getInstance(EntityManager.class);
-    }
-
     @Setter
     @Getter
     private static Session session;
     @Setter
     @Getter
     private static EntityManager em;
+
+    static {
+        final Injector injector = Main.getInstance().getInjector();
+        ;
+        session = injector.getInstance(Session.class);
+        em = injector.getInstance(EntityManager.class);
+    }
 
     @Getter
     private final Class<O> target;
@@ -55,7 +56,7 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
             final O obj = em.find(target, id);
             em.getTransaction().commit();
             return Optional.ofNullable(obj);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
             if (em.getTransaction().isActive()) em.getTransaction().commit();
         }
         return Optional.empty();

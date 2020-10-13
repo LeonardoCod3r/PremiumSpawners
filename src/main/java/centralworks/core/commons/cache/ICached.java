@@ -1,7 +1,7 @@
 package centralworks.core.commons.cache;
 
-import centralworks.lib.Cache;
 import centralworks.core.commons.models.Impulse;
+import centralworks.lib.Cache;
 
 public class ICached extends Cache<Impulse> {
 

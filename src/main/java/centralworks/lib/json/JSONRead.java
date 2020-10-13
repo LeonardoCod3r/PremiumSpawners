@@ -9,8 +9,8 @@ import java.io.IOException;
 public class JSONRead<T> {
 
     private final Class<T> result;
-    private T object;
     private final String fileName;
+    private T object;
 
     public JSONRead(Class<T> result, String fileName) {
         this.result = result;

@@ -1,16 +1,19 @@
 package centralworks.core.quests.models;
 
-import centralworks.repositories.json.FastUserQuestsRepository;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
-import centralworks.repositories.mysql.JpaUserQuestsRepository;
-import centralworks.database.Storable;
 import centralworks.core.quests.cache.Quests;
 import centralworks.core.quests.other.CraftQuest;
 import centralworks.core.quests.other.CraftQuestSettings;
+import centralworks.database.Storable;
+import centralworks.database.specifications.BindRepository;
+import centralworks.database.specifications.Repository;
+import centralworks.repositories.json.FastUserQuestsRepository;
+import centralworks.repositories.mysql.JpaUserQuestsRepository;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -46,19 +49,19 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
     @Expose
     private List<QuestData> compounds = Lists.newLinkedList();
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<PlayerQuests, String> getRepository() {
-        final BindRepository<PlayerQuests, String> bindRepository = new BindRepository<>(PlayerQuests.class, JpaUserQuestsRepository.require(), FastUserQuestsRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
     public PlayerQuests(OfflinePlayer player) {
         this.name = player.getName();
     }
 
     public PlayerQuests(String name) {
         this.name = name;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<PlayerQuests, String> getRepository() {
+        final BindRepository<PlayerQuests, String> bindRepository = new BindRepository<>(PlayerQuests.class, JpaUserQuestsRepository.require(), FastUserQuestsRepository.require());
+        return bindRepository.getRelativeRepository();
     }
 
     @Override

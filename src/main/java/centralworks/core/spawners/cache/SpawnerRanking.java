@@ -1,9 +1,9 @@
 package centralworks.core.spawners.cache;
 
 import centralworks.Main;
-import centralworks.repositories.mysql.JpaUserRepository;
-import centralworks.database.SyncRequests;
 import centralworks.core.commons.models.UserDetails;
+import centralworks.database.SyncRequests;
+import centralworks.repositories.mysql.JpaUserRepository;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

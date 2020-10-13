@@ -2,17 +2,20 @@ package centralworks.core.commons.models;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.repositories.json.FastUserRepository;
+import centralworks.core.spawners.models.Spawner;
+import centralworks.database.Storable;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
+import centralworks.lib.Utils;
+import centralworks.repositories.json.FastUserRepository;
 import centralworks.repositories.mysql.JpaUserRepository;
-import centralworks.database.Storable;
-import centralworks.lib.Serialize;
-import centralworks.core.spawners.models.Spawner;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -50,12 +53,6 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     @Setter
     @Expose
     private Double sellLimit = 1.0;
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<UserDetails, String> getRepository() {
-        final BindRepository<UserDetails, String> bindRepository = new BindRepository<>(UserDetails.class, JpaUserRepository.require(), FastUserRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
 
     public UserDetails(OfflinePlayer p) {
         this.user = p.getName();
@@ -63,6 +60,13 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
 
     public UserDetails(String user) {
         this.user = user;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<UserDetails, String> getRepository() {
+        final BindRepository<UserDetails, String> bindRepository = new BindRepository<>(UserDetails.class, JpaUserRepository.require(), FastUserRepository.require());
+        return bindRepository.getRelativeRepository();
     }
 
     @Override
@@ -117,19 +121,19 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     }
 
     public void addSpawnerLocation(Location location) {
-        locationsSerialized.add(new Serialize<Location, String>(location).getResult());
+        locationsSerialized.add(Utils.locToString(location));
     }
 
     public Spawner getSpawner(Location location) {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-        return cache.getUnchecked(locationsSerialized.stream().filter(location1 -> location1.equals(new Serialize<Location, String>(location).getResult())).findFirst().get());
+        return cache.getUnchecked(locationsSerialized.stream().filter(location1 -> location1.equals(Utils.locToString(location))).findFirst().get());
     }
 
     public boolean exists(Location location) {
-        return locationsSerialized.stream().map(s -> new Serialize<String, Location>(s).getResult()).anyMatch(location1 -> location1.equals(location));
+        return locationsSerialized.stream().map(Utils::stringToLoc).anyMatch(location1 -> location1.equals(location));
     }
 
     public void deleteSpawnerLocation(Location location) {
-        locationsSerialized.remove(new Serialize<Location, String>(location).getResult());
+        locationsSerialized.remove(Utils.locToString(location));
     }
 }

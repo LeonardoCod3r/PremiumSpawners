@@ -5,11 +5,10 @@ import centralworks.core.quests.other.CraftQuest;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
 import lombok.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;

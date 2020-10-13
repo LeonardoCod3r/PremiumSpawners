@@ -1,12 +1,11 @@
 package centralworks.hooks;
 
 import centralworks.cache.Caches;
-import centralworks.lib.BalanceFormatter;
 import centralworks.core.commons.models.UserDetails;
+import centralworks.lib.BalanceFormatter;
 import com.google.common.cache.LoadingCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.jetbrains.annotations.NotNull;
 
 public class PlaceHolderHook extends PlaceholderExpansion {
 

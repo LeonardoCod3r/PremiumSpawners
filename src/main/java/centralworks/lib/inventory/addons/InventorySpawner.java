@@ -14,13 +14,13 @@ import java.util.function.Consumer;
 public abstract class InventorySpawner extends InventoryMaker {
 
     @Getter
+    private final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
+    @Getter
     @Setter
     private Spawner target;
     @Getter
     @Setter
     private Player player;
-    @Getter
-    private final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
 
     public InventorySpawner() {
     }
@@ -35,15 +35,11 @@ public abstract class InventorySpawner extends InventoryMaker {
 
     public Spawner ifPresent(Consumer<Spawner> consumer) {
         final Spawner spawner = takeACurrentInstance();
-        if (consumer!=null && Optional.ofNullable(spawner).isPresent()) consumer.accept(spawner);
+        if (consumer != null && Optional.ofNullable(spawner).isPresent()) consumer.accept(spawner);
         return spawner;
     }
 
     public abstract void load();
-
-
-
-
 
 
 }

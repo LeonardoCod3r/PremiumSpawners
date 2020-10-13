@@ -28,18 +28,6 @@ public class SyncRequests<O extends Storable<O>, T> {
     @Setter
     private O target;
 
-    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository, A object) {
-        return new SyncRequests<>(repository, object);
-    }
-
-    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository) {
-        return new SyncRequests<>(repository);
-    }
-
-    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository, String id) {
-        return new SyncRequests<>(repository, id);
-    }
-
     public SyncRequests(Repository<O, T> repository) {
         this.classFile = repository.getTarget();
         this.repository = repository;
@@ -56,6 +44,18 @@ public class SyncRequests<O extends Storable<O>, T> {
         this.repository = repository;
         this.target = target;
         this.identifier = (String) target.getEntityIdentifier();
+    }
+
+    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository, A object) {
+        return new SyncRequests<>(repository, object);
+    }
+
+    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository) {
+        return new SyncRequests<>(repository);
+    }
+
+    public static <A extends Storable<A>, B> SyncRequests<A, B> supply(Repository<A, B> repository, String id) {
+        return new SyncRequests<>(repository, id);
     }
 
     public O persist() {

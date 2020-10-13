@@ -5,9 +5,9 @@ import centralworks.core.commons.cmds.BoosterCommand;
 import centralworks.core.commons.cmds.LimitCommand;
 import centralworks.core.commons.listeners.PlayerListeners;
 import centralworks.hooks.PlaceHolderHook;
-import centralworks.layouts.settings.MenusSettings;
 import centralworks.init.ImpulseLoader;
 import centralworks.init.LimitLoader;
+import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.inventory.InventoryController;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
@@ -31,36 +31,6 @@ public class Application {
     @Getter
     @Setter
     private static Function<LinkedList<PluginSystem>, LinkedList<PluginSystem>> orderToTerminate;
-
-    public static void registerPluginSystem(PluginSystem... pluginSystem) {
-        final LinkedList<PluginSystem> list = Lists.newLinkedList(CACHE.get());
-        list.addAll(Lists.newArrayList(pluginSystem));
-        CACHE.set(list);
-    }
-
-    public static void startSystems() {
-        LinkedList<PluginSystem> systems = CACHE.get();
-        if (orderToStart != null) systems = orderToStart.apply(systems);
-        systems.stream().filter(PluginSystem::canRegister).forEach(pluginSystem -> pluginSystem.start(Main.getInstance()));
-    }
-
-    public static void terminateSystems() {
-        LinkedList<PluginSystem> systems = CACHE.get();
-        if (orderToTerminate != null) systems = orderToTerminate.apply(systems);
-        systems.stream().filter(PluginSystem::canRegister).forEach(pluginSystem -> pluginSystem.terminate(Main.getInstance()));
-    }
-
-    public static void startSystem(String id) {
-        getPluginSystem(id).start(Main.getInstance());
-    }
-
-    public static void stopSystem(String id) {
-        getPluginSystem(id).terminate(Main.getInstance());
-    }
-
-    private static PluginSystem getPluginSystem(String id) {
-        return CACHE.get().stream().filter(pluginSystem -> pluginSystem.getId().equals(id)).findFirst().orElse(null);
-    }
 
     static {
         CACHE.set(Lists.newLinkedList());
@@ -115,6 +85,36 @@ public class Application {
         }
         //noinspection ResultOfMethodCallIgnored
         Caches.getCaches();
+    }
+
+    public static void registerPluginSystem(PluginSystem... pluginSystem) {
+        final LinkedList<PluginSystem> list = Lists.newLinkedList(CACHE.get());
+        list.addAll(Lists.newArrayList(pluginSystem));
+        CACHE.set(list);
+    }
+
+    public static void startSystems() {
+        LinkedList<PluginSystem> systems = CACHE.get();
+        if (orderToStart != null) systems = orderToStart.apply(systems);
+        systems.stream().filter(PluginSystem::canRegister).forEach(pluginSystem -> pluginSystem.start(Main.getInstance()));
+    }
+
+    public static void terminateSystems() {
+        LinkedList<PluginSystem> systems = CACHE.get();
+        if (orderToTerminate != null) systems = orderToTerminate.apply(systems);
+        systems.stream().filter(PluginSystem::canRegister).forEach(pluginSystem -> pluginSystem.terminate(Main.getInstance()));
+    }
+
+    public static void startSystem(String id) {
+        getPluginSystem(id).start(Main.getInstance());
+    }
+
+    public static void stopSystem(String id) {
+        getPluginSystem(id).terminate(Main.getInstance());
+    }
+
+    private static PluginSystem getPluginSystem(String id) {
+        return CACHE.get().stream().filter(pluginSystem -> pluginSystem.getId().equals(id)).findFirst().orElse(null);
     }
 
 }

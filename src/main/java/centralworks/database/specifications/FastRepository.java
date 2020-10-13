@@ -28,14 +28,14 @@ public class FastRepository<O extends Storable<O>, T> implements Repository<O, T
 
     @Override
     public O commit(O obj) {
-        final String id = (String)obj.getEntityIdentifier();
+        final String id = (String) obj.getEntityIdentifier();
         new JSONWrite<>(obj, id);
         return obj;
     }
 
     @Override
     public Optional<O> read(T id) {
-        return Optional.ofNullable(new JSONRead<>(getTarget(), (String)id).getObject());
+        return Optional.ofNullable(new JSONRead<>(getTarget(), (String) id).getObject());
     }
 
     @Override

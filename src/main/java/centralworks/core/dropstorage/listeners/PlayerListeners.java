@@ -10,7 +10,6 @@ import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.commons.models.enums.LimitType;
 import centralworks.core.dropstorage.models.BoosterPlayer;
-import centralworks.core.dropstorage.models.DropPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.models.Spawner;
@@ -30,7 +29,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerListeners implements Listener {

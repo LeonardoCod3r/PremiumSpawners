@@ -1,7 +1,7 @@
 package centralworks.core.spawners.cache;
 
-import centralworks.lib.Cache;
 import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.lib.Cache;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

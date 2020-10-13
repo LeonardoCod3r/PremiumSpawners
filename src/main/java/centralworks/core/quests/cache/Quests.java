@@ -1,7 +1,7 @@
 package centralworks.core.quests.cache;
 
-import centralworks.lib.Cache;
 import centralworks.core.quests.other.CraftQuest;
+import centralworks.lib.Cache;
 
 public class Quests extends Cache<CraftQuest> {
 

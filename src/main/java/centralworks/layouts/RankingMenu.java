@@ -1,16 +1,13 @@
 package centralworks.layouts;
 
-import centralworks.Main;
-import centralworks.cache.Caches;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.inventory.Item;
-import centralworks.layouts.settings.MenusSettings;
-import centralworks.layouts.settings.RankingMenuS;
-import centralworks.lib.ItemSettings;
 import centralworks.core.spawners.cache.SpawnerRanking;
 import centralworks.core.spawners.models.Spawner;
+import centralworks.layouts.settings.MenusSettings;
+import centralworks.layouts.settings.RankingMenuS;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.ItemSettings;
+import centralworks.lib.inventory.Item;
 import centralworks.lib.inventory.addons.InventorySpawner;
-import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
 public class RankingMenu extends InventorySpawner {
 
     public RankingMenu(Spawner spawner, Player p) {
-        super( 3, "§8Ranking");
+        super(3, "§8Ranking");
         setTarget(spawner);
         setPlayer(p);
     }
@@ -30,7 +27,7 @@ public class RankingMenu extends InventorySpawner {
         clear();
         setCancellable(true);
 
-        if (getTarget()!=null) {
+        if (getTarget() != null) {
             setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
                 getPlayer().closeInventory();
                 ifPresent(spawner1 -> {

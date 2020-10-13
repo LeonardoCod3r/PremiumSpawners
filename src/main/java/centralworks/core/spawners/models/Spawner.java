@@ -2,24 +2,27 @@ package centralworks.core.spawners.models;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.repositories.json.FastSpawnerRepository;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
-import centralworks.repositories.mysql.JpaSpawnerRepository;
-import centralworks.database.Storable;
-import centralworks.lib.Configuration;
-import centralworks.lib.enums.EntityName;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Serialize;
-import centralworks.hooks.DynmapHook;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.enums.ImpulseType;
+import centralworks.database.Storable;
+import centralworks.database.specifications.BindRepository;
+import centralworks.database.specifications.Repository;
+import centralworks.hooks.DynmapHook;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Configuration;
+import centralworks.lib.Utils;
+import centralworks.lib.enums.EntityName;
+import centralworks.repositories.json.FastSpawnerRepository;
+import centralworks.repositories.mysql.JpaSpawnerRepository;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -78,19 +81,19 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Expose
     private Long hologramId;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<Spawner, String> getRepository() {
-        final BindRepository<Spawner, String> bindRepository = new BindRepository<>(Spawner.class, JpaSpawnerRepository.require(), FastSpawnerRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
     public Spawner(String locSerialized) {
         this.locSerialized = locSerialized;
     }
 
     public Spawner(Location location) {
         setLocation(location);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<Spawner, String> getRepository() {
+        final BindRepository<Spawner, String> bindRepository = new BindRepository<>(Spawner.class, JpaSpawnerRepository.require(), FastSpawnerRepository.require());
+        return bindRepository.getRelativeRepository();
     }
 
     @Override
@@ -139,13 +142,11 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public Location getLocation() {
-        final Serialize<String, Location> se = new Serialize<>(this.locSerialized);
-        return se.getResult();
+        return Utils.stringToLoc(getLocSerialized());
     }
 
     public void setLocation(Location location) {
-        final Serialize<Location, String> se = new Serialize<>(location.clone());
-        this.locSerialized = se.getResult();
+        this.locSerialized = Utils.locToString(location);
     }
 
     public EntityType getEntityType() {
@@ -232,7 +233,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
             spawnerBlock.update();
             updateHologram();
             impulsesForceRun();
-            if (callback!=null) callback.accept(this);
+            if (callback != null) callback.accept(this);
             final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
             dynmapHook.view(this);
         });

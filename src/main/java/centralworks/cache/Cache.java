@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 public interface Cache<O extends Storable<O>> {
 
     void create();
+
     LoadingCache<String, O> getCache();
 
 

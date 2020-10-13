@@ -25,13 +25,12 @@ import java.util.Properties;
 
 public class ServiceModule extends AbstractModule {
 
-    static {
-        Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
-    }
-
     private static final ThreadLocal<EntityManager> ENTITY_MANAGER_CACHE = new ThreadLocal<>();
     private static final ThreadLocal<Session> SESSION_CACHE = new ThreadLocal<>();
 
+    static {
+        Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
+    }
 
     @Override
     protected void configure() {
@@ -61,7 +60,7 @@ public class ServiceModule extends AbstractModule {
     private void defineProps(Properties settings) {
         final centralworks.lib.Configuration data = Main.getInstance().getData();
         settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-        settings.put(Environment.URL, "jdbc:mysql://"+ data.get("MySQL.Host", false) + ":" + data.get("MySQL.Port", false) +"/"+data.get("MySQL.Database", false)+"?useSSL=false&useTimezone=true&serverTimezone=UTC");
+        settings.put(Environment.URL, "jdbc:mysql://" + data.get("MySQL.Host", false) + ":" + data.get("MySQL.Port", false) + "/" + data.get("MySQL.Database", false) + "?useSSL=false&useTimezone=true&serverTimezone=UTC");
         settings.put(Environment.USER, data.get("MySQL.User", false));
         settings.put(Environment.PASS, data.get("MySQL.Password", false));
         settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");

@@ -23,11 +23,6 @@ public class Caches {
     @Getter
     private static final HashMap<Class<?>, AbstractCache<?>> caches;
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Storable<T>> LoadingCache<String, T> getCache(Class<T> clazz) {
-        return (LoadingCache<String, T>) caches.get(clazz).getCache();
-    }
-
     static {
         caches = Maps.newHashMap();
 
@@ -181,6 +176,11 @@ public class Caches {
         });
 
         caches.values().forEach(Cache::create);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Storable<T>> LoadingCache<String, T> getCache(Class<T> clazz) {
+        return (LoadingCache<String, T>) caches.get(clazz).getCache();
     }
 
 }

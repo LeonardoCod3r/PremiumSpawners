@@ -3,14 +3,13 @@ package centralworks.core.stackmobs.listeners;
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.enums.ImpulseType;
+import centralworks.core.spawners.models.Spawner;
 import centralworks.core.stackmobs.models.EntityStacked;
 import centralworks.lib.Configuration;
-import centralworks.core.spawners.models.Spawner;
-import centralworks.lib.Serialize;
+import centralworks.lib.Utils;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtinjector.NBTInjector;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,7 +47,7 @@ public class EntityListeners implements Listener {
         if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
             final EntityStacked entityStacked = new EntityStacked(entity).noAI();
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-            Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(e.getSpawner().getLocation()).getResult()))
+            Optional.ofNullable(cache.getIfPresent(Utils.locToString(e.getSpawner().getLocation())))
                     .ifPresent(spawner -> entityStacked.setStack(spawner.getAmount() * spawner.getMultiplierOf(ImpulseType.GENERATION)));
             for (Entity nearbyEntity : entity.getNearbyEntities(entities.getDouble("Settings.area.x"), entities.getDouble("Settings.area.y"), entities.getDouble("Settings.area.z"))) {
                 if (!nearbyEntity.hasMetadata("NPC") && nearbyEntity instanceof Animals || nearbyEntity instanceof Monster || indeterminate.contains(nearbyEntity.getType()))

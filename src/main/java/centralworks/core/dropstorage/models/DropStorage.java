@@ -2,14 +2,14 @@ package centralworks.core.dropstorage.models;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.repositories.json.FastDropStorageRepository;
-import centralworks.repositories.mysql.JpaDropStorageRepository;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
-import centralworks.database.Storable;
+import centralworks.core.commons.models.UserDetails;
 import centralworks.core.dropstorage.cache.BonusRegistered;
 import centralworks.core.dropstorage.cache.LootData;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.database.Storable;
+import centralworks.database.specifications.BindRepository;
+import centralworks.database.specifications.Repository;
+import centralworks.repositories.json.FastDropStorageRepository;
+import centralworks.repositories.mysql.JpaDropStorageRepository;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
@@ -71,19 +71,19 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Expose
     private List<String> friends = Lists.newArrayList();
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<DropStorage, String> getRepository() {
-        final BindRepository<DropStorage, String> bindRepository = new BindRepository<>(DropStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
     public DropStorage(OfflinePlayer p) {
         this.owner = p.getName();
     }
 
     public DropStorage(String owner) {
         this.owner = owner;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Repository<DropStorage, String> getRepository() {
+        final BindRepository<DropStorage, String> bindRepository = new BindRepository<>(DropStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
+        return bindRepository.getRelativeRepository();
     }
 
     @Override

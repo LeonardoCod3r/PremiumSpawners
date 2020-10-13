@@ -1,10 +1,10 @@
 package centralworks.core.stackmobs.models;
 
 import centralworks.Main;
+import centralworks.core.spawners.Settings;
+import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
 import centralworks.lib.enums.EntityName;
-import centralworks.lib.BalanceFormatter;
-import centralworks.core.spawners.Settings;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTEntity;
 import de.tr7zw.nbtinjector.NBTInjector;

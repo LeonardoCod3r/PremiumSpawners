@@ -17,12 +17,11 @@ import centralworks.core.spawners.models.enums.TaskType;
 import centralworks.hooks.EconomyContext;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
-import centralworks.lib.Serialize;
+import centralworks.lib.Utils;
 import centralworks.lib.enums.PluginSystemType;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -59,7 +58,7 @@ public class PlayerListeners implements Listener {
             e.setCancelled(true);
             if (type == ImpulseType.DROPS) return;
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-            Optional.ofNullable(cache.getIfPresent(new Serialize<Location, String>(block.getLocation()).getResult())).ifPresent(spawner -> {
+            Optional.ofNullable(cache.getIfPresent(Utils.locToString(block.getLocation()))).ifPresent(spawner -> {
                 if (!spawner.isOwner(p.getName())) {
                     p.sendMessage(messages.getMessage("onlyActiveBooster"));
                     return;

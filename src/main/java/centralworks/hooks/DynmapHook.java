@@ -1,7 +1,7 @@
 package centralworks.hooks;
 
-import centralworks.lib.BalanceFormatter;
 import centralworks.core.spawners.models.Spawner;
+import centralworks.lib.BalanceFormatter;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

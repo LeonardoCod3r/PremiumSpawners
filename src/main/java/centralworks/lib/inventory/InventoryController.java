@@ -17,15 +17,14 @@ import java.util.function.Consumer;
 public class InventoryController implements Listener {
 
     private static InventoryController instance;
-
-    public static InventoryController getInstance() {
-        return instance == null ? instance = new InventoryController() : instance;
-    }
-
     @Getter
     private final HashMap<InventoryMaker, Consumer<InventoryClickEvent>> consumersOnClick = Maps.newHashMap();
     @Getter
     private final HashMap<InventoryMaker, Consumer<InventoryCloseEvent>> consumersOnClose = Maps.newHashMap();
+
+    public static InventoryController getInstance() {
+        return instance == null ? instance = new InventoryController() : instance;
+    }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {

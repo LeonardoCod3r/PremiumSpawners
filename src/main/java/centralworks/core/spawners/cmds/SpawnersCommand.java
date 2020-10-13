@@ -1,17 +1,16 @@
 package centralworks.core.spawners.cmds;
 
 import centralworks.Main;
-import centralworks.lib.Configuration;
-import centralworks.lib.enums.EntityName;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.enums.Permission;
+import centralworks.core.spawners.cache.SICached;
+import centralworks.core.spawners.models.SpawnerItem;
 import centralworks.layouts.BuySpawnersMenu;
 import centralworks.layouts.MainMenu;
 import centralworks.layouts.SpawnersMenu;
-import centralworks.core.spawners.models.SpawnerItem;
-import centralworks.core.spawners.cache.SICached;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Configuration;
+import centralworks.lib.enums.EntityName;
+import centralworks.lib.enums.Permission;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
