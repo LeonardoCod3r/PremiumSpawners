@@ -34,13 +34,13 @@ public class EntityStacked {
 
     public void setStack(Double stack) {
         this.stack = stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.get().getNBT_TAG_ENTITY_AMOUNT(), getStack());
+        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
     public void addStack(Double stack) {
         this.stack += stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.get().getNBT_TAG_ENTITY_AMOUNT(), getStack());
+        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
@@ -66,15 +66,14 @@ public class EntityStacked {
 
     public void removeStack(Double stack) {
         this.stack -= stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.get().getNBT_TAG_ENTITY_AMOUNT(), getStack());
+        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
     public EntityStacked apply() {
         setEntity(NBTInjector.patchEntity(entity));
-        final Settings se = Settings.get();
         final NBTCompound data = NBTInjector.getNbtData(entity);
-        if (data.hasKey(se.getNBT_TAG_ENTITY_AMOUNT())) this.stack = data.getDouble(se.getNBT_TAG_ENTITY_AMOUNT());
+        if (data.hasKey(Settings.NBT_TAG_ENTITY_AMOUNT)) this.stack = data.getDouble(Settings.NBT_TAG_ENTITY_AMOUNT);
         else this.stack = 1.0;
         return this;
     }

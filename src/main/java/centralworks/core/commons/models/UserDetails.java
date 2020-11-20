@@ -52,6 +52,10 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     @Getter
     @Setter
     @Expose
+    private Long registeredIn = System.currentTimeMillis();
+    @Getter
+    @Setter
+    @Expose
     private Double sellLimit = 1.0;
 
     public UserDetails(OfflinePlayer p) {

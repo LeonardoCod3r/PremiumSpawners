@@ -47,9 +47,8 @@ public class SpawnerItem implements Cloneable {
         ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).getItemStack();
         final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
         final NBTTagCompound tag = copy.getTag();
-        final Settings se = Settings.get();
-        tag.setDouble(se.getNBT_TAG_SPAWNER_AMOUNT(), amountSpawners);
-        tag.setString(se.getNBT_TAG_ENTITY_TYPE(), entityType.toString());
+        tag.setDouble(Settings.NBT_TAG_SPAWNER_AMOUNT, amountSpawners);
+        tag.setString(Settings.NBT_TAG_ENTITY_TYPE, entityType.toString());
         copy.setTag(tag);
         return CraftItemStack.asBukkitCopy(copy);
     }
@@ -134,7 +133,7 @@ public class SpawnerItem implements Cloneable {
 
     public boolean isSpawnerItem(ItemStack itemStack) {
         try {
-            return CraftItemStack.asNMSCopy(itemStack).getTag().hasKey(Settings.get().getNBT_TAG_ENTITY_TYPE());
+            return CraftItemStack.asNMSCopy(itemStack).getTag().hasKey(Settings.NBT_TAG_ENTITY_TYPE);
         } catch (Exception e) {
             return false;
         }
@@ -193,7 +192,6 @@ public class SpawnerItem implements Cloneable {
 
     public SpawnerItem parse(ItemStack itemStack) {
         try {
-            final Settings se = Settings.get();
             final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
             final NBTTagCompound nbt = copy.getTag();
             setId(itemStack.getTypeId());
@@ -206,8 +204,8 @@ public class SpawnerItem implements Cloneable {
             setName(itemStack.getItemMeta().getDisplayName());
             setLore(itemStack.getItemMeta().getLore());
             setAmountItem(itemStack.getAmount());
-            setAmountSpawners(nbt.getDouble(se.getNBT_TAG_SPAWNER_AMOUNT()));
-            setEntityType(EntityType.valueOf(nbt.getString(se.getNBT_TAG_ENTITY_TYPE())));
+            setAmountSpawners(nbt.getDouble(Settings.NBT_TAG_SPAWNER_AMOUNT));
+            setEntityType(EntityType.valueOf(nbt.getString(Settings.NBT_TAG_ENTITY_TYPE)));
         } catch (Exception ignored) {
         }
         return this;

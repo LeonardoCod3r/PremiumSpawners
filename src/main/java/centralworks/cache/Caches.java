@@ -77,7 +77,7 @@ public class Caches {
                     @Override
                     public void onRemoval(RemovalNotification<String, UserDetails> notification) {
                         final RemovalCause cause = notification.getCause();
-                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE).contains(cause)) {
+                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE, RemovalCause.EXPLICIT).contains(cause)) {
                             if (notification.getValue() != null) notification.getValue().query().commit();
                         }
                     }
@@ -114,7 +114,7 @@ public class Caches {
                     @Override
                     public void onRemoval(RemovalNotification<String, DropStorage> notification) {
                         final RemovalCause cause = notification.getCause();
-                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE).contains(cause)) {
+                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE, RemovalCause.EXPLICIT).contains(cause)) {
                             if (notification.getValue() != null) notification.getValue().query().commit();
                         }
                     }
@@ -151,7 +151,7 @@ public class Caches {
                     @Override
                     public void onRemoval(RemovalNotification<String, PlayerQuests> notification) {
                         final RemovalCause cause = notification.getCause();
-                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE).contains(cause)) {
+                        if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE, RemovalCause.EXPLICIT).contains(cause)) {
                             if (notification.getValue() != null) notification.getValue().query().commit();
                         }
                     }

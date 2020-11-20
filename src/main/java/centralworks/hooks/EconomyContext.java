@@ -19,7 +19,7 @@ public class EconomyContext {
 
     static {
         final net.milkbowl.vault.economy.Economy eco = Main.getInstance().getVaultAPIEconomy();
-        setContexts(Lists.newArrayList(new Context(Lists.newArrayList(PluginSystemType.DROPSTORAGE, PluginSystemType.QUESTS, PluginSystemType.SPAWNERS_BUY),
+        setContexts(Lists.newArrayList(new Context(Lists.newArrayList(PluginSystemType.DROPSTORAGE, PluginSystemType.SPAWNERS_STATISTICS, PluginSystemType.QUESTS, PluginSystemType.SPAWNERS_BUY),
                 new Economy() {
                     @Override
                     public void addMoney(String user, Double value) {

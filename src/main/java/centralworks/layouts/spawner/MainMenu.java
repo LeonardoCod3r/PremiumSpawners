@@ -1,4 +1,4 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.layouts.settings.MainMenuS;
 import centralworks.layouts.settings.MenusSettings;

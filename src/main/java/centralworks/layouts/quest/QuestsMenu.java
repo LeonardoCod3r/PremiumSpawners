@@ -1,4 +1,4 @@
-package centralworks.layouts;
+package centralworks.layouts.quest;
 
 import centralworks.cache.Caches;
 import centralworks.core.quests.cache.Quests;

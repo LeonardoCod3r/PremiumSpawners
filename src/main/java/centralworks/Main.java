@@ -9,6 +9,7 @@ import centralworks.init.LimitLoader;
 import centralworks.init.QuestLoader;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Settings;
 import centralworks.lib.Configuration;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;

@@ -1,29 +1,26 @@
 package centralworks.core.spawners;
 
-import lombok.Data;
-
-@Data
 public class Settings {
 
-    private static Settings me;
-    private String NBT_TAG_SPAWNER_AMOUNT;
-    private String NBT_TAG_ENTITY_TYPE;
-    private String NBT_TAG_ENTITY_AMOUNT;
-    private String NBT_TAG_BOOSTER_TYPE;
-    private String NBT_TAG_BOOSTER_VALUE;
-    private String NBT_TAG_BOOSTER_DELAY;
+    public static String NBT_TAG_SPAWNER_AMOUNT;
+    public static String NBT_TAG_ENTITY_TYPE;
+    public static String NBT_TAG_ENTITY_AMOUNT;
+    public static String NBT_TAG_BOOSTER_TYPE;
+    public static String NBT_TAG_BOOSTER_VALUE;
+    public static String NBT_TAG_BOOSTER_DELAY;
+    public static String IMPROVEMENT_DELAY_SPAWN;
+    public static String IMPROVEMENT_LIMIT_STACK;
+    public static String IMPROVEMENT_SPAWN_AMOUNT_BOOST;
 
-    public Settings() {
-        this.NBT_TAG_SPAWNER_AMOUNT = "spawners_amount_spawners";
-        this.NBT_TAG_ENTITY_TYPE = "spawners_entity_type";
-        this.NBT_TAG_ENTITY_AMOUNT = "entities_entity_amount";
-        this.NBT_TAG_BOOSTER_TYPE = "booster_type";
-        this.NBT_TAG_BOOSTER_VALUE = "booster_value";
-        this.NBT_TAG_BOOSTER_DELAY = "booster_delay";
-    }
 
-    public static Settings get() {
-        return me == null ? me = new Settings() : me;
+
+    static {
+        NBT_TAG_SPAWNER_AMOUNT = "spawners_amount_spawners";
+        NBT_TAG_ENTITY_TYPE = "spawners_entity_type";
+        NBT_TAG_ENTITY_AMOUNT = "entities_entity_amount";
+        NBT_TAG_BOOSTER_TYPE = "booster_type";
+        NBT_TAG_BOOSTER_VALUE = "booster_value";
+        NBT_TAG_BOOSTER_DELAY = "booster_delay";
     }
 
 }

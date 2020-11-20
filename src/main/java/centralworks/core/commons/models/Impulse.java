@@ -22,12 +22,11 @@ public class Impulse {
     private ItemSettings item;
 
     public ItemStack getAsItem() {
-        final Settings settings = Settings.get();
         final ItemStack itemStack = item.getAsItem(s -> s);
         final NBTItem nbtItem = new NBTItem(itemStack);
-        nbtItem.setDouble(settings.getNBT_TAG_BOOSTER_VALUE(), value);
-        nbtItem.setInteger(settings.getNBT_TAG_BOOSTER_DELAY(), time);
-        nbtItem.setString(settings.getNBT_TAG_BOOSTER_TYPE(), type.name());
+        nbtItem.setDouble(Settings.NBT_TAG_BOOSTER_VALUE, value);
+        nbtItem.setInteger(Settings.NBT_TAG_BOOSTER_DELAY, time);
+        nbtItem.setString(Settings.NBT_TAG_BOOSTER_TYPE, type.name());
         return nbtItem.getItem();
     }
 

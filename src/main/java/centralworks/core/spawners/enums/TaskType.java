@@ -1,4 +1,4 @@
-package centralworks.core.spawners.models.enums;
+package centralworks.core.spawners.enums;
 
 public enum TaskType {
 

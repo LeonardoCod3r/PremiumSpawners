@@ -1,12 +1,13 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.core.spawners.cache.TCached;
+import centralworks.core.spawners.events.SpawnerRemoveEvent;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerItem;
-import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.core.spawners.enums.TaskType;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.layouts.settings.UtilitiesMenuS;
 import centralworks.lib.Configuration;
@@ -50,7 +51,10 @@ public class UtilitiesMenu extends InventorySpawner {
             getPlayer().closeInventory();
             ifPresent(spawner1 -> {
                 if (!spawner1.isOwner(getPlayer().getName())) return;
-                new SpawnerItem().parse(getTarget()).giveItem(getPlayer());
+                final SpawnerItem spawnerItem = new SpawnerItem().parse(getTarget());
+                final SpawnerRemoveEvent event = new SpawnerRemoveEvent(getPlayer(), spawner1, spawnerItem, true);
+                if (event.isCancelled()) return;
+                spawnerItem.giveItem(getPlayer());
                 spawner1.destroy(Caches.getCache(UserDetails.class).getUnchecked(getPlayer().getName()));
                 getPlayer().sendMessage(messages.getMessage("spawnerRemoved"));
             });
@@ -68,7 +72,7 @@ public class UtilitiesMenu extends InventorySpawner {
             getPlayer().closeInventory();
             ifPresent(spawner1 -> {
                 if (!spawner1.hasPermission(getPlayer().getName())) return;
-                if (spawner1.concat(e.getCurrentItem())) {
+                if (spawner1.concat(getPlayer(), e.getCurrentItem())) {
                     getPlayer().getInventory().setItem(e.getSlot(), new ItemStack(Material.AIR));
                 }
             });

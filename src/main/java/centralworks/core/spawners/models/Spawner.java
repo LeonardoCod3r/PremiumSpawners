@@ -4,6 +4,7 @@ import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.core.commons.models.enums.ImpulseType;
+import centralworks.core.spawners.events.SpawnerStackEvent;
 import centralworks.database.Storable;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
@@ -80,6 +81,13 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Setter
     @Expose
     private Long hologramId;
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "locSerialized")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @Getter
+    @Setter
+    @Expose
+    private Statistics statistics = new Statistics();
 
     public Spawner(String locSerialized) {
         this.locSerialized = locSerialized;
@@ -302,13 +310,26 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         updateHologram();
     }
 
-    public Boolean concat(ItemStack item) {
+    public Boolean concat(Player p, ItemStack item) {
         try {
             final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
             if (spawnerItem.getEntityType() != getEntityType()) return false;
-            addStack(spawnerItem.getAmountItem() * spawnerItem.getAmountSpawners());
-            updateHologram();
+            final Spawner spawner = new SpawnerBuilder().build(spawnerItem);
+            spawner.setOwner(p.getName());
+            final SpawnerStackEvent event = new SpawnerStackEvent(p, this, spawner);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) return false;
+            concat(spawner);
             return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    public boolean canConcat(ItemStack item){
+        try {
+            final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
+            return spawnerItem.getEntityType() == getEntityType();
         } catch (Exception ignored) {
             return false;
         }

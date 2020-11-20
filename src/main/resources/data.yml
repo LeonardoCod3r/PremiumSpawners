@@ -3,7 +3,7 @@ Database: MYSQL #LOCAL for small servers or MYSQL for large servers.
 MySQL:
   User: "root"
   Password: "123"
-  Database: "twmobcoins"
+  Database: "main"
   Host: "localhost"
   Port: "3306"
 Advanced:

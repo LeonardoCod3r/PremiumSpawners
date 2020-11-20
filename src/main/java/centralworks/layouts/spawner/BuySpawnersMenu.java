@@ -1,11 +1,11 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
 import centralworks.core.spawners.cache.SICached;
 import centralworks.core.spawners.cache.TCached;
-import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.core.spawners.enums.TaskType;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;

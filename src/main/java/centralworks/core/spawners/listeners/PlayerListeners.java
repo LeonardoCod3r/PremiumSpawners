@@ -10,10 +10,11 @@ import centralworks.core.commons.models.enums.LimitType;
 import centralworks.core.spawners.Settings;
 import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.events.BoosterActiveEvent;
+import centralworks.core.spawners.events.SpawnerRemoveEvent;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerImpulse;
 import centralworks.core.spawners.models.SpawnerItem;
-import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.core.spawners.enums.TaskType;
 import centralworks.hooks.EconomyContext;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
@@ -47,14 +48,13 @@ public class PlayerListeners implements Listener {
         final Player p = e.getPlayer();
         final ItemStack item = e.getItem();
         final Block block = e.getClickedBlock();
-        final Settings se = Settings.get();
         final Configuration messages = plugin.getMessages();
         if (item == null) return;
         try {
             final NBTItem nbt = new NBTItem(item);
-            final Double multiplier = nbt.getDouble(se.getNBT_TAG_BOOSTER_VALUE());
-            final Integer delay = nbt.getInteger(se.getNBT_TAG_BOOSTER_DELAY());
-            final ImpulseType type = ImpulseType.valueOf(nbt.getString(se.getNBT_TAG_BOOSTER_TYPE()));
+            final Double multiplier = nbt.getDouble(Settings.NBT_TAG_BOOSTER_VALUE);
+            final Integer delay = nbt.getInteger(Settings.NBT_TAG_BOOSTER_DELAY);
+            final ImpulseType type = ImpulseType.valueOf(nbt.getString(Settings.NBT_TAG_BOOSTER_TYPE));
             e.setCancelled(true);
             if (type == ImpulseType.DROPS) return;
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
@@ -144,13 +144,18 @@ public class PlayerListeners implements Listener {
                             return;
                         }
                         if (v == spawner.getAmount()) {
-                            new SpawnerItem().parse(spawner).giveItem(p);
+                            final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
+                            final SpawnerRemoveEvent event = new SpawnerRemoveEvent(p, spawner, spawnerItem, true);
+                            if (event.isCancelled()) return;
+                            spawnerItem.giveItem(p);
                             spawner.destroy(user);
                             p.sendMessage(messages.getMessage("spawnerRemoved"));
                             return;
                         }
                         final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
                         spawnerItem.setAmountSpawners(v);
+                        final SpawnerRemoveEvent event = new SpawnerRemoveEvent(p, spawner, spawnerItem, true);
+                        if (event.isCancelled()) return;
                         spawnerItem.giveItem(p);
                         spawner.removeStack(v);
                         spawner.updateHologram();

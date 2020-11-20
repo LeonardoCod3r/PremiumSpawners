@@ -1,6 +1,6 @@
 package centralworks.core.quests.cmds;
 
-import centralworks.layouts.QuestsMenu;
+import centralworks.layouts.quest.QuestsMenu;
 import com.google.common.collect.Lists;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;

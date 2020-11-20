@@ -3,14 +3,18 @@ package centralworks.core.spawners.listeners;
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;
-import centralworks.core.spawners.cache.DCached;
+import centralworks.core.spawners.cache.Delay;
+import centralworks.core.spawners.events.SpawnerBreakEvent;
+import centralworks.core.spawners.events.SpawnerPlaceEvent;
+import centralworks.core.spawners.events.SpawnerStackEvent;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerBuilder;
 import centralworks.core.spawners.models.SpawnerItem;
 import centralworks.core.spawners.utils.FilteringFunctions;
-import centralworks.layouts.InfoSpawnerMenu;
+import centralworks.layouts.spawner.InfoSpawnerMenu;
 import centralworks.lib.Utils;
 import lombok.var;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,8 +68,7 @@ public class SpawnerListeners implements Listener {
         var spawnerItem = new SpawnerItem().parse(item);
         var cache = Caches.getCache(Spawner.class);
         final Predicate<ItemStack> prd = itemStack -> new SpawnerItem().isSpawnerItem(itemStack) && spawnerItem.isSimilar(itemStack);
-        var cached = DCached.get();
-        if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
+        if (Delay.inDelay(p.getName())) {
             p.sendMessage("§cAguarde para poder colocar o gerador novamente.");
             return;
         }
@@ -73,24 +76,30 @@ public class SpawnerListeners implements Listener {
                 .filter(prd)
                 .map(itemStack -> new SpawnerItem().parse(itemStack))
                 .reduce(SpawnerItem::concat).get();
-        for (int i = 0; i < p.getInventory().getSize(); i++) {
-            if (prd.test(p.getInventory().getItem(i))) {
-                p.getInventory().setItem(i, new ItemStack(Material.AIR));
-            }
-        }
         var spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
         var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
         user.getSpawners(spawners -> {
             var functions = new FilteringFunctions(spawners);
             if (functions.exists(spawner.getEntityType())) {
                 var spawner1 = functions.get(spawner.getEntityType());
+                final SpawnerStackEvent event = new SpawnerStackEvent(p, spawner1, spawner);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) return;
                 spawner1.concat(spawner);
             } else {
+                final SpawnerPlaceEvent event = new SpawnerPlaceEvent(p, spawner);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) return;
                 user.addSpawnerLocation(location);
                 spawner.appear(spawner1 -> cache.put(spawner1.getLocSerialized(), spawner1));
+                Delay.put(p.getName());
+            }
+            for (int i = 0; i < p.getInventory().getSize(); i++) {
+                if (prd.test(p.getInventory().getItem(i))) {
+                    p.getInventory().setItem(i, new ItemStack(Material.AIR));
+                }
             }
         });
-        cached.add(p.getName());
     }
 
     @EventHandler
@@ -101,19 +110,21 @@ public class SpawnerListeners implements Listener {
         var p = e.getPlayer();
         var messages = plugin.getMessages();
         var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
-        var cached = DCached.get();
 
         if (user.exists(location)) {
             e.setCancelled(true);
-            if (cached.exists(s -> s.equalsIgnoreCase(p.getName()))) {
+            if (Delay.inDelay(p.getName())) {
                 p.sendMessage("§cAguarde para poder retirar o gerador novamente.");
                 return;
             }
             var spawner = user.getSpawner(location);
-            new SpawnerItem().parse(spawner).giveItem(p);
+            final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
+            final SpawnerBreakEvent event = new SpawnerBreakEvent(p, spawner, spawnerItem);
+            if (event.isCancelled()) return;
+            spawnerItem.giveItem(p);
             spawner.destroy(user);
             p.sendMessage(messages.getMessage("spawnerRemoved"));
-            cached.add(p.getName());
+            Delay.put(p.getName());
         } else {
             Optional.ofNullable(Caches.getCache(Spawner.class).getUnchecked(Utils.locToString(location))).ifPresent(spawner -> {
                 e.setCancelled(true);

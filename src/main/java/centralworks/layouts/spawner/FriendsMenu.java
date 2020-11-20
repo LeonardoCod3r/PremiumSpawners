@@ -1,9 +1,9 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.models.Spawner;
-import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.core.spawners.enums.TaskType;
 import centralworks.layouts.settings.FriendsMenuS;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;

@@ -10,6 +10,7 @@ import centralworks.core.quests.models.QuestData;
 import centralworks.core.quests.models.QuestRule;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerImpulse;
+import centralworks.core.spawners.models.Statistics;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -53,6 +54,7 @@ public class ServiceModule extends AbstractModule {
         configuration.addAnnotatedClass(SpawnerImpulse.class);
         configuration.addAnnotatedClass(BoosterPlayer.class);
         configuration.addAnnotatedClass(DropPlayer.class);
+        configuration.addAnnotatedClass(Statistics.class);
         final ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
         return configuration.buildSessionFactory(serviceRegistry);
     }

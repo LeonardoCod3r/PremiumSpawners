@@ -1,4 +1,4 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.core.commons.models.enums.ImpulseType;
@@ -35,7 +35,6 @@ public class BoosterMenu extends InventorySpawner {
 
         final BoosterMenuS menu = MenusSettings.get().getBoosterMenuSettings();
         final Configuration messages = Main.getInstance().getMessages();
-        final Settings se = Settings.get();
 
         setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
             getPlayer().closeInventory();
@@ -61,9 +60,9 @@ public class BoosterMenu extends InventorySpawner {
                 try {
                     final ItemStack item = e.getCurrentItem();
                     final NBTItem nbt = new NBTItem(item);
-                    final Double multiplier = nbt.getDouble(se.getNBT_TAG_BOOSTER_VALUE());
-                    final Integer delay = nbt.getInteger(se.getNBT_TAG_BOOSTER_DELAY());
-                    final ImpulseType type = ImpulseType.valueOf(nbt.getString(se.getNBT_TAG_BOOSTER_TYPE()));
+                    final Double multiplier = nbt.getDouble(Settings.NBT_TAG_BOOSTER_VALUE);
+                    final Integer delay = nbt.getInteger(Settings.NBT_TAG_BOOSTER_DELAY);
+                    final ImpulseType type = ImpulseType.valueOf(nbt.getString(Settings.NBT_TAG_BOOSTER_TYPE));
                     if (type == ImpulseType.DROPS) return;
                     getPlayer().closeInventory();
                     if (spawner1.hasBoosterActive(type)) {

@@ -1,4 +1,4 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.cache.Caches;
 import centralworks.core.commons.models.UserDetails;

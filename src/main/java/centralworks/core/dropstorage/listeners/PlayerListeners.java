@@ -13,7 +13,7 @@ import centralworks.core.dropstorage.models.BoosterPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.models.Spawner;
-import centralworks.core.spawners.models.enums.TaskType;
+import centralworks.core.spawners.enums.TaskType;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;

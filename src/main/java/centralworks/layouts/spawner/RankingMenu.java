@@ -1,4 +1,4 @@
-package centralworks.layouts;
+package centralworks.layouts.spawner;
 
 import centralworks.core.spawners.cache.SpawnerRanking;
 import centralworks.core.spawners.models.Spawner;
