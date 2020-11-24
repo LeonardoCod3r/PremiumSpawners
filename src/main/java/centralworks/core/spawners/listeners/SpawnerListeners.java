@@ -2,7 +2,7 @@ package centralworks.core.spawners.listeners;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.spawners.cache.Delay;
 import centralworks.core.spawners.events.SpawnerBreakEvent;
 import centralworks.core.spawners.events.SpawnerPlaceEvent;
@@ -12,7 +12,7 @@ import centralworks.core.spawners.models.SpawnerBuilder;
 import centralworks.core.spawners.models.SpawnerItem;
 import centralworks.core.spawners.utils.FilteringFunctions;
 import centralworks.layouts.spawner.InfoSpawnerMenu;
-import centralworks.lib.Utils;
+import centralworks.lib.LocationUtils;
 import lombok.var;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -43,16 +43,16 @@ public class SpawnerListeners implements Listener {
             if (block.getType() != Material.MOB_SPAWNER) return;
             var location = block.getLocation();
             var p = e.getPlayer();
-            var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
+            var user = Caches.getCache(User.class).getIfPresent(p.getName());
             if (user.exists(location)) {
                 e.setCancelled(true);
                 var spawner = user.getSpawner(location);
                 new InfoSpawnerMenu(spawner, p).load();
             } else {
                 var cache = Caches.getCache(Spawner.class);
-                Optional.ofNullable(cache.getIfPresent(Utils.locToString(location))).ifPresent(spawner -> {
+                Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
                     if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p).load();
-                    else p.sendMessage(plugin.getMessages().getMessage("isNotOwner"));
+                    else p.sendMessage(plugin.getMessages().navigate().getMessage("isNotOwner"));
                 });
             }
         }
@@ -77,7 +77,7 @@ public class SpawnerListeners implements Listener {
                 .map(itemStack -> new SpawnerItem().parse(itemStack))
                 .reduce(SpawnerItem::concat).get();
         var spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
-        var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
+        var user = Caches.getCache(User.class).getIfPresent(p.getName());
         user.getSpawners(spawners -> {
             var functions = new FilteringFunctions(spawners);
             if (functions.exists(spawner.getEntityType())) {
@@ -108,8 +108,8 @@ public class SpawnerListeners implements Listener {
         if (block.getType() != Material.MOB_SPAWNER) return;
         var location = block.getLocation();
         var p = e.getPlayer();
-        var messages = plugin.getMessages();
-        var user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
+        var nav = plugin.getMessages().navigate();
+        var user = Caches.getCache(User.class).getIfPresent(p.getName());
 
         if (user.exists(location)) {
             e.setCancelled(true);
@@ -123,12 +123,12 @@ public class SpawnerListeners implements Listener {
             if (event.isCancelled()) return;
             spawnerItem.giveItem(p);
             spawner.destroy(user);
-            p.sendMessage(messages.getMessage("spawnerRemoved"));
+            p.sendMessage(nav.getMessage("spawnerRemoved"));
             Delay.put(p.getName());
         } else {
-            Optional.ofNullable(Caches.getCache(Spawner.class).getUnchecked(Utils.locToString(location))).ifPresent(spawner -> {
+            Optional.ofNullable(Caches.getCache(Spawner.class).getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
                 e.setCancelled(true);
-                p.sendMessage(messages.getMessage("isNotOwner"));
+                p.sendMessage(nav.getMessage("isNotOwner"));
             });
         }
     }

@@ -16,7 +16,7 @@ public class BindRepository<O extends Storable<O>, T> {
     }
 
     public Repository<O, T> getRelativeRepository() {
-        final String db = Main.getInstance().getData().get("Database", false);
+        final String db = Main.getInstance().getData().navigate().getString("Database");
         if (db.equalsIgnoreCase("MYSQL")) return jpaRepository;
         else return fastRepository;
     }

@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Settings {
     //todo construir uma util consistente para coletar dados da config
@@ -60,7 +63,7 @@ public class Settings {
 
     public void renameTo(String name) {
         final List<String> list = Splitter.on("/").trimResults().omitEmptyStrings().splitToList(getSource());
-        list.set(list.size() -1, name);
+        list.set(list.size() - 1, name);
         moveTo(Joiner.on("/").join(list));
     }
 
@@ -100,7 +103,7 @@ public class Settings {
         }
     }
 
-    public Navigate navigate(){
+    public Navigate navigate() {
         return new Navigate(this);
     }
 
@@ -119,31 +122,84 @@ public class Settings {
             this.settings = settings;
             config = settings.getConfiguration();
         }
-        
+
         public String getString(String... road) {
+            if (!has(road)) return "";
             return config.getString(Joiner.on(".").join(road));
         }
-        
+
         public Integer getInt(String... road) {
+            if (!has(road)) return 0;
             return config.getInt(Joiner.on(".").join(road));
         }
-        
+
         public Double getDouble(String... road) {
+            if (!has(road)) return 0d;
             return config.getDouble(Joiner.on(".").join(road));
         }
-        
+
         public boolean getBoolean(String... road) {
             return config.getBoolean(Joiner.on(".").join(road));
         }
-        
-        public Object getResult(String... road){
+
+        public Object getResult(String... road) {
             return config.get(Joiner.on(".").join(road));
         }
 
-        public String getMessage(String... road){
+        public Set<String> section(String path) {
+            return config.getConfigurationSection(path).getKeys(false);
+        }
+
+        public List<String> getList(String... path) {
+            return config.getStringList(Joiner.on(".").join(path));
+        }
+
+        public Long getLong(String... path) {
+            if (!has(path)) return 0L;
+            return config.getLong(Joiner.on(".").join(path));
+        }
+
+        public void saveLocation(Location location, String... paths) {
+            final String path = "Locations." + Joiner.on(".").join(paths) + ".";
+            set(path + "world", location.getWorld().getName());
+            set(path + "x", location.getX());
+            set(path + "y", location.getY());
+            set(path + "z", location.getZ());
+            set(path + "yaw", String.valueOf(location.getYaw()));
+            set(path + "pitch", String.valueOf(location.getPitch()));
+            settings.save();
+        }
+
+        public String getMessage(String... road) {
+            if (!has("Messages." + Joiner.on(".").join(road))) return "";
+            return config.getString("Messages." + Joiner.on(".").join(road)).replace("&", "§");
+        }
+
+        public String getColorfulString(String... road) {
+            if (!has(road)) return "";
             return config.getString(Joiner.on(".").join(road)).replace("&", "§");
         }
-        
+
+        public List<String> getListMessage(String... road) {
+            return getList("Messages." + Joiner.on(".").join(road)).stream().map(s -> s.replaceAll("&", "§")).collect(Collectors.toList());
+        }
+
+        public List<String> getColorfulList(String... road) {
+            return getList(Joiner.on(".").join(road)).stream().map(s -> s.replaceAll("&", "§")).collect(Collectors.toList());
+        }
+
+        public Float getFloat(String... path) {
+            return Float.valueOf(getResult(path).toString());
+        }
+
+        public Boolean has(String... path) {
+            return getResult(path) != null;
+        }
+
+        public void set(String path, Object value) {
+            config.set(path, value);
+        }
+
     }
 
 

@@ -4,12 +4,10 @@ import centralworks.core.spawners.managers.upgrade.Upgrade;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.hooks.EconomyContext;
 import centralworks.lib.enums.PluginSystemType;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class SpawnMobLevel2 extends SpawnMobLevel {
 
@@ -56,7 +54,6 @@ public class SpawnMobLevel2 extends SpawnMobLevel {
         }
         return false;
     }
-
 
 
 }

@@ -1,9 +1,9 @@
 package centralworks.core.stackmobs.models;
 
 import centralworks.Main;
-import centralworks.core.spawners.Settings;
+import centralworks.core.spawners.Identifiers;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.EntityName;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTEntity;
@@ -34,20 +34,20 @@ public class EntityStacked {
 
     public void setStack(Double stack) {
         this.stack = stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
+        NBTInjector.getNbtData(entity).setDouble(Identifiers.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
     public void addStack(Double stack) {
         this.stack += stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
+        NBTInjector.getNbtData(entity).setDouble(Identifiers.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
     public void concat(EntityStacked entityStacked) {
         if (entityStacked.getEntity().isDead()) return;
         if (getEntity().getType() != entityStacked.getEntity().getType()) return;
-        final Configuration entities = Main.getInstance().getEntities();
+        final Settings.Navigate entities = Main.getInstance().getEntities().navigate();
         final Double maxStack = entities.getDouble("Settings.max-stack");
         final Double amount = entityStacked.getStack();
         if (amount == 0.0) {
@@ -66,21 +66,22 @@ public class EntityStacked {
 
     public void removeStack(Double stack) {
         this.stack -= stack;
-        NBTInjector.getNbtData(entity).setDouble(Settings.NBT_TAG_ENTITY_AMOUNT, getStack());
+        NBTInjector.getNbtData(entity).setDouble(Identifiers.NBT_TAG_ENTITY_AMOUNT, getStack());
         updateName();
     }
 
     public EntityStacked apply() {
         setEntity(NBTInjector.patchEntity(entity));
         final NBTCompound data = NBTInjector.getNbtData(entity);
-        if (data.hasKey(Settings.NBT_TAG_ENTITY_AMOUNT)) this.stack = data.getDouble(Settings.NBT_TAG_ENTITY_AMOUNT);
+        if (data.hasKey(Identifiers.NBT_TAG_ENTITY_AMOUNT))
+            this.stack = data.getDouble(Identifiers.NBT_TAG_ENTITY_AMOUNT);
         else this.stack = 1.0;
         return this;
     }
 
     public EntityStacked updateName() {
-        final Configuration configuration = Main.getInstance().getEntities();
-        entity.setCustomName(configuration.get("Settings.name", true).replace("{mob}", EntityName.valueOf(entity).getName()).replace("{stack}", BalanceFormatter.format(getStack())));
+        final Settings.Navigate configuration = Main.getInstance().getEntities().navigate();
+        entity.setCustomName(configuration.getColorfulString("Settings.name").replace("{mob}", EntityName.valueOf(entity).getName()).replace("{stack}", BalanceFormatter.format(getStack())));
         entity.setCustomNameVisible(true);
         return this;
     }

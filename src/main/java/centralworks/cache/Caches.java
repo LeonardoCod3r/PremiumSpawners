@@ -1,12 +1,13 @@
 package centralworks.cache;
 
 import centralworks.Main;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.core.quests.models.PlayerQuests;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.database.Storable;
 import centralworks.database.SyncRequests;
+import centralworks.database.specifications.Repository;
 import com.google.common.cache.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,6 +16,7 @@ import lombok.var;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -31,9 +33,14 @@ public class Caches {
             private LoadingCache<String, Spawner> loadingCache;
 
             @Override
+            public Repository<Spawner, String> getRepository() {
+                return new Spawner().getRepository();
+            }
+
+            @Override
             public void create() {
                 var repository = new Spawner().getRepository();
-                var config = Main.getInstance().getCacheConfig();
+                var nav = Main.getInstance().getCacheConfig().navigate();
                 var path = "Spawner.";
                 var removalListener = new RemovalListener<String, Spawner>() {
                     @Override
@@ -45,8 +52,8 @@ public class Caches {
                     }
                 };
                 loadingCache = CacheBuilder.newBuilder()
-                        .maximumSize(config.getLong(path + "size"))
-                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .maximumSize(nav.getLong(path + "size"))
+                        .expireAfterWrite(nav.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, Spawner>() {
 
@@ -64,18 +71,23 @@ public class Caches {
             }
         });
 
-        caches.put(UserDetails.class, new AbstractCache<UserDetails>() {
+        caches.put(User.class, new AbstractCache<User>() {
 
-            private LoadingCache<String, UserDetails> loadingCache;
+            private LoadingCache<String, User> loadingCache;
+
+            @Override
+            public Repository<User, String> getRepository() {
+                return new User().getRepository();
+            }
 
             @Override
             public void create() {
-                var repository = new UserDetails().getRepository();
-                var config = Main.getInstance().getCacheConfig();
+                var repository = new User().getRepository();
+                var nav = Main.getInstance().getCacheConfig().navigate();
                 var path = "User.";
-                var removalListener = new RemovalListener<String, UserDetails>() {
+                var removalListener = new RemovalListener<String, User>() {
                     @Override
-                    public void onRemoval(RemovalNotification<String, UserDetails> notification) {
+                    public void onRemoval(RemovalNotification<String, User> notification) {
                         final RemovalCause cause = notification.getCause();
                         if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE, RemovalCause.EXPLICIT).contains(cause)) {
                             if (notification.getValue() != null) notification.getValue().query().commit();
@@ -83,12 +95,12 @@ public class Caches {
                     }
                 };
                 loadingCache = CacheBuilder.newBuilder()
-                        .maximumSize(config.getLong(path + "size"))
-                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .maximumSize(nav.getLong(path + "size"))
+                        .expireAfterWrite(nav.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
-                        .build(new CacheLoader<String, UserDetails>() {
+                        .build(new CacheLoader<String, User>() {
                             @Override
-                            public UserDetails load(@NotNull String s) {
+                            public User load(@NotNull String s) {
                                 return SyncRequests.supply(repository, s).persist();
                             }
                         });
@@ -96,7 +108,7 @@ public class Caches {
             }
 
             @Override
-            public LoadingCache<String, UserDetails> getCache() {
+            public LoadingCache<String, User> getCache() {
                 return loadingCache;
             }
         });
@@ -106,9 +118,14 @@ public class Caches {
             private LoadingCache<String, DropStorage> loadingCache;
 
             @Override
+            public Repository<DropStorage, String> getRepository() {
+                return new DropStorage().getRepository();
+            }
+
+            @Override
             public void create() {
                 var repository = new DropStorage().getRepository();
-                var config = Main.getInstance().getCacheConfig();
+                var nav = Main.getInstance().getCacheConfig().navigate();
                 var path = "DropStorage.";
                 var removalListener = new RemovalListener<String, DropStorage>() {
                     @Override
@@ -120,8 +137,8 @@ public class Caches {
                     }
                 };
                 loadingCache = CacheBuilder.newBuilder()
-                        .maximumSize(config.getLong(path + "size"))
-                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .maximumSize(nav.getLong(path + "size"))
+                        .expireAfterWrite(nav.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, DropStorage>() {
                             @Override
@@ -143,9 +160,14 @@ public class Caches {
             private LoadingCache<String, PlayerQuests> loadingCache;
 
             @Override
+            public Repository<PlayerQuests, String> getRepository() {
+                return new PlayerQuests().getRepository();
+            }
+
+            @Override
             public void create() {
                 var repository = new PlayerQuests().getRepository();
-                var config = Main.getInstance().getCacheConfig();
+                var nav = Main.getInstance().getCacheConfig().navigate();
                 var path = "PlayerQuests.";
                 var removalListener = new RemovalListener<String, PlayerQuests>() {
                     @Override
@@ -157,8 +179,8 @@ public class Caches {
                     }
                 };
                 loadingCache = CacheBuilder.newBuilder()
-                        .maximumSize(config.getLong(path + "size"))
-                        .expireAfterWrite(config.getLong(path + "expired"), TimeUnit.MINUTES)
+                        .maximumSize(nav.getLong(path + "size"))
+                        .expireAfterWrite(nav.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
                         .build(new CacheLoader<String, PlayerQuests>() {
                             @Override

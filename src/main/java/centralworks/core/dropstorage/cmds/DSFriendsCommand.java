@@ -3,7 +3,7 @@ package centralworks.core.dropstorage.cmds;
 import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.dropstorage.models.DropStorage;
-import centralworks.lib.Configuration;
+import centralworks.lib.Settings;
 import centralworks.lib.inventory.InventoryMaker;
 import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
@@ -68,13 +68,13 @@ public class DSFriendsCommand extends BukkitCommand {
     public boolean execute(CommandSender s, String lbl, String[] args) {
         if (s instanceof Player) {
             final Player p = (Player) s;
-            final Configuration messages = plugin.getMessages();
+            final Settings.Navigate nav = plugin.getMessages().navigate();
             final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
             if (args.length == 0) {
                 final DropStorage dropStorage = cache.getIfPresent(p.getName());
                 if (dropStorage.getFriends().size() > 0) {
                     openFriendsInventory(p, dropStorage, 1);
-                } else p.sendMessage(messages.getMessage("friends-0"));
+                } else p.sendMessage(nav.getMessage("friends-0"));
             } else if (args.length == 1) {
                 p.sendMessage("§aComandos Armazém - Sistema de amigos");
                 p.sendMessage("");
@@ -84,25 +84,25 @@ public class DSFriendsCommand extends BukkitCommand {
                 p.sendMessage("§a/armazemfriends remove (player) - Remove um jogador da lista de amigos.");
             } else if (args.length == 2) {
                 if (Bukkit.getPlayer(args[1]) == null) {
-                    p.sendMessage(messages.getMessage("player-offline"));
+                    p.sendMessage(nav.getMessage("player-offline"));
                     return true;
                 }
-                final DropStorage dropStorage = cache.getUnchecked(p.getName());
+                final DropStorage dropStorage = cache.getIfPresent(p.getName());
                 if (args[0].equalsIgnoreCase("add")) {
                     if (dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     if (args[1].equalsIgnoreCase(p.getName())) return true;
-                    if (dropStorage.getFriends().size() == plugin.getDropStorage().getInt("Settings.friends.max")) {
-                        p.sendMessage(messages.getMessage("friends-max"));
+                    if (dropStorage.getFriends().size() == plugin.getDropStorage().navigate().getInt("Settings.friends.max")) {
+                        p.sendMessage(nav.getMessage("friends-max"));
                         return true;
                     }
                     dropStorage.getFriends().add(args[1].toLowerCase());
-                    p.sendMessage(messages.getMessage("friends-add").replace("{player}", p.getName()));
+                    p.sendMessage(nav.getMessage("friends-add").replace("{player}", p.getName()));
                 } else if (args[0].equalsIgnoreCase("remove")) {
                     if (!dropStorage.getFriends().contains(args[1].toLowerCase())) return true;
                     final List<String> friends = new ArrayList<>(dropStorage.getFriends());
                     friends.remove(args[1].toLowerCase());
                     dropStorage.setFriends(friends);
-                    p.sendMessage(messages.getMessage("friends-remove").replace("{player}", p.getName()));
+                    p.sendMessage(nav.getMessage("friends-remove").replace("{player}", p.getName()));
                 }
             }
         }

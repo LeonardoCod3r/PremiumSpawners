@@ -2,12 +2,12 @@ package centralworks.core.spawners.cache;
 
 import centralworks.Main;
 import centralworks.core.spawners.models.SpawnerItem;
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.EntityType;
 
-public class SICached extends Cache<SICached.LoadedSpawnerItem> {
+public class SICached extends ListCache<SICached.LoadedSpawnerItem> {
 
     private static SICached me;
 
@@ -17,7 +17,7 @@ public class SICached extends Cache<SICached.LoadedSpawnerItem> {
 
     public void load() {
         clear();
-        Main.getInstance().getSpawners().section("List").stream().map(EntityType::valueOf).forEach(entityType -> add(new LoadedSpawnerItem(entityType)));
+        Main.getInstance().getSpawners().navigate().section("List").stream().map(EntityType::valueOf).forEach(entityType -> add(new LoadedSpawnerItem(entityType)));
     }
 
     @Data

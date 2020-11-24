@@ -1,16 +1,12 @@
 package centralworks.core.spawners.models;
 
 import centralworks.Main;
-import centralworks.core.spawners.Settings;
+import centralworks.core.spawners.Identifiers;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
 import centralworks.lib.enums.EntityName;
 import centralworks.lib.inventory.Item;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
@@ -47,8 +43,8 @@ public class SpawnerItem implements Cloneable {
         ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).getItemStack();
         final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
         final NBTTagCompound tag = copy.getTag();
-        tag.setDouble(Settings.NBT_TAG_SPAWNER_AMOUNT, amountSpawners);
-        tag.setString(Settings.NBT_TAG_ENTITY_TYPE, entityType.toString());
+        tag.setDouble(Identifiers.NBT_TAG_SPAWNER_AMOUNT, amountSpawners);
+        tag.setString(Identifiers.NBT_TAG_ENTITY_TYPE, entityType.toString());
         copy.setTag(tag);
         return CraftItemStack.asBukkitCopy(copy);
     }
@@ -133,7 +129,7 @@ public class SpawnerItem implements Cloneable {
 
     public boolean isSpawnerItem(ItemStack itemStack) {
         try {
-            return CraftItemStack.asNMSCopy(itemStack).getTag().hasKey(Settings.NBT_TAG_ENTITY_TYPE);
+            return CraftItemStack.asNMSCopy(itemStack).getTag().hasKey(Identifiers.NBT_TAG_ENTITY_TYPE);
         } catch (Exception e) {
             return false;
         }
@@ -161,30 +157,30 @@ public class SpawnerItem implements Cloneable {
     }
 
     public SpawnerItem parse(EntityType entityType) {
-        final Configuration configuration = Main.getInstance().getSpawners();
+        val configuration = Main.getInstance().getSpawners().navigate();
         final String path = "List." + entityType.toString() + ".item.";
         setEntityType(entityType);
         setId(configuration.getInt(path + "id"));
         setData(configuration.getInt(path + "data").shortValue());
-        setSkullUrl(configuration.get(path + "skull-url", false));
-        setSkullOwner(configuration.get(path + "skull-owner", false));
-        setName(configuration.get(path + "name", true));
-        setLore(configuration.getList(path + "lore", true));
+        setSkullUrl(configuration.getString(path + "skull-url"));
+        setSkullOwner(configuration.getString(path + "skull-owner"));
+        setName(configuration.getColorfulString(path + "name"));
+        setLore(configuration.getColorfulList(path + "lore"));
         setAmountItem(1);
         setAmountSpawners(1.0);
         return this;
     }
 
     public SpawnerItem parse(Spawner spawner) {
-        final Configuration configuration = Main.getInstance().getSpawners();
+        val configuration = Main.getInstance().getSpawners().navigate();
         final String path = "List." + spawner.getEntityType().toString() + ".item.";
         setEntityType(spawner.getEntityType());
         setId(configuration.getInt(path + "id"));
         setData(configuration.getInt(path + "data").shortValue());
-        setSkullUrl(configuration.get(path + "skull-url", false));
-        setSkullOwner(configuration.get(path + "skull-owner", false));
-        setName(configuration.get(path + "name", true));
-        setLore(configuration.getList(path + "lore", true));
+        setSkullUrl(configuration.getString(path + "skull-url"));
+        setSkullOwner(configuration.getString(path + "skull-owner"));
+        setName(configuration.getColorfulString(path + "name"));
+        setLore(configuration.getColorfulList(path + "lore"));
         setAmountItem(1);
         setAmountSpawners(spawner.getAmount());
         return this;
@@ -204,8 +200,8 @@ public class SpawnerItem implements Cloneable {
             setName(itemStack.getItemMeta().getDisplayName());
             setLore(itemStack.getItemMeta().getLore());
             setAmountItem(itemStack.getAmount());
-            setAmountSpawners(nbt.getDouble(Settings.NBT_TAG_SPAWNER_AMOUNT));
-            setEntityType(EntityType.valueOf(nbt.getString(Settings.NBT_TAG_ENTITY_TYPE)));
+            setAmountSpawners(nbt.getDouble(Identifiers.NBT_TAG_SPAWNER_AMOUNT));
+            setEntityType(EntityType.valueOf(nbt.getString(Identifiers.NBT_TAG_ENTITY_TYPE)));
         } catch (Exception ignored) {
         }
         return this;

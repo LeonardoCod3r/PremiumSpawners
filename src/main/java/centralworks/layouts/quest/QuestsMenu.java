@@ -46,7 +46,7 @@ public class QuestsMenu extends InventoryMaker {
 
     public Item getInfoPlayer(Player p) {
         final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
-        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
+        final PlayerQuests playerQuests = cache.getIfPresent(p.getName());
         return new Item(Material.SKULL_ITEM, 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações").lore(
                 "§fUsuário: §7" + p.getName(),
                 "§fÚltima missão completada: §7" +

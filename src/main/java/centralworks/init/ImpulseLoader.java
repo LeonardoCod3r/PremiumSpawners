@@ -41,7 +41,7 @@ public class ImpulseLoader {
     }
 
     public void setDefaults() {
-        if (!Main.getInstance().getData().is("Answered")) {
+        if (!Main.getInstance().getData().navigate().getBoolean("Answered")) {
             final File ctx = new File(Main.getInstance().getDataFolder(), "impulses");
             try {
                 if (!Main.getInstance().getDataFolder().exists()) Main.getInstance().getDataFolder().mkdir();

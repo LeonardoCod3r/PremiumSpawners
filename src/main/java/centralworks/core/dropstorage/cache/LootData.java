@@ -2,14 +2,14 @@ package centralworks.core.dropstorage.cache;
 
 import centralworks.Main;
 import centralworks.core.dropstorage.models.Drop;
-import centralworks.lib.Cache;
-import centralworks.lib.Configuration;
+import centralworks.lib.ListCache;
+import centralworks.lib.Settings;
 import centralworks.lib.inventory.Item;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-public class LootData extends Cache<Drop> {
+public class LootData extends ListCache<Drop> {
 
     private static LootData me;
 
@@ -23,15 +23,15 @@ public class LootData extends Cache<Drop> {
 
     public void load() {
         clear();
-        final Configuration configuration = Main.getInstance().getDropStorage();
-        configuration.section("Drops").forEach(s -> {
+        final Settings.Navigate nav = Main.getInstance().getDropStorage().navigate();
+        nav.section("Drops").forEach(s -> {
             final String path = "Drops." + s + ".";
             final Drop drop = Drop.builder()
                     .keyDrop(s)
-                    .unitPrice(configuration.getDouble(path + "unit-sales-value"))
-                    .entityType(EntityType.valueOf(configuration.get(path + "mob", false)))
-                    .menuItem(new Item(Material.getMaterial(configuration.getInt(path + "drop-item-menu.id")), configuration.getInt(path + "drop-item-menu.amount"), configuration.getInt(path + "drop-item-menu.data").shortValue()).name(configuration.get(path + "drop-item-menu.name", true)).lore(configuration.getList(path + "drop-item-menu.lore", true)))
-                    .drop(new ItemStack(configuration.getInt(path + "id"), 1, configuration.getInt(path + "data").shortValue()))
+                    .unitPrice(nav.getDouble(path + "unit-sales-value"))
+                    .entityType(EntityType.valueOf(nav.getString(path + "mob")))
+                    .menuItem(new Item(Material.getMaterial(nav.getInt(path + "drop-item-menu.id")), nav.getInt(path + "drop-item-menu.amount"), nav.getInt(path + "drop-item-menu.data").shortValue()).name(nav.getColorfulString(path + "drop-item-menu.name")).lore(nav.getColorfulList(path + "drop-item-menu.lore")))
+                    .drop(new ItemStack(nav.getInt(path + "id"), 1, nav.getInt(path + "data").shortValue()))
                     .build();
             add(drop);
         });

@@ -1,7 +1,7 @@
 name: NitroSpawners
 main: centralworks.Main
 author: <Leonardo/>
-version: 2.0.0-Alpha
+version: 2.0.5-Alpha
 description: A advanced plug-in of Spawners system
 depend: [HolographicDisplays, NBTAPI, PlaceholderAPI, ProtocolLib]
 softdepend: [dynmap]

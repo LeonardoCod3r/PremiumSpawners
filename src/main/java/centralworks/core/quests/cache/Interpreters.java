@@ -6,7 +6,7 @@ import centralworks.core.quests.other.CraftQuest;
 import centralworks.core.quests.other.CraftQuestRule;
 import centralworks.core.spawners.events.BoosterActiveEvent;
 import centralworks.core.stackmobs.models.EntityStacked;
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 import com.google.gson.JsonObject;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class Interpreters extends Cache<CraftInterpreter<?>> {
+public class Interpreters extends ListCache<CraftInterpreter<?>> {
 
     private static Interpreters me;
 

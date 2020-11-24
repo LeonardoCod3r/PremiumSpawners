@@ -1,9 +1,9 @@
 package centralworks.core.commons.cache;
 
 import centralworks.core.commons.models.Limit;
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 
-public class LimitCached extends Cache<Limit> {
+public class LimitCached extends ListCache<Limit> {
 
     private static LimitCached me;
 

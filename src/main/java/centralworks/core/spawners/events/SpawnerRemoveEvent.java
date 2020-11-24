@@ -42,5 +42,4 @@ public class SpawnerRemoveEvent extends Event implements Cancellable {
     }
 
 
-
 }

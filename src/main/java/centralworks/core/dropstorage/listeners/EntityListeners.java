@@ -9,7 +9,7 @@ import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.core.stackmobs.models.EntityStacked;
 import centralworks.lib.ActionBarMessage;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.ItemName;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Entity;
@@ -28,21 +28,21 @@ public class EntityListeners implements Listener {
             final Player p = e.getEntity().getKiller();
             final Entity mob = e.getEntity();
             if (plugin.dropStorageSystemIsActive()) {
-                if (plugin.getDropStorage().getList("Settings.black-list", false).contains(e.getEntity().getWorld().getName()))
+                if (plugin.getDropStorage().navigate().getList("Settings.black-list").contains(e.getEntity().getWorld().getName()))
                     return;
                 final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
-                final DropStorage dropStorage = cache.getUnchecked(p.getName());
+                final DropStorage dropStorage = cache.getIfPresent(p.getName());
                 for (DropPlayer dropPlayer : dropStorage.getDropPlayers()) {
                     final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
                     if (drop.getEntityType().equals(mob.getType())) {
-                        final Configuration messages = plugin.getMessages();
+                        final Settings.Navigate nav = plugin.getMessages().navigate();
                         if (!dropStorage.isMax()) {
                             final Double add = Math.ceil(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getAllMultipliers());
                             if (dropStorage.isMax(add))
                                 dropPlayer.addDropAmount(add - (dropStorage.getAmountAll() + add - dropStorage.getUser().getSellLimit()));
                             else dropPlayer.addDropAmount(add);
-                            new ActionBarMessage(p, messages.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(drop.getDrop()).getName()));
-                        } else new ActionBarMessage(p, messages.getMessage("armazem-max"));
+                            new ActionBarMessage(p, nav.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(drop.getDrop()).getName()));
+                        } else new ActionBarMessage(p, nav.getMessage("armazem-max"));
                         if (dropStorage.isAutoSell()) {
                             if (dropPlayer.getAmount() > 0) dropPlayer.sell(p.getPlayer(), dropStorage);
                         }

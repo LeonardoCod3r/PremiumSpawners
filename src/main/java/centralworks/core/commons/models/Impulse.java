@@ -1,7 +1,7 @@
 package centralworks.core.commons.models;
 
 import centralworks.core.commons.models.enums.ImpulseType;
-import centralworks.core.spawners.Settings;
+import centralworks.core.spawners.Identifiers;
 import centralworks.lib.ItemSettings;
 import de.tr7zw.nbtapi.NBTItem;
 import lombok.Data;
@@ -24,9 +24,9 @@ public class Impulse {
     public ItemStack getAsItem() {
         final ItemStack itemStack = item.getAsItem(s -> s);
         final NBTItem nbtItem = new NBTItem(itemStack);
-        nbtItem.setDouble(Settings.NBT_TAG_BOOSTER_VALUE, value);
-        nbtItem.setInteger(Settings.NBT_TAG_BOOSTER_DELAY, time);
-        nbtItem.setString(Settings.NBT_TAG_BOOSTER_TYPE, type.name());
+        nbtItem.setDouble(Identifiers.NBT_TAG_BOOSTER_VALUE, value);
+        nbtItem.setInteger(Identifiers.NBT_TAG_BOOSTER_DELAY, time);
+        nbtItem.setString(Identifiers.NBT_TAG_BOOSTER_TYPE, type.name());
         return nbtItem.getItem();
     }
 

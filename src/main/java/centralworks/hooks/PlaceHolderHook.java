@@ -1,7 +1,7 @@
 package centralworks.hooks;
 
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.lib.BalanceFormatter;
 import com.google.common.cache.LoadingCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -31,8 +31,8 @@ public class PlaceHolderHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer p, String identifier) {
-        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
-        final UserDetails user = cache.getUnchecked(p.getName());
+        final LoadingCache<String, User> cache = Caches.getCache(User.class);
+        final User user = cache.getIfPresent(p.getName());
         if (identifier.equals("compra")) return BalanceFormatter.format(user.getBuyLimit());
         if (identifier.equalsIgnoreCase("venda")) return BalanceFormatter.format(user.getSellLimit());
         return null;

@@ -6,16 +6,13 @@ import centralworks.core.spawners.models.Spawner;
 import centralworks.database.Storable;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
-import centralworks.lib.Utils;
+import centralworks.lib.LocationUtils;
 import centralworks.repositories.json.FastUserRepository;
 import centralworks.repositories.mysql.JpaUserRepository;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -31,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UserDetails extends Storable<UserDetails> implements Serializable {
+public class User extends Storable<User> implements Serializable {
 
     @Id
     @Column(length = 16)
@@ -58,18 +55,18 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     @Expose
     private Double sellLimit = 1.0;
 
-    public UserDetails(OfflinePlayer p) {
+    public User(OfflinePlayer p) {
         this.user = p.getName();
     }
 
-    public UserDetails(String user) {
+    public User(String user) {
         this.user = user;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Repository<UserDetails, String> getRepository() {
-        final BindRepository<UserDetails, String> bindRepository = new BindRepository<>(UserDetails.class, JpaUserRepository.require(), FastUserRepository.require());
+    public Repository<User, String> getRepository() {
+        final BindRepository<User, String> bindRepository = new BindRepository<>(User.class, JpaUserRepository.require(), FastUserRepository.require());
         return bindRepository.getRelativeRepository();
     }
 
@@ -80,17 +77,18 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
 
     public void getSpawners(Consumer<List<Spawner>> callback) {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-        CompletableFuture.supplyAsync(() -> locationsSerialized.stream().map(cache::getUnchecked).collect(Collectors.toList())).thenAccept(callback);
+        CompletableFuture.supplyAsync(() -> locationsSerialized.stream().map(cache::getIfPresent).collect(Collectors.toList())).thenAccept(callback);
     }
 
     public List<Spawner> getSpawners() {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-        return locationsSerialized.stream().map(cache::getUnchecked).collect(Collectors.toList());
+        return locationsSerialized.stream().map(cache::getIfPresent).collect(Collectors.toList());
     }
 
     public void fixLimits() {
         if (Bukkit.getPlayer(user) != null) {
-            final Double l = Double.valueOf(Main.getInstance().getDropStorage().getList("Limits.default", false).stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
+            var settings = Main.getInstance().getDropStorage().navigate();
+            final Double l = Double.valueOf(settings.getList("Limits.default").stream().filter(s -> getPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1").split(":")[1]);
             if (getBuyLimit() < l) setBuyLimit(l);
             if (getSellLimit() < l) setSellLimit(l);
         }
@@ -125,19 +123,19 @@ public class UserDetails extends Storable<UserDetails> implements Serializable {
     }
 
     public void addSpawnerLocation(Location location) {
-        locationsSerialized.add(Utils.locToString(location));
+        locationsSerialized.add(LocationUtils.locToString(location));
     }
 
     public Spawner getSpawner(Location location) {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-        return cache.getUnchecked(locationsSerialized.stream().filter(location1 -> location1.equals(Utils.locToString(location))).findFirst().get());
+        return cache.getIfPresent(locationsSerialized.stream().filter(location1 -> location1.equals(LocationUtils.locToString(location))).findFirst().get());
     }
 
     public boolean exists(Location location) {
-        return locationsSerialized.stream().map(Utils::stringToLoc).anyMatch(location1 -> location1.equals(location));
+        return locationsSerialized.stream().map(LocationUtils::stringToLoc).anyMatch(location1 -> location1.equals(location));
     }
 
     public void deleteSpawnerLocation(Location location) {
-        locationsSerialized.remove(Utils.locToString(location));
+        locationsSerialized.remove(LocationUtils.locToString(location));
     }
 }

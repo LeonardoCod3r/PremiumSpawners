@@ -1,7 +1,7 @@
 package centralworks.core.spawners.cache;
 
 import centralworks.Main;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.database.SyncRequests;
 import centralworks.repositories.mysql.JpaUserRepository;
 import com.google.common.collect.Lists;
@@ -33,7 +33,7 @@ public class SpawnerRanking {
                 .supplyAsync(() -> SyncRequests.supply(JpaUserRepository.require()).getRepository().findAll())
                 .thenApplyAsync(userDetails -> {
                     final List<Supplier> suppliers = Lists.newArrayList();
-                    for (UserDetails user : userDetails) {
+                    for (User user : userDetails) {
                         final double[] value = {0.0};
                         user.getSpawners().forEach(spawner -> value[0] += spawner.getPriceAll());
                         suppliers.add(new Supplier(user.getUser(), value[0]));

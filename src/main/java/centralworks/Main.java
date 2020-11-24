@@ -10,7 +10,6 @@ import centralworks.init.QuestLoader;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Settings;
-import centralworks.lib.Configuration;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,19 +39,19 @@ public class Main extends JavaPlugin {
     @Getter
     private static Gson gson;
     @Getter
-    private Configuration configuration;
+    private Settings configuration;
     @Getter
-    private Configuration spawners;
+    private Settings spawners;
     @Getter
-    private Configuration entities;
+    private Settings entities;
     @Getter
-    private Configuration dropStorage;
+    private Settings dropStorage;
     @Getter
-    private Configuration data;
+    private Settings data;
     @Getter
-    private Configuration messages;
+    private Settings messages;
     @Getter
-    private Configuration cacheConfig;
+    private Settings cacheConfig;
     @Getter
     private Economy vaultAPIEconomy;
     @Getter
@@ -70,9 +69,9 @@ public class Main extends JavaPlugin {
     public void createConfigurations() {
         try {
             for (Field field : Main.class.getDeclaredFields()) {
-                if (Modifier.isPrivate(field.getModifiers()) && field.getType().getName().equals(Configuration.class.getName())) {
+                if (Modifier.isPrivate(field.getModifiers()) && field.getType().getName().equals(Settings.class.getName())) {
                     field.setAccessible(true);
-                    field.set(this, new Configuration(field.getName().toLowerCase()));
+                    field.set(this, new Settings(field.getName().toLowerCase() + ".yml"));
                     field.setAccessible(false);
                 }
             }
@@ -102,8 +101,9 @@ public class Main extends JavaPlugin {
         dynmapHook = new DynmapHook();
         vaultAPIEconomy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
         createConfigurations();
-        final Map<String, Double> collect = configuration.getList("Settings.format", true).stream().collect(Collectors.toMap(s -> s.split(",")[0], s -> Double.parseDouble(s.split(",")[1])));
-        BalanceFormatter.setSuffix(configuration.getList("Settings.format", true).stream().map(s -> s.replace(s.split(",")[1], "").replace(",", "")).toArray(String[]::new));
+        final Settings.Navigate nav = configuration.navigate();
+        final Map<String, Double> collect = nav.getList("Settings.format").stream().collect(Collectors.toMap(s -> s.split(",")[0], s -> Double.parseDouble(s.split(",")[1])));
+        BalanceFormatter.setSuffix(nav.getList("Settings.format").stream().map(s -> s.replace(s.split(",")[1], "").replace(",", "")).toArray(String[]::new));
         BalanceFormatter.setFormat(Maps.newHashMap(collect));
         info("Distribuição completada com sucesso.");
         this.injector = Guice.createInjector(new ServiceModule());
@@ -135,21 +135,21 @@ public class Main extends JavaPlugin {
         info("Inicializando o plug-in...");
         distribution();
         Application.startSystems();
-        getData().set("Answered", true);
+        getData().navigate().set("Answered", true);
         getData().save();
         info("Plug-in inicializado e pronto para uso.");
     }
 
     public boolean questsSystemIsActive() {
-        return configuration.is("Settings.quests");
+        return configuration.navigate().getBoolean("Settings.quests");
     }
 
     public boolean dropStorageSystemIsActive() {
-        return configuration.is("Settings.dropStorage");
+        return configuration.navigate().getBoolean("Settings.dropStorage");
     }
 
     public boolean limitSystemIsActive() {
-        return configuration.is("Settings.limitSystem");
+        return configuration.navigate().getBoolean("Settings.limitSystem");
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Cache<T> {
+public class ListCache<T> {
 
     private List<T> list = Lists.newArrayList();
 

@@ -1,11 +1,11 @@
 package centralworks.core.spawners.cache;
 
 import centralworks.core.spawners.enums.TaskType;
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-public class TCached extends Cache<TCached.TaskObj> {
+public class TCached extends ListCache<TCached.TaskObj> {
 
     private static TCached me;
 

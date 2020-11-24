@@ -2,13 +2,13 @@ package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.spawners.cache.SICached;
 import centralworks.core.spawners.cache.TCached;
 import centralworks.core.spawners.enums.TaskType;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.EntityName;
 import centralworks.lib.inventory.InventoryMaker;
 import centralworks.lib.inventory.Item;
@@ -31,20 +31,20 @@ public class BuySpawnersMenu extends InventoryMaker {
         super(6, "§8Comprar Geradores");
         clear();
         setCancellable(true);
-        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
-        final Double buyLimit = cache.getUnchecked(p.getName()).getBuyLimit();
+        final LoadingCache<String, User> cache = Caches.getCache(User.class);
+        final Double buyLimit = cache.getIfPresent(p.getName()).getBuyLimit();
         setItem(4, new Item(Material.getMaterial(397), 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações: ").lore("§fLimite de compra: §7" + BalanceFormatter.format(buyLimit)));
 
         final ArrayList<Integer> slots = Lists.newArrayList(19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43);
 
-        final List<String> list = Lists.newArrayList(Main.getInstance().getSpawners().section("List"));
+        final List<String> list = Lists.newArrayList(Main.getInstance().getSpawners().navigate().section("List"));
         for (int i = 0; i < slots.size(); i++) {
             if (list.size() >= (i + 1)) {
                 final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
                 final String s = list.get(i);
-                final Configuration configuration = Main.getInstance().getSpawners();
-                final Boolean value = configuration.is("List." + s + ".toggle");
-                final String s1 = configuration.get("List." + s + ".in", false);
+                final Settings.Navigate nav = Main.getInstance().getSpawners().navigate();
+                final boolean value = nav.getBoolean("List." + s + ".toggle");
+                final String s1 = nav.getString("List." + s + ".in");
                 if (value && (s1.equals("") || dateFormat.parse(s1).getTime() < System.currentTimeMillis()))
                     setItem(slots.get(i), getSpawnerItem(p, EntityType.valueOf(s)));
                 else setItem(slots.get(i), comingSoon(dateFormat.parse(s1)));
@@ -54,12 +54,12 @@ public class BuySpawnersMenu extends InventoryMaker {
     }
 
     public Item getSpawnerItem(Player p, EntityType entityType) {
-        final Configuration messages = Main.getInstance().getMessages();
-        final Double price = Main.getInstance().getSpawners().getDouble("List." + entityType.name() + ".price");
+        final Settings.Navigate nav = Main.getInstance().getMessages().navigate();
+        final Double price = Main.getInstance().getSpawners().navigate().getDouble("List." + entityType.name() + ".price");
         return new Item(SICached.get().get(item -> item.getEntityType() == entityType).getSpawnerItem().getItem())
                 .lore("§fPreço: §2R$§7" + BalanceFormatter.format(price), "", "§7Clique para comprar geradores de " + EntityName.valueOf(entityType).getName() + ".")
                 .onClick(event -> {
-                    p.sendMessage(messages.getMessage("talkAmountToBuy"));
+                    p.sendMessage(nav.getMessage("talkAmountToBuy"));
                     p.closeInventory();
                     TCached.get().add(new TCached.TaskObj(p.getName(), entityType.name(), TaskType.BUY_SPAWNERS));
                 });

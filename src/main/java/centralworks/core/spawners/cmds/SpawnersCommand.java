@@ -7,7 +7,7 @@ import centralworks.layouts.spawner.BuySpawnersMenu;
 import centralworks.layouts.spawner.MainMenu;
 import centralworks.layouts.spawner.SpawnersMenu;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.EntityName;
 import centralworks.lib.enums.Permission;
 import com.google.common.collect.Lists;
@@ -29,8 +29,8 @@ public class SpawnersCommand extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender s, String cmd, String[] args) {
-        final Configuration messages = plugin.getMessages();
-        final Configuration configSpawners = plugin.getSpawners();
+        final Settings.Navigate messages = plugin.getMessages().navigate();
+        final Settings.Navigate configSpawners = plugin.getSpawners().navigate();
         switch (args.length) {
             case 0:
                 if (s instanceof Player) new MainMenu(((Player) s));

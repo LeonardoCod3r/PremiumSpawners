@@ -6,17 +6,17 @@ import centralworks.core.commons.cache.ICached;
 import centralworks.core.commons.cache.LimitCached;
 import centralworks.core.commons.models.Impulse;
 import centralworks.core.commons.models.Limit;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.commons.models.enums.LimitType;
 import centralworks.core.dropstorage.models.BoosterPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.core.spawners.cache.TCached;
-import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.enums.TaskType;
+import centralworks.core.spawners.models.Spawner;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;
+import centralworks.lib.Settings;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,10 +52,10 @@ public class PlayerListeners implements Listener {
         if (trCached.exists(s -> s.getPlayerName().equalsIgnoreCase(p.getName()))) {
             e.setCancelled(true);
             final String msg = e.getMessage();
-            final Configuration messages = Main.getInstance().getMessages();
+            final Settings.Navigate nav = Main.getInstance().getMessages().navigate();
             final TCached.TaskObj obj = trCached.get(taskObj -> taskObj.getPlayerName().equalsIgnoreCase(p.getName()));
             if (msg.equalsIgnoreCase("cancelar")) {
-                p.sendMessage(messages.getMessage("cancel"));
+                p.sendMessage(nav.getMessage("cancel"));
                 trCached.remove(obj);
                 return;
             }
@@ -65,15 +65,15 @@ public class PlayerListeners implements Listener {
                 Optional.ofNullable(cache.getIfPresent(obj.getValue())).ifPresent(spawner -> {
                     if (!spawner.isOwner(p.getName())) return;
                     if (Bukkit.getPlayer(msg) == null) {
-                        p.sendMessage(messages.getMessage("offlinePlayer").replace("{player}", msg));
+                        p.sendMessage(nav.getMessage("offlinePlayer").replace("{player}", msg));
                         return;
                     }
                     if (spawner.existsFriend(msg)) {
-                        p.sendMessage(messages.getMessage("alreadyHaveFriend").replace("{player}", msg));
+                        p.sendMessage(nav.getMessage("alreadyHaveFriend").replace("{player}", msg));
                         return;
                     }
                     spawner.addFriend(msg);
-                    p.sendMessage(messages.getMessage("friendAdded").replace("{player}", msg));
+                    p.sendMessage(nav.getMessage("friendAdded").replace("{player}", msg));
                 });
             }
         }
@@ -83,35 +83,35 @@ public class PlayerListeners implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         final Player p = event.getPlayer();
         final ItemStack item = event.getItem();
-        final Configuration messages = Main.getInstance().getMessages();
+        final Settings.Navigate nav = Main.getInstance().getMessages().navigate();
         if (item == null) return;
 
         if (Main.getInstance().limitSystemIsActive()) {
-            final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
-            final UserDetails userDetails = cache.getUnchecked(p.getName());
+            final LoadingCache<String, User> cache = Caches.getCache(User.class);
+            final User user = cache.getIfPresent(p.getName());
             for (Limit limit : LimitCached.get().getList()) {
                 if (!item.isSimilar(limit.getItemStack().getAsItem(s -> s))) continue;
                 event.setCancelled(true);
                 final LimitType type = limit.getLimitType();
                 if (!limit.hasPermission(p)) {
-                    p.sendMessage(messages.getMessage("permissionErrorLimit").replace("{type}", type.getName()));
+                    p.sendMessage(nav.getMessage("permissionErrorLimit").replace("{type}", type.getName()));
                     return;
                 }
-                final Double max = Main.getInstance().getDropStorage().getDouble("Limits.max");
+                final Double max = Main.getInstance().getDropStorage().navigate().getDouble("Limits.max");
                 if (type == LimitType.SELL) {
-                    if (userDetails.getSellLimit() >= max) {
-                        p.sendMessage(messages.getMessage("limitMax").replace("{type}", type.getName()));
+                    if (user.getSellLimit() >= max) {
+                        p.sendMessage(nav.getMessage("limitMax").replace("{type}", type.getName()));
                         return;
                     }
-                    final Double adder = userDetails.getSellLimit() + limit.getValue() > max ?
-                            limit.getValue() - (userDetails.getSellLimit() + limit.getValue() - max)
+                    final Double adder = user.getSellLimit() + limit.getValue() > max ?
+                            limit.getValue() - (user.getSellLimit() + limit.getValue() - max)
                             : limit.getValue();
 
-                    userDetails.addSellLimit(adder);
-                    final Double v = userDetails.getSellLimit();
+                    user.addSellLimit(adder);
+                    final Double v = user.getSellLimit();
                     if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
                     else p.setItemInHand(new ItemStack(Material.AIR));
-                    p.sendMessage(messages.getMessage("limitUsed")
+                    p.sendMessage(nav.getMessage("limitUsed")
                             .replace("{type}", type.getName())
                             .replace("{limit-value}", BalanceFormatter.format(adder))
                             .replace("{player-limit-value}", BalanceFormatter.format(v)));
@@ -121,22 +121,22 @@ public class PlayerListeners implements Listener {
         }
 
         final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
-        final DropStorage dropStorage = cache.getUnchecked(p.getName());
+        final DropStorage dropStorage = cache.getIfPresent(p.getName());
 
         for (Impulse booster : ICached.get().getList()) {
             if (!item.isSimilar(booster.getAsItem())) continue;
             event.setCancelled(true);
             if (booster.getType() != ImpulseType.DROPS) return;
             if (!booster.hasPermission(p)) {
-                p.sendMessage(messages.getMessage("permission-error-booster"));
+                p.sendMessage(nav.getMessage("permission-error-booster"));
                 return;
             }
             if (booster.getTime() == 0) {
                 dropStorage.addMultiplier(booster.getValue());
-                p.sendMessage(messages.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
+                p.sendMessage(nav.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
             } else {
                 dropStorage.addBooster(new BoosterPlayer(dropStorage, booster.getValue(), booster.getTime()));
-                p.sendMessage(messages.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
+                p.sendMessage(nav.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
             }
             if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);
             else p.setItemInHand(new ItemStack(Material.AIR));

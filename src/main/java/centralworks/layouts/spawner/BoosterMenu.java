@@ -2,13 +2,13 @@ package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.core.commons.models.enums.ImpulseType;
-import centralworks.core.spawners.Settings;
+import centralworks.core.spawners.Identifiers;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.models.SpawnerImpulse;
 import centralworks.layouts.settings.BoosterMenuS;
 import centralworks.layouts.settings.MenusSettings;
-import centralworks.lib.Configuration;
 import centralworks.lib.FormatTime;
+import centralworks.lib.Settings;
 import centralworks.lib.inventory.Item;
 import centralworks.lib.inventory.addons.InventorySpawner;
 import com.google.common.collect.Lists;
@@ -34,7 +34,7 @@ public class BoosterMenu extends InventorySpawner {
         setCancellable(true);
 
         final BoosterMenuS menu = MenusSettings.get().getBoosterMenuSettings();
-        final Configuration messages = Main.getInstance().getMessages();
+        final Settings.Navigate nav = Main.getInstance().getMessages().navigate();
 
         setItem(menu.getBack().getItem_slot(), new Item(menu.getBack().getAsItem(s -> s)).onClick(e -> {
             getPlayer().closeInventory();
@@ -60,28 +60,28 @@ public class BoosterMenu extends InventorySpawner {
                 try {
                     final ItemStack item = e.getCurrentItem();
                     final NBTItem nbt = new NBTItem(item);
-                    final Double multiplier = nbt.getDouble(Settings.NBT_TAG_BOOSTER_VALUE);
-                    final Integer delay = nbt.getInteger(Settings.NBT_TAG_BOOSTER_DELAY);
-                    final ImpulseType type = ImpulseType.valueOf(nbt.getString(Settings.NBT_TAG_BOOSTER_TYPE));
+                    final Double multiplier = nbt.getDouble(Identifiers.NBT_TAG_BOOSTER_VALUE);
+                    final Integer delay = nbt.getInteger(Identifiers.NBT_TAG_BOOSTER_DELAY);
+                    final ImpulseType type = ImpulseType.valueOf(nbt.getString(Identifiers.NBT_TAG_BOOSTER_TYPE));
                     if (type == ImpulseType.DROPS) return;
                     getPlayer().closeInventory();
                     if (spawner1.hasBoosterActive(type)) {
-                        getPlayer().sendMessage(messages.getMessage("onlyBooster").replace("{type}", type.name()));
+                        getPlayer().sendMessage(nav.getMessage("onlyBooster").replace("{type}", type.name()));
                         return;
                     }
                     final String name = getPlayer().getName();
                     if (item.getAmount() == 1)
                         getPlayer().getInventory().setItem(e.getSlot(), new ItemStack(Material.AIR));
                     else item.setAmount(item.getAmount() - 1);
-                    getPlayer().sendMessage(messages.getMessage("boosterActivated").replace("{type}", type.name()));
+                    getPlayer().sendMessage(nav.getMessage("boosterActivated").replace("{type}", type.name()));
                     new SpawnerImpulse(type, delay, multiplier).in(spawner1, () -> {
                         if (Bukkit.getPlayer(name) != null)
-                            Bukkit.getPlayer(name).sendMessage(messages.getMessage("boosterEnd").replace("{type}", type.name()));
+                            Bukkit.getPlayer(name).sendMessage(nav.getMessage("boosterEnd").replace("{type}", type.name()));
                     });
                 } catch (Exception ignored) {
                 }
             } else {
-                getPlayer().sendMessage(messages.getMessage("onlyActiveBooster"));
+                getPlayer().sendMessage(nav.getMessage("onlyActiveBooster"));
                 getPlayer().closeInventory();
             }
         }));

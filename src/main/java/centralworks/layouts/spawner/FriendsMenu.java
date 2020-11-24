@@ -2,13 +2,13 @@ package centralworks.layouts.spawner;
 
 import centralworks.Main;
 import centralworks.core.spawners.cache.TCached;
-import centralworks.core.spawners.models.Spawner;
 import centralworks.core.spawners.enums.TaskType;
+import centralworks.core.spawners.models.Spawner;
 import centralworks.layouts.settings.FriendsMenuS;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
 import centralworks.lib.ItemSettings;
+import centralworks.lib.Settings;
 import centralworks.lib.inventory.Item;
 import centralworks.lib.inventory.addons.InventorySpawner;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class FriendsMenu extends InventorySpawner {
     @Override
     public void load() {
         final FriendsMenuS menu = MenusSettings.get().getFriendsMenuSettings();
-        final Configuration messages = Main.getInstance().getMessages();
+        final Settings.Navigate nav = Main.getInstance().getMessages().navigate();
         final TCached cached = TCached.get();
         clear();
         setCancellable(true);
@@ -56,7 +56,7 @@ public class FriendsMenu extends InventorySpawner {
                 if (!spawner1.isOwner(getPlayer().getName())) return;
                 if (!cached.exists(s -> s.getPlayerName().equalsIgnoreCase(getPlayer().getName()))) {
                     cached.add(new TCached.TaskObj(getPlayer().getName(), spawner1.getLocSerialized(), TaskType.ADD_FRIEND));
-                    getPlayer().sendMessage(messages.getMessage("taskAdd"));
+                    getPlayer().sendMessage(nav.getMessage("taskAdd"));
                 }
             });
         }));

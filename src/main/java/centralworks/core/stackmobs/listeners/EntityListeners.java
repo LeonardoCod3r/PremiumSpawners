@@ -5,8 +5,8 @@ import centralworks.cache.Caches;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.core.stackmobs.models.EntityStacked;
-import centralworks.lib.Configuration;
-import centralworks.lib.Utils;
+import centralworks.lib.LocationUtils;
+import centralworks.lib.Settings;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtinjector.NBTInjector;
 import org.bukkit.Chunk;
@@ -41,13 +41,13 @@ public class EntityListeners implements Listener {
 
     @EventHandler
     public void onSpawn(SpawnerSpawnEvent e) {
-        final Configuration entities = plugin.getEntities();
-        if (entities.getList("Settings.worldBlackList", false).contains(e.getLocation().getWorld().getName())) return;
+        final Settings.Navigate entities = plugin.getEntities().navigate();
+        if (entities.getList("Settings.worldBlackList").contains(e.getLocation().getWorld().getName())) return;
         final Entity entity = e.getEntity();
         if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
             final EntityStacked entityStacked = new EntityStacked(entity).noAI();
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-            Optional.ofNullable(cache.getIfPresent(Utils.locToString(e.getSpawner().getLocation())))
+            Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(e.getSpawner().getLocation())))
                     .ifPresent(spawner -> entityStacked.setStack(spawner.getAmount() * spawner.getMultiplierOf(ImpulseType.GENERATION)));
             for (Entity nearbyEntity : entity.getNearbyEntities(entities.getDouble("Settings.area.x"), entities.getDouble("Settings.area.y"), entities.getDouble("Settings.area.z"))) {
                 if (!nearbyEntity.hasMetadata("NPC") && nearbyEntity instanceof Animals || nearbyEntity instanceof Monster || indeterminate.contains(nearbyEntity.getType()))
@@ -59,8 +59,8 @@ public class EntityListeners implements Listener {
     @EventHandler
     public void onLoad(ChunkLoadEvent e) {
         final Chunk chunk = e.getChunk();
-        final Configuration entities = plugin.getEntities();
-        if (entities.getList("Settings.worldBlackList", false).contains(chunk.getWorld().getName())) return;
+        final Settings.Navigate entities = plugin.getEntities().navigate();
+        if (entities.getList("Settings.worldBlackList").contains(chunk.getWorld().getName())) return;
         for (Entity entity : chunk.getEntities()) {
             if (!entity.hasMetadata("NPC") && entity instanceof Animals || entity instanceof Monster || indeterminate.contains(entity.getType())) {
                 final EntityStacked entityStacked = new EntityStacked(entity).noAI();

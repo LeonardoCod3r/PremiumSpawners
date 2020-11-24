@@ -2,7 +2,7 @@ package centralworks.core.spawners.models;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.commons.models.enums.ImpulseType;
 import centralworks.core.spawners.events.SpawnerStackEvent;
 import centralworks.database.Storable;
@@ -10,8 +10,7 @@ import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
 import centralworks.hooks.DynmapHook;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
-import centralworks.lib.Utils;
+import centralworks.lib.LocationUtils;
 import centralworks.lib.enums.EntityName;
 import centralworks.repositories.json.FastSpawnerRepository;
 import centralworks.repositories.mysql.JpaSpawnerRepository;
@@ -20,10 +19,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,6 +33,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -87,14 +84,16 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Getter
     @Setter
     @Expose
-    private Statistics statistics = new Statistics();
+    private Statistics statistics;
 
     public Spawner(String locSerialized) {
         this.locSerialized = locSerialized;
+        this.statistics = new Statistics(this);
     }
 
     public Spawner(Location location) {
         setLocation(location);
+        this.statistics = new Statistics(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,7 +109,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public Double getPrice() {
-        return Main.getInstance().getSpawners().getDouble("List." + getEntityType().toString() + ".price");
+        return Main.getInstance().getSpawners().navigate().getDouble("List." + getEntityType().toString() + ".price");
     }
 
     public Double getPriceAll() {
@@ -150,11 +149,11 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public Location getLocation() {
-        return Utils.stringToLoc(getLocSerialized());
+        return LocationUtils.stringToLoc(getLocSerialized());
     }
 
     public void setLocation(Location location) {
-        this.locSerialized = Utils.locToString(location);
+        this.locSerialized = LocationUtils.locToString(location);
     }
 
     public EntityType getEntityType() {
@@ -172,7 +171,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public void impulsesForceRun() {
-        final Configuration messages = Main.getInstance().getMessages();
+        var messages = Main.getInstance().getMessages().navigate();
         for (SpawnerImpulse si : getImpulsesOfGeneration()) {
             si.fix().setValid(true);
             si.run(this, () -> {
@@ -250,7 +249,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     public void pullHologram() {
         final Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), getLocation().add(0.0, 2.50, 0.0).add(0.5, 0.0, 0.5));
         setHologramId(hologram.getCreationTimestamp());
-        Main.getInstance().getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
+        Main.getInstance().getSpawners().navigate().getColorfulList("Hologram").forEach(s -> hologram.appendTextLine(s
                 .replace("{mob}", getEntityName())
                 .replace("{stack}", BalanceFormatter.format(getAmount()))
                 .replace("{owner}", getOwner()))
@@ -261,11 +260,12 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public void updateHologram() {
-        if (HologramsAPI.getHolograms(Main.getInstance()).stream().anyMatch(hologram -> hologram.getCreationTimestamp() == getHologramId())) {
+        final Collection<Hologram> holograms = HologramsAPI.getHolograms(Main.getInstance());
+        if (getHologramId() !=null && holograms.stream().anyMatch(hologram -> hologram.getCreationTimestamp() == getHologramId())) {
             final Hologram hologram = HologramsAPI.getHolograms(Main.getInstance()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().get();
             hologram.clearLines();
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                Main.getInstance().getSpawners().getList("Hologram", true).forEach(s -> hologram.appendTextLine(s
+                Main.getInstance().getSpawners().navigate().getColorfulList("Hologram").forEach(s -> hologram.appendTextLine(s
                         .replace("{mob}", getEntityName())
                         .replace("{stack}", BalanceFormatter.format(getAmount()))
                         .replace("{owner}", getOwner()))
@@ -285,7 +285,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         return getOwner().equalsIgnoreCase(name) || getFriends().stream().anyMatch(s -> s.equalsIgnoreCase(name));
     }
 
-    public void destroy(UserDetails userDetails) {
+    public void destroy(User user) {
         HologramsAPI.getHolograms(Main.getInstance()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().ifPresent(Hologram::delete);
         setHologramId(null);
         final Location l = getLocation();
@@ -294,7 +294,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
         cache.invalidate(getLocSerialized());
         query().delete();
-        userDetails.deleteSpawnerLocation(l);
+        user.deleteSpawnerLocation(l);
         final DynmapHook dynmapHook = Main.getInstance().getDynmapHook();
         dynmapHook.hide(this);
     }
@@ -326,7 +326,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         }
     }
 
-    public boolean canConcat(ItemStack item){
+    public boolean canConcat(ItemStack item) {
         try {
             final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
             return spawnerItem.getEntityType() == getEntityType();

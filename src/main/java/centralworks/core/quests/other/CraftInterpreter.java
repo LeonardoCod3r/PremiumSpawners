@@ -32,7 +32,7 @@ public class CraftInterpreter<T> {
     }
 
     public PlayerQuests getPlayerQuests(String name) {
-        return Caches.getCache(PlayerQuests.class).getUnchecked(name);
+        return Caches.getCache(PlayerQuests.class).getIfPresent(name);
     }
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1"
-             xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="centralworks.core.spawners"
                       transaction-type="RESOURCE_LOCAL">
-        <class>centralworks.core.commons.models.UserDetails</class>
+        <class>centralworks.core.commons.models.User</class>
         <class>centralworks.core.spawners.models.Spawner</class>
         <class>centralworks.core.dropstorage.models.DropStorage</class>
         <class>centralworks.core.dropstorage.models.DropPlayer</class>
@@ -17,19 +17,21 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.schema-generation.database.action"
-                      value="create" />
+                      value="create"/>
             <property name="javax.persistence.provider"
-                      value="org.hibernate.jpa.HibernatePersistenceProvider" />
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/twmobcoins?useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC" />
-            <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="123" />
-            <property name="hibernate.hikari.minimumIdle" value="5" />
-            <property name="hibernate.hikari.maximumPoolSize" value="50" />
-            <property name="hibernate.hikari.idleTimeout" value="30000" />
+                      value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/twmobcoins?useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC"/>
+            <property name="javax.persistence.jdbc.user" value="root"/>
+            <property name="javax.persistence.jdbc.password" value="123"/>
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.maximumPoolSize" value="50"/>
+            <property name="hibernate.hikari.idleTimeout" value="30000"/>
             <property name="hibernate.hbm2dll.auto" value="create"/>
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
+            <property name="hibernate.connection.provider_class"
+                      value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
         </properties>
     </persistence-unit>
 </persistence>

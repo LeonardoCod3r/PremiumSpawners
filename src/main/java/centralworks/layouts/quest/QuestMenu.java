@@ -22,7 +22,7 @@ public class QuestMenu extends InventoryMaker {
         clear();
         setCancellable(true);
         final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
-        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
+        final PlayerQuests playerQuests = cache.getIfPresent(p.getName());
         playerQuests.findQuestByCraftQuest(cq).ifPresent(questData -> {
             setItem(10, getCraftQuestInfoItem(cq));
             setItem(13, getCraftQuestStatusItem(playerQuests, cq));

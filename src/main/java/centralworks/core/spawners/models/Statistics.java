@@ -32,24 +32,28 @@ public class Statistics implements Cloneable {
     @OneToOne(mappedBy = "statistics")
     private Spawner spawner;
 
-    public Statistics(HashMap<String, Integer> map) {
+    public Statistics(Spawner spawner, HashMap<String, Integer> map) {
+        this.spawner = spawner;
+        this.locSerialized = spawner.getLocSerialized();
         this.map = map;
     }
 
-    public Statistics() {
+    public Statistics(Spawner spawner) {
+        this.spawner = spawner;
+        this.locSerialized = spawner.getLocSerialized();
     }
 
-    public void replace(String statistic, Integer level){
+    public void replace(String statistic, Integer level) {
         if (map.containsKey(statistic)) {
             map.replace(statistic, level);
         } else map.put(statistic, level);
     }
 
-    public Integer getLevel(String statistic){
+    public Integer getLevel(String statistic) {
         return map.get(statistic);
     }
 
-    public void upgradeLevel(String statistic){
+    public void upgradeLevel(String statistic) {
         replace(statistic, getLevel(statistic) + 1);
     }
 

@@ -2,7 +2,7 @@ package centralworks.core.dropstorage.models;
 
 import centralworks.Main;
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.dropstorage.cache.BonusRegistered;
 import centralworks.core.dropstorage.cache.LootData;
 import centralworks.database.Storable;
@@ -118,7 +118,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public void applyBoostersDefault() {
-        final Double b = Double.valueOf(Main.getInstance().getDropStorage().getList("Boosters.default", false).stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
+        final Double b = Double.valueOf(Main.getInstance().getDropStorage().navigate().getList("Boosters.default").stream().filter(s -> getOwnerPlayer().hasPermission(s.split(":")[0])).findFirst().orElse("0:1.0").split(":")[1]);
         if (getMultiplier() < b) setMultiplier(b);
     }
 
@@ -143,9 +143,9 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
         return getPriceAll() + (getPriceAll() * getBonus() / 100);
     }
 
-    public UserDetails getUser() {
-        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
-        return cache.getUnchecked(getOwner());
+    public User getUser() {
+        final LoadingCache<String, User> cache = Caches.getCache(User.class);
+        return cache.getIfPresent(getOwner());
     }
 
     public boolean isMax() {

@@ -3,7 +3,7 @@ package centralworks.lib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class Utils {
+public class LocationUtils {
 
     public static String locToString(Location location) {
         return location.getX() + "__" + location.getY() + "__" + location.getZ() + "__" + location.getWorld().getName() + "__" + location.getYaw() + "__" + location.getPitch();

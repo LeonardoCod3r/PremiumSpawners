@@ -50,7 +50,7 @@ public class SpawnMobLevel1 extends Upgrade {
 
     @Override
     public List<String> getDescription() {
-        return Lists.newArrayList("§eQuanto maior o nível, menos tempo para gerar o monstro." , "§fTempo atual: §7" + getValue());
+        return Lists.newArrayList("§eQuanto maior o nível, menos tempo para gerar o monstro.", "§fTempo atual: §7" + getValue());
     }
 
     @Override

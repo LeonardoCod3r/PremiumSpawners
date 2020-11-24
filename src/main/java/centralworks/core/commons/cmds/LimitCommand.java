@@ -4,11 +4,11 @@ import centralworks.Main;
 import centralworks.cache.Caches;
 import centralworks.core.commons.cache.LimitCached;
 import centralworks.core.commons.models.Limit;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.commons.models.enums.LimitType;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
 import centralworks.lib.PlayerCommons;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.Permission;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
@@ -29,14 +29,14 @@ public class LimitCommand extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender s, String lbl, String[] args) {
-        final Configuration messages = plugin.getMessages();
+        final Settings.Navigate nav = plugin.getMessages().navigate();
         if (args.length == 0) {
             if (s instanceof Player) {
                 final Player p = (Player) s;
-                final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
-                final UserDetails user = cache.getUnchecked(p.getName());
-                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.BUY.getName()).replace("{limit}", BalanceFormatter.format(user.getBuyLimit())));
-                p.sendMessage(messages.getMessage("limitView").replace("{type}", LimitType.SELL.getName()).replace("{limit}", BalanceFormatter.format(user.getSellLimit())));
+                final LoadingCache<String, User> cache = Caches.getCache(User.class);
+                final User user = cache.getIfPresent(p.getName());
+                p.sendMessage(nav.getMessage("limitView").replace("{type}", LimitType.BUY.getName()).replace("{limit}", BalanceFormatter.format(user.getBuyLimit())));
+                p.sendMessage(nav.getMessage("limitView").replace("{type}", LimitType.SELL.getName()).replace("{limit}", BalanceFormatter.format(user.getSellLimit())));
             }
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("ajuda") || args[0].equalsIgnoreCase("help")) {
@@ -49,26 +49,26 @@ public class LimitCommand extends BukkitCommand {
         } else if (args.length == 4) {
             if (args[0].equalsIgnoreCase("give")) {
                 if (!Permission.hasPermission(s, Permission.GIVE_LIMIT)) {
-                    s.sendMessage(messages.getMessage("permissionError"));
+                    s.sendMessage(nav.getMessage("permissionError"));
                     return true;
                 }
                 if (Bukkit.getPlayer(args[1]) == null) {
-                    s.sendMessage(messages.getMessage("offlinePlayer"));
+                    s.sendMessage(nav.getMessage("offlinePlayer"));
                     return true;
                 }
                 for (Limit limit : LimitCached.get().getList()) {
                     if (limit.getKey().equalsIgnoreCase(args[2])) {
                         if (StringUtils.isNumeric(args[3])) {
                             final int number = Integer.parseInt(args[3]);
-                            s.sendMessage(messages.getMessage("limitGived").replace("{type}", limit.getLimitType().getName()).replace("{id}", limit.getKey()).replace("{player}", args[1]));
+                            s.sendMessage(nav.getMessage("limitGived").replace("{type}", limit.getLimitType().getName()).replace("{id}", limit.getKey()).replace("{player}", args[1]));
                             final Player player = Bukkit.getPlayer(args[1]);
                             new PlayerCommons(player).giveItem(limit.getItemStack().getAsItem(s1 -> s1), number);
                             return true;
-                        } else s.sendMessage(messages.getMessage("invalidNumber"));
+                        } else s.sendMessage(nav.getMessage("invalidNumber"));
                         return true;
                     }
                 }
-                s.sendMessage(messages.getMessage("limitNotFound").replace("{id}", args[2]));
+                s.sendMessage(nav.getMessage("limitNotFound").replace("{id}", args[2]));
             } else Bukkit.dispatchCommand(s, "limitedecompra ajuda");
         }
         return true;

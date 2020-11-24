@@ -11,11 +11,12 @@ public class Delay {
 
     static {
         map = Maps.newHashMap();
-        delay = 30*1000L;
+        delay = 30 * 1000L;
     }
 
     public static void put(String playerName) {
-        if (map.containsKey(playerName.toLowerCase())) map.replace(playerName.toLowerCase(), System.currentTimeMillis());
+        if (map.containsKey(playerName.toLowerCase()))
+            map.replace(playerName.toLowerCase(), System.currentTimeMillis());
         else map.put(playerName.toLowerCase(), System.currentTimeMillis());
     }
 
@@ -27,7 +28,6 @@ public class Delay {
         if (inDelay) map.remove(playerName.toLowerCase());
         return inDelay;
     }
-
 
 
 }

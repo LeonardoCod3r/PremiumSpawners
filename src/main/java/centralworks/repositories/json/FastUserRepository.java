@@ -1,14 +1,14 @@
 package centralworks.repositories.json;
 
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.database.specifications.FastRepository;
 
-public class FastUserRepository extends FastRepository<UserDetails, String> {
+public class FastUserRepository extends FastRepository<User, String> {
 
     private static FastUserRepository repository;
 
     public FastUserRepository() {
-        super(UserDetails.class);
+        super(User.class);
     }
 
     public static FastUserRepository require() {

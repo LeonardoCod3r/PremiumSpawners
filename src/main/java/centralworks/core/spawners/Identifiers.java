@@ -1,6 +1,6 @@
 package centralworks.core.spawners;
 
-public class Settings {
+public class Identifiers {
 
     public static String NBT_TAG_SPAWNER_AMOUNT;
     public static String NBT_TAG_ENTITY_TYPE;
@@ -13,7 +13,6 @@ public class Settings {
     public static String IMPROVEMENT_SPAWN_AMOUNT_BOOST;
 
 
-
     static {
         NBT_TAG_SPAWNER_AMOUNT = "spawners_amount_spawners";
         NBT_TAG_ENTITY_TYPE = "spawners_entity_type";
@@ -21,6 +20,7 @@ public class Settings {
         NBT_TAG_BOOSTER_TYPE = "booster_type";
         NBT_TAG_BOOSTER_VALUE = "booster_value";
         NBT_TAG_BOOSTER_DELAY = "booster_delay";
+        IMPROVEMENT_DELAY_SPAWN = "spawnmob";
     }
 
 }

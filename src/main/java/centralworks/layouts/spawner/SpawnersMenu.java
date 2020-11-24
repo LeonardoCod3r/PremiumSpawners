@@ -1,7 +1,7 @@
 package centralworks.layouts.spawner;
 
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import centralworks.core.spawners.models.Spawner;
 import centralworks.layouts.settings.InfoSpawnerMenuS;
 import centralworks.layouts.settings.MenusSettings;
@@ -21,7 +21,7 @@ public class SpawnersMenu extends InventoryMaker {
         final InfoSpawnerMenuS mainMenuS = MenusSettings.get().getInfoSpawnerMenuSettings();
         clear();
         setCancellable(true);
-        final UserDetails user = Caches.getCache(UserDetails.class).getUnchecked(p.getName());
+        final User user = Caches.getCache(User.class).getIfPresent(p.getName());
         user.getSpawners(spawners -> {
             if (!spawners.isEmpty()) {
                 final List<Integer> slots = Lists.newArrayList(11, 12, 13, 14, 15);

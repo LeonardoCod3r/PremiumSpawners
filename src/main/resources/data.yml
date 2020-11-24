@@ -12,4 +12,4 @@ Advanced:
   maximumPoolSize: "50"
   idleTimeout: "30000"
   #for other changes, access the ServiceModule class
-  #https://www.github.com/LeonardoCod3r/PremiumSpawners/tree/hib-impl/src/main/java/centralworks/database/specifications/ServiceModule.java
+  #https://www.github.com/LeonardoCod3r/PremiumSpawners/blob/hib-impl/src/main/java/centralworks/database/specifications/ServiceModule.java

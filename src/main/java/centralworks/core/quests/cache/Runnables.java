@@ -1,6 +1,6 @@
 package centralworks.core.quests.cache;
 
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.Consumer;
 
-public class Runnables extends Cache<Runnables.QuestRunnableReward> {
+public class Runnables extends ListCache<Runnables.QuestRunnableReward> {
 
     private static Runnables me;
 

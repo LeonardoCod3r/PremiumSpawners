@@ -1,9 +1,9 @@
 package centralworks.core.commons.cache;
 
 import centralworks.core.commons.models.Impulse;
-import centralworks.lib.Cache;
+import centralworks.lib.ListCache;
 
-public class ICached extends Cache<Impulse> {
+public class ICached extends ListCache<Impulse> {
 
     private static ICached me;
 

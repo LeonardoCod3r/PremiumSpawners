@@ -1,7 +1,7 @@
 package centralworks.core.commons.listeners;
 
 import centralworks.cache.Caches;
-import centralworks.core.commons.models.UserDetails;
+import centralworks.core.commons.models.User;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +13,9 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        final LoadingCache<String, UserDetails> cache = Caches.getCache(UserDetails.class);
+        final LoadingCache<String, User> cache = Caches.getCache(User.class);
         final String name = e.getPlayer().getName();
-        final UserDetails user = Optional.ofNullable(cache.getIfPresent(name)).orElse(new UserDetails(name));
+        final User user = Optional.ofNullable(cache.getIfPresent(name)).orElse(new User(name));
         user.fixLimits();
         cache.put(name, user);
     }

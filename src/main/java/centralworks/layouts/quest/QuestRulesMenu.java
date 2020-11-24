@@ -23,7 +23,7 @@ public class QuestRulesMenu extends InventoryMaker {
         clear();
         setCancellable(true);
         final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
-        final PlayerQuests playerQuests = cache.getUnchecked(p.getName());
+        final PlayerQuests playerQuests = cache.getIfPresent(p.getName());
         final QuestData data = playerQuests.findQuestByCraftQuest(cq).get();
         final List<QuestRule> rules = data.getData();
         final List<Integer> slots = Arrays.asList(11, 12, 13, 14, 15);

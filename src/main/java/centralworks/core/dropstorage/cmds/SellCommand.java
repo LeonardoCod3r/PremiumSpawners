@@ -8,7 +8,7 @@ import centralworks.core.dropstorage.models.DropPlayer;
 import centralworks.core.dropstorage.models.DropStorage;
 import centralworks.lib.ActionBarMessage;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.Configuration;
+import centralworks.lib.Settings;
 import centralworks.lib.enums.ItemName;
 import centralworks.lib.enums.Permission;
 import centralworks.lib.inventory.InventoryMaker;
@@ -39,61 +39,61 @@ public class SellCommand extends BukkitCommand {
     public boolean execute(CommandSender s, String lbl, String[] args) {
         if (s instanceof Player) {
             final Player p = (Player) s;
-            final Configuration configuration = plugin.getDropStorage();
+            final Settings.Navigate nav = plugin.getDropStorage().navigate();
             final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
             if (args.length == 0) {
-                final DropStorage dropStorage = cache.getUnchecked(p.getName());
-                openSellInventory(p, dropStorage, configuration);
+                final DropStorage dropStorage = cache.getIfPresent(p.getName());
+                openSellInventory(p, dropStorage, nav);
             } else if (args.length == 1) {
                 final Optional<DropStorage> optional = Optional.ofNullable(cache.getIfPresent(args[0]));
                 final boolean present = optional.isPresent();
                 optional.ifPresent(dropStorage -> {
                     if (dropStorage.getFriends().stream().anyMatch(s1 -> s1.equalsIgnoreCase(p.getName())) || args[0].equalsIgnoreCase(p.getName())) {
-                        openSellInventory(p, dropStorage, configuration);
+                        openSellInventory(p, dropStorage, nav);
                     }
                 });
-                if (!present) p.sendMessage(plugin.getMessages().getMessage("drops-no-friend"));
+                if (!present) p.sendMessage(plugin.getMessages().navigate().getMessage("drops-no-friend"));
             }
         }
         return true;
     }
 
-    public void openSellInventory(Player p, DropStorage dropStorage, Configuration configuration) {
-        final InventoryMaker inventory = new InventoryMaker(configuration.getInt("Inventory.sell.rows"), configuration.get("Inventory.sell.name", true));
+    public void openSellInventory(Player p, DropStorage dropStorage, Settings.Navigate nav) {
+        final InventoryMaker inventory = new InventoryMaker(nav.getInt("Inventory.sell.rows"), nav.getColorfulString("Inventory.sell.name"));
         final List<Integer> slots = new ArrayList<>();
         final LootData cached = LootData.get();
-        final Configuration messages = plugin.getMessages();
+        final Settings.Navigate messages = plugin.getMessages().navigate();
         final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
-        Arrays.asList(configuration.get("Inventory.sell.slotsDropSell", true).split(",")).forEach(s1 -> slots.add(Integer.parseInt(s1)));
+        Arrays.asList(nav.getString("Inventory.sell.slotsDropSell").split(",")).forEach(s1 -> slots.add(Integer.parseInt(s1)));
         inventory.setCancellable(true);
         inventory.clear();
         String path = "Inventory.sell.items.playerStats.";
-        if (configuration.is(path + "toggle")) {
-            inventory.setItem(configuration.getInt(path + "slot"),
-                    new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
-                            .name(configuration.get(path + "name", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
-                            .setSkullUrl(configuration.get(path + "skull-url", false))
-                            .setSkullOwner(configuration.get(path + "skull-owner", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
-                            .lore(configuration.getList(path + "lore", true).stream().map(s1 -> s1
+        if (nav.getBoolean(path + "toggle")) {
+            inventory.setItem(nav.getInt(path + "slot"),
+                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                            .name(nav.getColorfulString(path + "name").replace("{playername}", dropStorage.getCorrectNameOwner()))
+                            .setSkullUrl(nav.getString(path + "skull-url"))
+                            .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", dropStorage.getCorrectNameOwner()))
+                            .lore(nav.getColorfulList(path + "lore").stream().map(s1 -> s1
                                     .replace("{limit}", BalanceFormatter.format(dropStorage.getUser().getSellLimit()))
                                     .replace("{bonus}", dropStorage.getBonus().toString())
                                     .replace("{multiplier}", dropStorage.getMultiplier().toString()))
                                     .collect(Collectors.toList())));
         }
         path = "Inventory.sell.items.sellAll.";
-        if (configuration.is(path + "toggle")) {
-            inventory.setItem(configuration.getInt(path + "slot"),
-                    new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
-                            .name(configuration.get(path + "name", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
-                            .setSkullUrl(configuration.get(path + "skull-url", false))
-                            .setSkullOwner(configuration.get(path + "skull-owner", true).replace("{playername}", dropStorage.getCorrectNameOwner()))
-                            .lore(configuration.getList(path + "lore", true).stream().map(s1 -> s1
+        if (nav.getBoolean(path + "toggle")) {
+            inventory.setItem(nav.getInt(path + "slot"),
+                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                            .name(nav.getColorfulString(path + "name").replace("{playername}", dropStorage.getCorrectNameOwner()))
+                            .setSkullUrl(nav.getString(path + "skull-url"))
+                            .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", dropStorage.getCorrectNameOwner()))
+                            .lore(nav.getColorfulList(path + "lore").stream().map(s1 -> s1
                                     .replace("{drops}", BalanceFormatter.format(dropStorage.getAmountAll()))
                                     .replace("{total}", BalanceFormatter.format(dropStorage.getPriceWithBonus())))
                                     .collect(Collectors.toList()))
                             .onClick(inventoryClickEvent -> {
                                 if (!Permission.hasPermission(p, Permission.SELL_ALL)) return;
-                                final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
+                                final DropStorage storage = cache.getIfPresent(dropStorage.getOwner());
                                 if (storage.getAmountAll() > 0) {
                                     new ActionBarMessage(p, messages.getMessage("drops-sellall")
                                             .replace("{amount}", BalanceFormatter.format(dropStorage.getAmountAll()))
@@ -104,18 +104,18 @@ public class SellCommand extends BukkitCommand {
                             }));
         }
         path = "Inventory.sell.items.autoSell.";
-        if (configuration.is(path + "toggle")) {
-            inventory.setItem(configuration.getInt(path + "slot"),
-                    new Item(Material.getMaterial(configuration.getInt(path + "id")), 1, configuration.getInt(path + "data").shortValue())
-                            .name(configuration.get(path + "name", true).replace("{playername}", p.getName()))
-                            .setSkullUrl(configuration.get(path + "skull-url", false))
-                            .setSkullOwner(configuration.get(path + "skull-owner", true).replace("{playername}", p.getName()))
-                            .lore(configuration.getList(path + "lore", true).stream().map(s1 -> s1
+        if (nav.getBoolean(path + "toggle")) {
+            inventory.setItem(nav.getInt(path + "slot"),
+                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                            .name(nav.getColorfulString(path + "name").replace("{playername}", p.getName()))
+                            .setSkullUrl(nav.getString(path + "skull-url"))
+                            .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", p.getName()))
+                            .lore(nav.getColorfulList(path + "lore").stream().map(s1 -> s1
                                     .replace("{state}", dropStorage.isAutoSellResult())
                                     .replace("{future-state}", "" + (!dropStorage.isAutoSell() ? "ativar" : "desativar")))
                                     .collect(Collectors.toList()))
                             .onClick(inventoryClickEvent -> {
-                                final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
+                                final DropStorage storage = cache.getIfPresent(dropStorage.getOwner());
                                 if (!Permission.hasPermission(p, Permission.AUTO_SELL)) storage.setAutoSell(false);
                                 else storage.setAutoSell(!storage.isAutoSell());
                                 Bukkit.dispatchCommand(p, "drops " + storage.getOwner());
@@ -136,7 +136,7 @@ public class SellCommand extends BukkitCommand {
                                         .replace("{price-sell-all}", BalanceFormatter.format(dropPlayer.getPrice(dropStorage))))
                                         .collect(Collectors.toList()))
                                 .onClick(event -> {
-                                    final DropStorage storage = cache.getUnchecked(dropStorage.getOwner());
+                                    final DropStorage storage = cache.getIfPresent(dropStorage.getOwner());
                                     final DropPlayer dp = storage.getDropPlayer(dropPlayer.getKeyDrop());
                                     if (dp.getAmount() > 0) {
                                         new ActionBarMessage(p, messages.getMessage("drops-sell")
