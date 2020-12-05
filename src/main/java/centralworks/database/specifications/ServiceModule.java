@@ -1,16 +1,16 @@
 package centralworks.database.specifications;
 
 import centralworks.Main;
-import centralworks.core.commons.models.User;
-import centralworks.core.dropstorage.models.BoosterPlayer;
-import centralworks.core.dropstorage.models.DropPlayer;
-import centralworks.core.dropstorage.models.DropStorage;
-import centralworks.core.quests.models.PlayerQuests;
-import centralworks.core.quests.models.QuestData;
-import centralworks.core.quests.models.QuestRule;
-import centralworks.core.spawners.models.Spawner;
-import centralworks.core.spawners.models.SpawnerImpulse;
-import centralworks.core.spawners.models.Statistics;
+import centralworks.models.User;
+import centralworks.models.BoosterPlayer;
+import centralworks.models.DropPlayer;
+import centralworks.models.DropStorage;
+import centralworks.quests.models.PlayerQuests;
+import centralworks.quests.models.QuestData;
+import centralworks.quests.models.QuestRule;
+import centralworks.spawners.models.Spawner;
+import centralworks.spawners.models.SpawnerImpulse;
+import centralworks.spawners.models.Statistics;
 import centralworks.lib.Settings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

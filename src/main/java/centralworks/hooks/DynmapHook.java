@@ -1,6 +1,6 @@
 package centralworks.hooks;
 
-import centralworks.core.spawners.models.Spawner;
+import centralworks.spawners.models.Spawner;
 import centralworks.lib.BalanceFormatter;
 import lombok.Getter;
 import org.bukkit.Bukkit;

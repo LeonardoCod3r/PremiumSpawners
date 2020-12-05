@@ -1,7 +1,7 @@
 package centralworks.hooks;
 
-import centralworks.cache.Caches;
-import centralworks.core.commons.models.User;
+import centralworks.cache.google.Caches;
+import centralworks.models.User;
 import centralworks.lib.BalanceFormatter;
 import com.google.common.cache.LoadingCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

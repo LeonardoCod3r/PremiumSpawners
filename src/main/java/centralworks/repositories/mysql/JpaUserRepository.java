@@ -1,6 +1,6 @@
 package centralworks.repositories.mysql;
 
-import centralworks.core.commons.models.User;
+import centralworks.models.User;
 import centralworks.database.specifications.JpaRepository;
 
 public class JpaUserRepository extends JpaRepository<User, String> {

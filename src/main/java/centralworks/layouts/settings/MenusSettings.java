@@ -11,7 +11,7 @@ import java.nio.file.Files;
 
 @Data
 @RequiredArgsConstructor
-public class MenusSettings {
+public class MenusSettings{
 
     private static MenusSettings menusSettings;
 
@@ -21,6 +21,7 @@ public class MenusSettings {
     private RankingMenuS rankingMenuSettings;
     private BoosterMenuS boosterMenuSettings;
     private MainMenuS mainMenuSettings;
+    private BuySpawnersMenuS buySpawnersMenuSettings;
 
     public static MenusSettings get() {
         if (menusSettings == null) {

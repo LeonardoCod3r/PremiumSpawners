@@ -1,6 +1,6 @@
 package centralworks.repositories.mysql;
 
-import centralworks.core.spawners.models.Spawner;
+import centralworks.spawners.models.Spawner;
 import centralworks.database.specifications.JpaRepository;
 
 public class JpaSpawnerRepository extends JpaRepository<Spawner, String> {

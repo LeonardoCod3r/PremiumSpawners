@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-public class ItemSettings {
+public class ItemSettings implements Cloneable{
 
     private Integer item_id;
     private Integer item_data;
@@ -22,10 +22,17 @@ public class ItemSettings {
     private Integer item_amount;
     private Integer item_slot;
     private String item_name;
+    private boolean item_view;
     private List<String> item_lore;
     private List<String> item_enchants;
 
+    @Override
+    public ItemSettings clone() throws CloneNotSupportedException {
+        return (ItemSettings) super.clone();
+    }
+
     public ItemStack getAsItem(Function<String, String> loreReplacement) {
+        if (!item_view) return new ItemStack(Material.AIR);
         final Item item = new Item(Material.getMaterial(item_id), item_amount, item_data.shortValue());
         item.name(item_name.replace("&", "§"));
         item.lore(item_lore.stream().map(s -> s.replace("&", "§")).map(loreReplacement).collect(Collectors.toList()));

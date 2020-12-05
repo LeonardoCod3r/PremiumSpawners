@@ -1,6 +1,6 @@
 package centralworks.repositories.json;
 
-import centralworks.core.quests.models.PlayerQuests;
+import centralworks.quests.models.PlayerQuests;
 import centralworks.database.specifications.FastRepository;
 
 public class FastUserQuestsRepository extends FastRepository<PlayerQuests, String> {

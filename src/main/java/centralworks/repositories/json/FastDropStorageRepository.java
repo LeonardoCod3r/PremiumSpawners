@@ -1,6 +1,6 @@
 package centralworks.repositories.json;
 
-import centralworks.core.dropstorage.models.DropStorage;
+import centralworks.models.DropStorage;
 import centralworks.database.specifications.FastRepository;
 
 public class FastDropStorageRepository extends FastRepository<DropStorage, String> {

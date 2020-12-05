@@ -1,7 +1,7 @@
 package centralworks.lib.inventory.addons;
 
-import centralworks.cache.Caches;
-import centralworks.core.spawners.models.Spawner;
+import centralworks.cache.google.Caches;
+import centralworks.spawners.models.Spawner;
 import centralworks.lib.inventory.InventoryMaker;
 import com.google.common.cache.LoadingCache;
 import lombok.Getter;
@@ -21,9 +21,6 @@ public abstract class InventorySpawner extends InventoryMaker {
     @Getter
     @Setter
     private Player player;
-
-    public InventorySpawner() {
-    }
 
     public InventorySpawner(Integer rows, String name) {
         super(rows, name);

@@ -1,0 +1,57 @@
+package centralworks.listeners.dropstorage;
+
+import centralworks.Main;
+import centralworks.cache.google.Caches;
+import centralworks.cache.simple.LootData;
+import centralworks.models.Drop;
+import centralworks.models.DropPlayer;
+import centralworks.models.DropStorage;
+import centralworks.models.EntityStacked;
+import centralworks.lib.ActionBarMessage;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Settings;
+import centralworks.lib.enums.ItemName;
+import com.google.common.cache.LoadingCache;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+
+public class EntityListeners implements Listener {
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDeath(EntityDeathEvent e) {
+        final Main plugin = Main.getInstance();
+        if (e.getEntity().getKiller() != null) {
+            final Player p = e.getEntity().getKiller();
+            final Entity mob = e.getEntity();
+            if (plugin.dropStorageSystemIsActive()) {
+                if (plugin.getDropStorage().navigate().getList("Settings.black-list").contains(e.getEntity().getWorld().getName()))
+                    return;
+                final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+                final DropStorage dropStorage = cache.getIfPresent(p.getName());
+                for (DropPlayer dropPlayer : dropStorage.getDropPlayers()) {
+                    final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
+                    if (drop.getEntityType().equals(mob.getType())) {
+                        final Settings.Navigate nav = plugin.getMessages().navigate();
+                        if (!dropStorage.isMax()) {
+                            final Double add = Math.ceil(new EntityStacked(mob).getAmountDrops(p.getItemInHand()) * dropStorage.getAllMultipliers());
+                            if (dropStorage.isMax(add))
+                                dropPlayer.addDropAmount(add - (dropStorage.getAmountAll() + add - dropStorage.getUser().getSellLimit()));
+                            else dropPlayer.addDropAmount(add);
+                            new ActionBarMessage(p, nav.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(drop.getDrop()).getName()));
+                        } else new ActionBarMessage(p, nav.getMessage("armazem-max"));
+                        if (dropStorage.isAutoSell()) {
+                            if (dropPlayer.getAmount() > 0) dropPlayer.sell(p.getPlayer(), dropStorage);
+                        }
+                        e.getDrops().clear();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+}

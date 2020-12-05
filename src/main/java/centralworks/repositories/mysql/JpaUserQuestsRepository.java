@@ -1,6 +1,6 @@
 package centralworks.repositories.mysql;
 
-import centralworks.core.quests.models.PlayerQuests;
+import centralworks.quests.models.PlayerQuests;
 import centralworks.database.specifications.JpaRepository;
 
 public class JpaUserQuestsRepository extends JpaRepository<PlayerQuests, String> {

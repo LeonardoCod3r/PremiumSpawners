@@ -1,7 +1,7 @@
 package centralworks;
 
-import centralworks.core.dropstorage.cache.LootData;
-import centralworks.core.spawners.cache.SICached;
+import centralworks.cache.simple.LootData;
+import centralworks.cache.simple.SICached;
 import centralworks.database.specifications.ServiceModule;
 import centralworks.hooks.DynmapHook;
 import centralworks.init.ImpulseLoader;

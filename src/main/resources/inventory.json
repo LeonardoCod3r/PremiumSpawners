@@ -1,5 +1,71 @@
 {
+  "buySpawnersMenuSettings": {
+    "name": "§8Comprar Geradores",
+    "rows": 6,
+    "toggle": true,
+    "slots": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "comingSoon": {
+      "item_id": 397,
+      "item_skull_owner": "",
+      "item_skull_url": "http://textures.minecraft.net/texture/3ed1aba73f639f4bc42bd48196c715197be2712c3b962c97ebf9e9ed8efa025",
+      "item_data": 3,
+      "item_amount": 1,
+      "item_name": "§c§lEm breve!",
+      "item_enchants": [],
+      "item_view": true,
+      "item_lore": [
+        "§7Esse gerador ainda não foi liberado.",
+        "§7Será liberado em {date}."
+      ]
+    },
+    "info": {
+      "item_id": 397,
+      "item_skull_owner": "{player}",
+      "item_skull_url": "",
+      "item_data": 3,
+      "item_slot": 4,
+      "item_amount": 1,
+      "item_name": "§eInformações: ",
+      "item_enchants": [],
+      "item_view": true,
+      "item_lore": [
+        "§fLimite de compra: §7{limit}"
+      ]
+    },
+    "spawnerItem": {
+      "item_lore": [
+        "§fPreço: §2R$§7{price}",
+        "",
+        "§7Clique para comprar geradores de {mob}."
+      ]
+    }
+  },
   "mainMenuSettings": {
+    "name": "§8Rede Nitro - Geradores",
+    "rows": 3,
+    "toggle": true,
     "buy": {
       "item_id": 397,
       "item_skull_owner": "",
@@ -9,6 +75,7 @@
       "item_slot": 11,
       "item_name": "&eComprar geradores",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para poder comprar geradores."
       ]
@@ -22,12 +89,16 @@
       "item_slot": 15,
       "item_name": "&aSeus geradores",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para ver seus geradores colocados."
       ]
     }
   },
   "infoSpawnerMenuSettings": {
+    "name": "§8Gerador",
+    "rows": 3,
+    "toggle": true,
     "spawner_item": {
       "item_id": 397,
       "item_skull_owner": "",
@@ -37,6 +108,7 @@
       "item_slot": 10,
       "item_name": "&aGerador",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&fValor: &2R$ &7{coins}",
         "&fDono: &7{owner}",
@@ -53,6 +125,7 @@
       "item_amount": 1,
       "item_slot": 13,
       "item_name": "&aBoosters",
+      "item_view": true,
       "item_enchants": [],
       "item_lore": [
         "&7Clique para ver seus boosters ativos."
@@ -67,6 +140,7 @@
       "item_slot": 14,
       "item_name": "&2Amigos",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para gerenciar as permissões de jogadores."
       ]
@@ -80,6 +154,7 @@
       "item_slot": 15,
       "item_name": "&eUtilidades",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para acessar o menu de utilidades do gerador."
       ]
@@ -93,12 +168,16 @@
       "item_slot": 16,
       "item_name": "&bTop Ranking",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para ver os jogadores que mais possuem spawners."
       ]
     }
   },
   "utilsMenuSettings": {
+    "name": "§8Gerador - Ações",
+    "rows": 3,
+    "toggle": true,
     "add": {
       "item_id": 397,
       "item_skull_owner": "",
@@ -108,6 +187,7 @@
       "item_slot": 11,
       "item_name": "&aAdicionar spawners",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique no gerador que está no seu.",
         "&7inventário para poder adicioná-lo."
@@ -122,6 +202,7 @@
       "item_slot": 13,
       "item_name": "&cRecolher todos",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para recolher todos os spawners."
       ]
@@ -135,6 +216,7 @@
       "item_slot": 15,
       "item_name": "&cRemover spawners",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique aqui para remover spawners desse stack."
       ]
@@ -148,12 +230,16 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
     }
   },
   "friendsMenuSettings": {
+    "name": "§8Gerador - Amigos",
+    "rows": 6,
+    "toggle": true,
     "slots": [
       19,
       20,
@@ -186,6 +272,7 @@
       "item_slot": 4,
       "item_name": "&aGerador",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&fValor: &2R$ &7{coins}",
         "&fDono: &7{owner}",
@@ -203,6 +290,7 @@
       "item_slot": 49,
       "item_name": "&aAdicionar amigo",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para adicionar um jogador a sua lista de amigos."
       ]
@@ -213,9 +301,9 @@
       "item_skull_url": "",
       "item_data": 3,
       "item_amount": 1,
-      "item_slot": 0,
       "item_name": "&f{player}",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique no jogador para removê-lo da sua lista."
       ]
@@ -229,6 +317,7 @@
       "item_slot": 45,
       "item_name": "&cVoltar",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
@@ -242,6 +331,7 @@
       "item_slot": 47,
       "item_name": "&cPágina anterior",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para voltar a página anterior."
       ]
@@ -255,12 +345,16 @@
       "item_slot": 47,
       "item_name": "&aPróxima página",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para ir à página seguinte."
       ]
     }
   },
   "rankingMenuSettings": {
+    "name": "§8Geradores - Ranking",
+    "rows": 3,
+    "toggle": true,
     "slots": [
       10,
       11,
@@ -281,6 +375,7 @@
       "item_slot": 13,
       "item_name": "&aAtualizando",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7O ranking está atualizando."
       ]
@@ -294,6 +389,7 @@
       "item_slot": 15,
       "item_name": "&f{player}",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&fPosição: &7{position}º",
         "&fValor: &2R$ &7{price}"
@@ -308,12 +404,16 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
     }
   },
   "boosterMenuSettings": {
+    "name": "§8Gerador - Impulsos",
+    "rows": 3,
+    "toggle": true,
     "add": {
       "item_id": 397,
       "item_skull_owner": "",
@@ -323,6 +423,7 @@
       "item_slot": 11,
       "item_name": "&aAdicionar booster",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique em um booster do seu inventário para ativar."
       ]
@@ -336,6 +437,7 @@
       "item_slot": 15,
       "item_name": "&eInformações",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Boosters ativos/Tempo restante:",
         ""
@@ -350,6 +452,7 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
+      "item_view": true,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]

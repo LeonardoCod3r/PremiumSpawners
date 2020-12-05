@@ -1,3 +1,5 @@
+FactionMode: false
+HologramToggle: false
 Hologram:
   - " &6&lMob Spawner"
   - ""

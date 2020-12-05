@@ -1,6 +1,6 @@
 package centralworks.repositories.json;
 
-import centralworks.core.commons.models.User;
+import centralworks.models.User;
 import centralworks.database.specifications.FastRepository;
 
 public class FastUserRepository extends FastRepository<User, String> {

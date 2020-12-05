@@ -2,8 +2,8 @@ package centralworks.init;
 
 
 import centralworks.Main;
-import centralworks.core.commons.cache.LimitCached;
-import centralworks.core.commons.models.Limit;
+import centralworks.cache.simple.LimitCached;
+import centralworks.models.Limit;
 import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;

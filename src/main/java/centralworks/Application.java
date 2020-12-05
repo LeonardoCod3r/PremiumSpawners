@@ -1,9 +1,9 @@
 package centralworks;
 
-import centralworks.cache.Caches;
-import centralworks.core.commons.cmds.BoosterCommand;
-import centralworks.core.commons.cmds.LimitCommand;
-import centralworks.core.commons.listeners.PlayerListeners;
+import centralworks.cache.google.Caches;
+import centralworks.commands.BoosterCommand;
+import centralworks.commands.LimitCommand;
+import centralworks.listeners.commons.PlayerListeners;
 import centralworks.hooks.PlaceHolderHook;
 import centralworks.init.ImpulseLoader;
 import centralworks.init.LimitLoader;

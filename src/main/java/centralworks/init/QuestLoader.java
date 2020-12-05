@@ -1,8 +1,8 @@
 package centralworks.init;
 
 import centralworks.Main;
-import centralworks.core.quests.cache.Quests;
-import centralworks.core.quests.other.CraftQuest;
+import centralworks.cache.simple.Quests;
+import centralworks.quests.structure.CraftQuest;
 import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

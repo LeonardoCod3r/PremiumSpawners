@@ -1,6 +1,6 @@
 package centralworks.repositories.json;
 
-import centralworks.core.spawners.models.Spawner;
+import centralworks.spawners.models.Spawner;
 import centralworks.database.specifications.FastRepository;
 
 public class FastSpawnerRepository extends FastRepository<Spawner, String> {

@@ -1,6 +1,6 @@
 package centralworks.repositories.mysql;
 
-import centralworks.core.dropstorage.models.DropStorage;
+import centralworks.models.DropStorage;
 import centralworks.database.specifications.JpaRepository;
 
 public class JpaDropStorageRepository extends JpaRepository<DropStorage, String> {

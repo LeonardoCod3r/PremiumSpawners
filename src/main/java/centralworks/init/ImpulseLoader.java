@@ -1,8 +1,8 @@
 package centralworks.init;
 
 import centralworks.Main;
-import centralworks.core.commons.cache.ICached;
-import centralworks.core.commons.models.Impulse;
+import centralworks.cache.simple.ICached;
+import centralworks.models.Impulse;
 import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;

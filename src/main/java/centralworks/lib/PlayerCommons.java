@@ -37,6 +37,11 @@ public class PlayerCommons {
             } else p.getWorld().dropItem(p.getLocation(), itemStack);
             return this;
         }
+        give(itemStack, amount, stackMax, p);
+        return this;
+    }
+
+    public static void give(ItemStack itemStack, Integer amount, int stackMax, Player p) {
         final int items = amount / stackMax;
         final int rest = amount % stackMax;
         final ItemStack newItemStack = itemStack.clone();
@@ -51,7 +56,6 @@ public class PlayerCommons {
                 p.getInventory().addItem(newItem);
             } else p.getWorld().dropItem(p.getLocation(), newItem);
         }
-        return this;
     }
 
     public boolean haveSpace(final ItemStack itemStack, Integer amount) {
