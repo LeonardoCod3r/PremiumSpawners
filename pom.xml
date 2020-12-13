@@ -44,7 +44,7 @@
     </repositories>
 
     <build>
-        <finalName>${name}_V${version}</finalName>
+        <finalName>${project.name}_V${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -150,10 +150,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>com.github.azbh111</groupId>
+            <artifactId>craftbukkit-1.8.8</artifactId>
+            <version>R</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
