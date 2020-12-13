@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 
 @Module
 public class SpawnerModule extends PluginSystem {
+
     @Override
     public String getId() {
         return "spawners";
@@ -35,7 +36,7 @@ public class SpawnerModule extends PluginSystem {
         ranking.updateAsync();
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> SpawnerRanking.get().updateAsync(), 20L * 60 * 5, 20L * 60 * 7);
         ((CraftServer) plugin.getServer()).getCommandMap().register("spawners", new SpawnersCommand());
-        Bukkit.getPluginManager().registerEvents(new SpawnerListeners(), plugin);
+        Bukkit.getPluginManager().registerEvents(SpawnerListeners.getListener(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerListeners(), plugin);
     }
 

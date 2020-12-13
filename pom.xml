@@ -6,7 +6,7 @@
     <groupId>centralworks.spawners</groupId>
     <artifactId>PremiumSpawners</artifactId>
     <version>2.0.5</version>
-    <name>NitroSpawners</name>
+    <name>PremiumSpawners</name>
     <organization>
         <name>CentralWorks</name>
         <url>https://discord.gg/E8y2R5w</url>
@@ -20,6 +20,14 @@
     </developers>
 
     <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
         <repository>
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
@@ -36,7 +44,7 @@
     </repositories>
 
     <build>
-        <finalName>NitroSpawners_V${version}</finalName>
+        <finalName>${name}_V${version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -122,27 +130,29 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
-            <systemPath>${project.basedir}/../../ApisBukkit/Vault.jar</systemPath>
-            <scope>system</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>us.dynmap</groupId>
-            <artifactId>Dynmap</artifactId>
+            <groupId>com.github.webbukkit</groupId>
+            <artifactId>dynmap-api</artifactId>
             <version>2.5</version>
-            <systemPath>${project.basedir}/../../ApisBukkit/dynmap-2.5.jar</systemPath>
-            <scope>system</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigot</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.8.8</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../Spigot.jar</systemPath>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

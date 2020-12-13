@@ -57,7 +57,7 @@ public class UtilitiesMenu extends InventorySpawner {
             getPlayer().closeInventory();
             ifPresent(spawner1 -> {
                 if (!spawner1.isOwner(getPlayer().getName())) return;
-                final SpawnerItem spawnerItem = new SpawnerItem().parse(getTarget());
+                final SpawnerItem spawnerItem = new SpawnerItem(getTarget());
                 final SpawnerRemoveEvent event = new SpawnerRemoveEvent(getPlayer(), spawner1, spawnerItem, true);
                 if (event.isCancelled()) return;
                 spawnerItem.giveItem(getPlayer());

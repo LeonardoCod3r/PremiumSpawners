@@ -8,12 +8,10 @@ import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
 import centralworks.repositories.json.FastUserQuestsRepository;
 import centralworks.repositories.mysql.JpaUserQuestsRepository;
+import centralworks.spawners.models.Spawner;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -27,23 +25,19 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
+@Data
 public class PlayerQuests extends Storable<PlayerQuests> implements Serializable {
 
     @Id
     @Column(length = 16)
-    @Getter
-    @Setter
     @Expose
     private String name;
-    @Getter
-    @Setter
     @Expose
     private String lastCompletedId = "";
-    @Getter
-    @Setter
     @OneToMany(mappedBy = "playerQuests", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Expose
@@ -127,6 +121,10 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
             }).collect(Collectors.toList()));
             addQuest(data);
         }
+        update();
+    }
+
+    private void update() {
         getCompounds().forEach(q -> {
             final CraftQuest craftQuests = q.getQuest();
             final List<String> needQuests = craftQuests.getSettings().getNeedQuests();
@@ -153,14 +151,7 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
                     q.setActive(true);
             });
         }
-        getCompounds().forEach(q -> {
-            final CraftQuest craftQuests = q.getQuest();
-            final List<String> needQuests = craftQuests.getSettings().getNeedQuests();
-            if (!q.isActive() && !q.isCompleted() && needQuests.stream().map(this::findQuestById).allMatch(questData -> questData.get().isCompleted())) {
-                if (needQuests.stream().map(this::findQuestById).allMatch(questData -> questData.get().isCompleted()) && !q.getQuest().getSettings().isNeedPreviousQuestToRun())
-                    q.setActive(true);
-            }
-        });
+        update();
     }
 
     public void addQuest(String id, List<QuestRule> questRules, Boolean... isActive) {

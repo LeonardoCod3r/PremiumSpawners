@@ -50,15 +50,15 @@ public class SpawnerItem {
     }
 
     public ItemStack getItem() {
-        final Item item = new Item(new ItemStack(id, amountItem, data));
-        final ItemStack itemStack = item.name(name).lore(
+        val item = new Item(new ItemStack(id, amountItem, data));
+        val itemStack = item.name(name).lore(
                 lore.stream().map(s -> s
                         .replace("{entity-type}", EntityName.valueOf(entityType).getName())
                         .replace("{stack}", BalanceFormatter.format(amountSpawners))
                 ).collect(Collectors.toList())
         ).setSkullOwner(skullOwner).setSkullUrl(skullUrl).getItemStack();
-        final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
-        final NBTTagCompound tag = copy.getTag();
+        val copy = CraftItemStack.asNMSCopy(itemStack);
+        val tag = copy.getTag();
         tag.setDouble(Identifiers.NBT_TAG_SPAWNER_AMOUNT, amountSpawners);
         tag.setString(Identifiers.NBT_TAG_ENTITY_TYPE, entityType.toString());
         copy.setTag(tag);
@@ -67,9 +67,9 @@ public class SpawnerItem {
 
     public List<ItemStack> getItems() {
         final List<ItemStack> list = Lists.newArrayList();
-        final int v = amountItem / 64;
-        final int rest = amountItem % 64;
-        final SpawnerItem clone = new SpawnerItem(this);
+        val v = amountItem / 64;
+        val rest = amountItem % 64;
+        val clone = new SpawnerItem(this);
         if (v != 0) {
             for (int i = v; i != 0; i--) {
                 clone.setAmountItem(64);
@@ -92,9 +92,9 @@ public class SpawnerItem {
     }
 
     public void giveItem(Player p) {
-        final ItemStack itemStack = getItem();
-        final int stackMax = itemStack.getMaxStackSize();
-        int amount = itemStack.getAmount();
+        val itemStack = getItem();
+        val stackMax = itemStack.getMaxStackSize();
+        var amount = itemStack.getAmount();
         for (ItemStack itemStack1 : p.getInventory().getContents()) {
             if (amount == 0) return;
             if (itemStack1 == null || !isSpawnerItem(itemStack1)) continue;
@@ -127,16 +127,16 @@ public class SpawnerItem {
 
     public SpawnerItem concat(ItemStack itemStack) {
         if (isSpawnerItem(itemStack)) {
-            final SpawnerItem item = new SpawnerItem(itemStack);
+            val item = new SpawnerItem(itemStack);
             if (item.getEntityType() != entityType) return this;
-            setAmountItem(getAmountItem() + item.getAmountItem());
+            this.amountItem = getAmountItem() + item.getAmountItem();
         }
         return this;
     }
 
     public SpawnerItem concat(SpawnerItem item) {
         if (item.getEntityType() != entityType) return this;
-        setAmountItem(getAmountItem() + item.getAmountItem());
+        this.amountItem = getAmountItem() + item.getAmountItem();
         return this;
     }
 
@@ -146,39 +146,37 @@ public class SpawnerItem {
         return this;
     }
 
-    public SpawnerItem parse(EntityType entityType) {
+    public SpawnerItem(EntityType entityType) {
         val configuration = Main.getInstance().getSpawners().navigate();
-        final String path = "List." + entityType.toString() + ".item.";
-        setEntityType(entityType);
-        setId(configuration.getInt(path + "id"));
-        setData(configuration.getInt(path + "data").shortValue());
-        setSkullUrl(configuration.getString(path + "skull-url"));
-        setSkullOwner(configuration.getString(path + "skull-owner"));
-        setName(configuration.getColorfulString(path + "name"));
-        setLore(configuration.getColorfulList(path + "lore"));
-        setAmountItem(1);
-        setAmountSpawners(1.0);
-        return this;
+        val path = "List." + entityType.toString() + ".item.";
+        this.entityType = entityType;
+        this.id = configuration.getInt(path + "id");
+        this.data = configuration.getInt(path + "data").shortValue();
+        this.skullUrl = configuration.getString(path + "skull-url");
+        this.skullOwner = configuration.getString(path + "skull-owner");
+        this.name = configuration.getColorfulString(path + "name");
+        this.lore = configuration.getColorfulList(path + "lore");
+        this.amountItem = 1;
+        this.amountSpawners = 1.0;
     }
 
-    public SpawnerItem parse(Spawner spawner) {
+    public SpawnerItem(Spawner spawner) {
         val configuration = Main.getInstance().getSpawners().navigate();
-        final String path = "List." + spawner.getEntityType().toString() + ".item.";
-        setEntityType(spawner.getEntityType());
-        setId(configuration.getInt(path + "id"));
-        setData(configuration.getInt(path + "data").shortValue());
-        setSkullUrl(configuration.getString(path + "skull-url"));
-        setSkullOwner(configuration.getString(path + "skull-owner"));
-        setName(configuration.getColorfulString(path + "name"));
-        setLore(configuration.getColorfulList(path + "lore"));
-        setAmountItem(1);
-        setAmountSpawners(spawner.getAmount());
-        return this;
+        val path = "List." + spawner.getEntityType().toString() + ".item.";
+        this.entityType = spawner.getEntityType();
+        this.id = configuration.getInt(path + "id");
+        this.data = configuration.getInt(path + "data").shortValue();
+        this.skullUrl = configuration.getString(path + "skull-url");
+        this.skullOwner = configuration.getString(path + "skull-owner");
+        this.name = configuration.getColorfulString(path + "name");
+        this.lore = configuration.getColorfulList(path + "lore");
+        this.amountItem = 1;
+        this.amountSpawners = spawner.getAmount();
     }
 
     public void put(Location loc){
         loc.getBlock().setType(Material.MOB_SPAWNER);
-        final CreatureSpawner spawnerBlock = ((CreatureSpawner) loc.getBlock().getState());
+        val spawnerBlock = ((CreatureSpawner) loc.getBlock().getState());
         spawnerBlock.setCreatureTypeByName(getEntityType().name());
         spawnerBlock.setSpawnedType(getEntityType());
         spawnerBlock.setDelay(20);
@@ -187,20 +185,20 @@ public class SpawnerItem {
 
     public SpawnerItem(ItemStack itemStack) {
         try {
-            final net.minecraft.server.v1_8_R3.ItemStack copy = CraftItemStack.asNMSCopy(itemStack);
-            final NBTTagCompound nbt = copy.getTag();
-            setId(itemStack.getTypeId());
-            setData(itemStack.getDurability());
+            val copy = CraftItemStack.asNMSCopy(itemStack);
+            val nbt = copy.getTag();
+            this.id = itemStack.getTypeId();
+            this.data = itemStack.getDurability();
             if (itemStack.getItemMeta() instanceof SkullMeta) {
-                final SkullMeta meta = ((SkullMeta) itemStack.getItemMeta());
-                setSkullOwner(meta.getOwner());
-                setSkullUrl(new Item(itemStack).getSkullUrl());
+                val meta = ((SkullMeta) itemStack.getItemMeta());
+                this.skullOwner = meta.getOwner();
+                this.skullUrl = new Item(itemStack).getSkullUrl();
             }
-            setName(itemStack.getItemMeta().getDisplayName());
-            setLore(itemStack.getItemMeta().getLore());
-            setAmountItem(itemStack.getAmount());
-            setAmountSpawners(nbt.getDouble(Identifiers.NBT_TAG_SPAWNER_AMOUNT));
-            setEntityType(EntityType.valueOf(nbt.getString(Identifiers.NBT_TAG_ENTITY_TYPE)));
+            this.name = itemStack.getItemMeta().getDisplayName();
+            this.lore = itemStack.getItemMeta().getLore();
+            this.amountItem = itemStack.getAmount();
+            this.amountSpawners = nbt.getDouble(Identifiers.NBT_TAG_SPAWNER_AMOUNT);
+            this.entityType = EntityType.valueOf(nbt.getString(Identifiers.NBT_TAG_ENTITY_TYPE));
         } catch (Exception e) {
             e.printStackTrace();
         }

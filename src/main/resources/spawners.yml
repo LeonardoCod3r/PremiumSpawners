@@ -1,5 +1,6 @@
 FactionMode: false
 HologramToggle: false
+BreakWithSilkTouch: false
 Hologram:
   - " &6&lMob Spawner"
   - ""
@@ -33,3 +34,5 @@ List:
         - "&fCriatura: &7{entity-type}"
         - "&fStack: &7{stack}"
     price: 1500000.0
+
+

@@ -29,7 +29,7 @@ public class SICached extends ListCache<SICached.LoadedSpawnerItem> {
 
         public LoadedSpawnerItem(EntityType entityType) {
             this.entityType = entityType;
-            this.spawnerItem = new SpawnerItem().parse(entityType);
+            this.spawnerItem = new SpawnerItem(entityType);
         }
     }
 }

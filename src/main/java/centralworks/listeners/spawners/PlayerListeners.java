@@ -144,17 +144,19 @@ public class PlayerListeners implements Listener {
                             return;
                         }
                         if (v == spawner.getAmount()) {
-                            final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
+                            final SpawnerItem spawnerItem = new SpawnerItem(spawner);
                             final SpawnerRemoveEvent event = new SpawnerRemoveEvent(p, spawner, spawnerItem, true);
+                            Bukkit.getPluginManager().callEvent(event);
                             if (event.isCancelled()) return;
                             spawnerItem.giveItem(p);
                             spawner.destroy(user);
                             p.sendMessage(nav.getMessage("spawnerRemoved"));
                             return;
                         }
-                        final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
+                        final SpawnerItem spawnerItem = new SpawnerItem(spawner);
                         spawnerItem.setAmountSpawners(v);
                         final SpawnerRemoveEvent event = new SpawnerRemoveEvent(p, spawner, spawnerItem, true);
+                        Bukkit.getPluginManager().callEvent(event);
                         if (event.isCancelled()) return;
                         final Settings.Navigate navSpawner = Main.getInstance().getSpawners().navigate();
                         final boolean hologram = navSpawner.getBoolean("HologramToggle");
@@ -185,7 +187,7 @@ public class PlayerListeners implements Listener {
                         p.sendMessage(nav.getMessage("insufficientMoney").replace("{price}", BalanceFormatter.format(priceAll)));
                         return;
                     }
-                    final SpawnerItem spawnerItem = new SpawnerItem().parse(entityType);
+                    final SpawnerItem spawnerItem = new SpawnerItem(entityType);
                     spawnerItem.setAmountSpawners(value);
                     spawnerItem.setAmountItem(1);
                     spawnerItem.giveItem(p);

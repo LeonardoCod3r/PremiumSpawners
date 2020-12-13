@@ -34,7 +34,7 @@
       "item_amount": 1,
       "item_name": "§c§lEm breve!",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "§7Esse gerador ainda não foi liberado.",
         "§7Será liberado em {date}."
@@ -49,7 +49,7 @@
       "item_amount": 1,
       "item_name": "§eInformações: ",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "§fLimite de compra: §7{limit}"
       ]
@@ -75,7 +75,7 @@
       "item_slot": 11,
       "item_name": "&eComprar geradores",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para poder comprar geradores."
       ]
@@ -89,7 +89,7 @@
       "item_slot": 15,
       "item_name": "&aSeus geradores",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para ver seus geradores colocados."
       ]
@@ -108,7 +108,7 @@
       "item_slot": 10,
       "item_name": "&aGerador",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&fValor: &2R$ &7{coins}",
         "&fDono: &7{owner}",
@@ -125,7 +125,7 @@
       "item_amount": 1,
       "item_slot": 13,
       "item_name": "&aBoosters",
-      "item_view": true,
+      "hide": false,
       "item_enchants": [],
       "item_lore": [
         "&7Clique para ver seus boosters ativos."
@@ -140,7 +140,7 @@
       "item_slot": 14,
       "item_name": "&2Amigos",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para gerenciar as permissões de jogadores."
       ]
@@ -154,7 +154,7 @@
       "item_slot": 15,
       "item_name": "&eUtilidades",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para acessar o menu de utilidades do gerador."
       ]
@@ -168,7 +168,7 @@
       "item_slot": 16,
       "item_name": "&bTop Ranking",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para ver os jogadores que mais possuem spawners."
       ]
@@ -187,7 +187,7 @@
       "item_slot": 11,
       "item_name": "&aAdicionar spawners",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique no gerador que está no seu.",
         "&7inventário para poder adicioná-lo."
@@ -202,7 +202,7 @@
       "item_slot": 13,
       "item_name": "&cRecolher todos",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para recolher todos os spawners."
       ]
@@ -216,7 +216,7 @@
       "item_slot": 15,
       "item_name": "&cRemover spawners",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique aqui para remover spawners desse stack."
       ]
@@ -230,7 +230,7 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
@@ -272,7 +272,7 @@
       "item_slot": 4,
       "item_name": "&aGerador",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&fValor: &2R$ &7{coins}",
         "&fDono: &7{owner}",
@@ -290,7 +290,7 @@
       "item_slot": 49,
       "item_name": "&aAdicionar amigo",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para adicionar um jogador a sua lista de amigos."
       ]
@@ -303,7 +303,7 @@
       "item_amount": 1,
       "item_name": "&f{player}",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique no jogador para removê-lo da sua lista."
       ]
@@ -317,7 +317,7 @@
       "item_slot": 45,
       "item_name": "&cVoltar",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
@@ -331,7 +331,7 @@
       "item_slot": 47,
       "item_name": "&cPágina anterior",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para voltar a página anterior."
       ]
@@ -345,7 +345,7 @@
       "item_slot": 47,
       "item_name": "&aPróxima página",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para ir à página seguinte."
       ]
@@ -375,7 +375,7 @@
       "item_slot": 13,
       "item_name": "&aAtualizando",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7O ranking está atualizando."
       ]
@@ -389,7 +389,7 @@
       "item_slot": 15,
       "item_name": "&f{player}",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&fPosição: &7{position}º",
         "&fValor: &2R$ &7{price}"
@@ -404,7 +404,7 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]
@@ -423,7 +423,7 @@
       "item_slot": 11,
       "item_name": "&aAdicionar booster",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique em um booster do seu inventário para ativar."
       ]
@@ -437,7 +437,7 @@
       "item_slot": 15,
       "item_name": "&eInformações",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Boosters ativos/Tempo restante:",
         ""
@@ -452,7 +452,7 @@
       "item_slot": 18,
       "item_name": "&cVoltar",
       "item_enchants": [],
-      "item_view": true,
+      "hide": false,
       "item_lore": [
         "&7Clique para voltar para voltar ao menu do spawner."
       ]

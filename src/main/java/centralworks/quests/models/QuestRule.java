@@ -27,7 +27,6 @@ public class QuestRule implements Serializable {
     private Long completedIn = System.currentTimeMillis();
     @ManyToOne
     @Getter(AccessLevel.PRIVATE)
-    @Setter
     private QuestData questData;
     @Expose
     private String value;

@@ -21,7 +21,7 @@ public class SpawnerBuilder {
 
     public Spawner build(ItemStack itemStack) {
         final Spawner spawner = new Spawner();
-        final SpawnerItem item = new SpawnerItem().parse(itemStack);
+        final SpawnerItem item = new SpawnerItem(itemStack);
         spawner.setLocation(location);
         spawner.setAmount(item.getAmountSpawners() * item.getAmountItem());
         spawner.setEntityType(item.getEntityType());

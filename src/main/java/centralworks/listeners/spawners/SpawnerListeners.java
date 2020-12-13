@@ -13,11 +13,12 @@ import centralworks.spawners.models.SpawnerItem;
 import centralworks.spawners.utils.FilteringFunctions;
 import centralworks.layouts.menus.spawner.InfoSpawnerMenu;
 import centralworks.lib.LocationUtils;
+import lombok.Getter;
 import lombok.val;
-import lombok.var;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -30,130 +31,171 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class SpawnerListeners implements Listener {
+public class SpawnerListeners {
 
-    private final Main plugin;
-    private final boolean factionMode;
+    private static final Main plugin;
+    private static final boolean breakWithSilkTouch;
+    @Getter
+    private static final Listener listener;
 
-    public SpawnerListeners() {
-        this.plugin = Main.getInstance();
-        this.factionMode = plugin.getSpawners().navigate().getBoolean("FactionMode");
+    static {
+        plugin = Main.getInstance();
+        val factionMode = plugin.getSpawners().navigate().getBoolean("FactionMode");
+        breakWithSilkTouch = plugin.getSpawners().navigate().getBoolean("BreakWithSilkTouch");
+        listener = factionMode ? new WithoutSimpleMode() : new WithSimpleMode();
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        if (factionMode) return;
-        var block = e.getClickedBlock();
-        if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    public static class WithoutSimpleMode extends Commons {
+
+        @EventHandler
+        public void onInteract(PlayerInteractEvent e) {
+            val block = e.getClickedBlock();
+            if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                if (block.getType() != Material.MOB_SPAWNER) return;
+                val location = block.getLocation();
+                val p = e.getPlayer();
+                val user = Caches.getCache(User.class).getIfPresent(p.getName());
+                if (user.exists(location)) {
+                    e.setCancelled(true);
+                    val spawner = user.getSpawner(location);
+                    new InfoSpawnerMenu(spawner, p).load();
+                } else {
+                    val cache = Caches.getCache(Spawner.class);
+                    Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
+                        if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p).load();
+                        else p.sendMessage(plugin.getMessages().navigate().getMessage("isNotOwner"));
+                    });
+                }
+            }
+        }
+
+        @EventHandler
+        public void onPlace(BlockPlaceEvent e) {
+            val item = e.getItemInHand();
+            if (!SpawnerItem.isSpawnerItem(item)) return;
+            e.setCancelled(true);
+            val location = e.getBlock().getLocation();
+            val p = e.getPlayer();
+            val spawnerItem = new SpawnerItem(item);
+            val cache = Caches.getCache(Spawner.class);
+            final Predicate<ItemStack> prd = itemStack -> SpawnerItem.isSpawnerItem(itemStack) && spawnerItem.isSimilar(new SpawnerItem(itemStack));
+            val spawnerItem1 = Arrays.stream(p.getInventory().getContents())
+                    .filter(prd)
+                    .map(SpawnerItem::new)
+                    .reduce(SpawnerItem::concat).get();
+            val spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
+            val user = Caches.getCache(User.class).getIfPresent(p.getName());
+            user.getSpawners(spawners -> {
+                val functions = new FilteringFunctions(spawners);
+                if (functions.exists(spawner.getEntityType())) {
+                    val spawner1 = functions.get(spawner.getEntityType());
+                    val event = new SpawnerStackEvent(p, spawner1, spawner);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) return;
+                    spawner1.concat(spawner);
+                } else {
+                    val event = new SpawnerPlaceEvent(p, spawner);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) return;
+                    user.addSpawnerLocation(location);
+                    spawner.appear(spawner1 -> cache.put(spawner1.getLocSerialized(), spawner1));
+                }
+                for (int i = 0; i < p.getInventory().getSize(); i++) {
+                    if (prd.test(p.getInventory().getItem(i))) {
+                        p.getInventory().setItem(i, new ItemStack(Material.AIR));
+                    }
+                }
+            });
+        }
+
+        @EventHandler
+        public void onBreak(BlockBreakEvent e) {
+            val block = e.getBlock();
             if (block.getType() != Material.MOB_SPAWNER) return;
-            var location = block.getLocation();
-            var p = e.getPlayer();
-            var user = Caches.getCache(User.class).getIfPresent(p.getName());
+            val location = block.getLocation();
+            val p = e.getPlayer();
+            val item = p.getItemInHand();
+            val user = Caches.getCache(User.class).getIfPresent(p.getName());
             if (user.exists(location)) {
                 e.setCancelled(true);
-                var spawner = user.getSpawner(location);
-                new InfoSpawnerMenu(spawner, p).load();
+                if (Delay.inDelay(p.getName())) {
+                    p.sendMessage("§cAguarde para poder retirar o gerador novamente.");
+                    return;
+                }
+                val spawner = user.getSpawner(location);
+                final SpawnerItem spawnerItem = new SpawnerItem(spawner);
+                if (breakWithSilkTouch) {
+                    if (item.containsEnchantment(Enchantment.SILK_TOUCH)) boom(user, spawner, spawnerItem);
+                    else spawner.destroy(user);
+                } else boom(user, spawner, spawnerItem);
             } else {
-                var cache = Caches.getCache(Spawner.class);
-                Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
-                    if (spawner.hasPermission(p.getName())) new InfoSpawnerMenu(spawner, p).load();
-                    else p.sendMessage(plugin.getMessages().navigate().getMessage("isNotOwner"));
+                Optional.ofNullable(Caches.getCache(Spawner.class).getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
+                    e.setCancelled(true);
+                    p.sendMessage(plugin.getMessages().navigate().getMessage("isNotOwner"));
                 });
             }
         }
+
     }
 
-    @EventHandler
-    public void onPlaceFM(BlockPlaceEvent e) {
-        var item = e.getItemInHand();
-        if (!SpawnerItem.isSpawnerItem(item) || !factionMode) return;
-        val l = e.getBlock().getLocation();
-        var spawnerItem = new SpawnerItem(item);
-        l.getBlock().setType(Material.MOB_SPAWNER);
-        final CreatureSpawner spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
-        spawnerBlock.setCreatureTypeByName(spawnerItem.getEntityType().name());
-        spawnerBlock.setSpawnedType(spawnerItem.getEntityType());
-        spawnerBlock.setDelay(20);
-        spawnerBlock.update();
-    }
+    public static class WithSimpleMode extends Commons {
 
-    @EventHandler
-    public void onPlace(BlockPlaceEvent e) {
-        var item = e.getItemInHand();
-        if (!SpawnerItem.isSpawnerItem(item) || factionMode) return;
-        e.setCancelled(true);
-        var location = e.getBlock().getLocation();
-        var p = e.getPlayer();
-        var spawnerItem = new SpawnerItem(item);
-        var cache = Caches.getCache(Spawner.class);
-        final Predicate<ItemStack> prd = itemStack -> SpawnerItem.isSpawnerItem(itemStack) && spawnerItem.isSimilar(new SpawnerItem(itemStack));
-        var spawnerItem1 = Arrays.stream(p.getInventory().getContents())
-                .filter(prd)
-                .map(SpawnerItem::new)
-                .reduce(SpawnerItem::concat).get();
-        var spawner = new SpawnerBuilder(location, p.getName()).build(spawnerItem1);
-        var user = Caches.getCache(User.class).getIfPresent(p.getName());
-        user.getSpawners(spawners -> {
-            var functions = new FilteringFunctions(spawners);
-            if (functions.exists(spawner.getEntityType())) {
-                var spawner1 = functions.get(spawner.getEntityType());
-                final SpawnerStackEvent event = new SpawnerStackEvent(p, spawner1, spawner);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return;
-                spawner1.concat(spawner);
-            } else {
-                final SpawnerPlaceEvent event = new SpawnerPlaceEvent(p, spawner);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) return;
-                user.addSpawnerLocation(location);
-                spawner.appear(spawner1 -> cache.put(spawner1.getLocSerialized(), spawner1));
-            }
-            for (int i = 0; i < p.getInventory().getSize(); i++) {
-                if (prd.test(p.getInventory().getItem(i))) {
-                    p.getInventory().setItem(i, new ItemStack(Material.AIR));
-                }
-            }
-        });
-    }
+        @EventHandler
+        public void onPlace(BlockPlaceEvent e) {
+            val item = e.getItemInHand();
+            if (!SpawnerItem.isSpawnerItem(item)) return;
+            val l = e.getBlock().getLocation();
+            val spawnerItem = new SpawnerItem(item);
+            l.getBlock().setType(Material.MOB_SPAWNER);
+            val spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
+            spawnerBlock.setCreatureTypeByName(spawnerItem.getEntityType().name());
+            spawnerBlock.setSpawnedType(spawnerItem.getEntityType());
+            spawnerBlock.setDelay(20);
+            spawnerBlock.update();
+        }
 
-    @EventHandler
-    public void onBreak(BlockBreakEvent e) {
-        if (factionMode) return;
-        var block = e.getBlock();
-        if (block.getType() != Material.MOB_SPAWNER) return;
-        var location = block.getLocation();
-        var p = e.getPlayer();
-        var nav = plugin.getMessages().navigate();
-        var user = Caches.getCache(User.class).getIfPresent(p.getName());
-        if (user.exists(location)) {
+        @EventHandler
+        public void onBreak(BlockBreakEvent e) {
+            val block = e.getBlock();
+            if (block.getType() == Material.MOB_SPAWNER ) return;
+            val p = e.getPlayer();
+            val item = p.getItemInHand();
+            val entityType = ((CreatureSpawner) block.getState()).getSpawnedType();
             e.setCancelled(true);
             if (Delay.inDelay(p.getName())) {
                 p.sendMessage("§cAguarde para poder retirar o gerador novamente.");
                 return;
             }
-            var spawner = user.getSpawner(location);
-            final SpawnerItem spawnerItem = new SpawnerItem().parse(spawner);
-            final SpawnerBreakEvent event = new SpawnerBreakEvent(p, spawner, spawnerItem);
-            if (event.isCancelled()) return;
-            spawnerItem.giveItem(p);
-            spawner.destroy(user);
-            p.sendMessage(nav.getMessage("spawnerRemoved"));
-            Delay.put(p.getName());
-        } else {
-            Optional.ofNullable(Caches.getCache(Spawner.class).getIfPresent(LocationUtils.locToString(location))).ifPresent(spawner -> {
-                e.setCancelled(true);
-                p.sendMessage(nav.getMessage("isNotOwner"));
-            });
+            block.setType(Material.AIR);
+            val spawnerItem = new SpawnerItem(entityType);
+            if (breakWithSilkTouch) {
+                if (item.containsEnchantment(Enchantment.SILK_TOUCH)) spawnerItem.giveItem(p);
+            } else spawnerItem.giveItem(p);
         }
+
     }
 
+    public static class Commons implements Listener {
 
-
-    @EventHandler
-    public void onInteractWithEgg(final PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.MOB_SPAWNER && e.getItem() != null && e.getItem().getType() == Material.MONSTER_EGG) {
-            e.setCancelled(true);
+        @EventHandler
+        public void onInteractWithEgg(final PlayerInteractEvent e) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.MOB_SPAWNER && e.getItem() != null && e.getItem().getType() == Material.MONSTER_EGG) {
+                e.setCancelled(true);
+            }
         }
+
+    }
+
+    private static void boom(User user, Spawner spawner, SpawnerItem spawnerItem) {
+        val p = user.getPlayer();
+        val nav = plugin.getMessages().navigate();
+        val event = new SpawnerBreakEvent(p, spawner, spawnerItem);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+        spawnerItem.giveItem(p);
+        spawner.destroy(user);
+        p.sendMessage(nav.getMessage("spawnerRemoved"));
+        Delay.put(p.getName());
     }
 
 }

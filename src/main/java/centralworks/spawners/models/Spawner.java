@@ -320,7 +320,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
 
     public Boolean concat(Player p, ItemStack item) {
         try {
-            final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
+            final SpawnerItem spawnerItem = new SpawnerItem(item);
             if (spawnerItem.getEntityType() != getEntityType()) return false;
             final Spawner spawner = new SpawnerBuilder().build(spawnerItem);
             spawner.setOwner(p.getName());
@@ -336,7 +336,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
 
     public boolean canConcat(ItemStack item) {
         try {
-            final SpawnerItem spawnerItem = new SpawnerItem().parse(item);
+            final SpawnerItem spawnerItem = new SpawnerItem(item);
             return spawnerItem.getEntityType() == getEntityType();
         } catch (Exception ignored) {
             return false;

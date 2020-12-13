@@ -11,7 +11,9 @@ import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.inventory.InventoryController;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -21,6 +23,7 @@ import java.util.LinkedList;
 import java.util.function.Function;
 
 @SuppressWarnings("UnstableApiUsage")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Application {
 
     private static final ThreadLocal<LinkedList<PluginSystem>> CACHE = new ThreadLocal<>();

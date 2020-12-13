@@ -1,4 +1,4 @@
-package centralworks.listeners.stackmobs;
+package centralworks.listeners.commons;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
@@ -9,15 +9,13 @@ import centralworks.lib.LocationUtils;
 import centralworks.lib.Settings;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtinjector.NBTInjector;
+import lombok.val;
 import org.bukkit.Chunk;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.SpawnerSpawnEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -73,6 +71,14 @@ public class EntityListeners implements Listener {
         for (Entity entity : chunk.getEntities()) {
             stackNearbyEntities(entity);
         }
+    }
+
+    @EventHandler
+    public void onTeleport(EntityTeleportEvent e) {
+        val location = e.getEntity().getLocation();
+        if (allowedWorld(location.getWorld().getName())) return;
+        final Entity entity = e.getEntity();
+        stackNearbyEntities(entity);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

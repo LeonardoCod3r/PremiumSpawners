@@ -70,7 +70,7 @@ public class BuySpawnersMenu extends InventoryMaker {
         final Double price = Main.getInstance().getSpawners().navigate().getDouble("List." + entityType.name() + ".price");
         List<String> lore = menu.getSpawnerItem().getItem_lore();
         lore = lore.stream()
-                .map(s -> s.replace("{price}", BalanceFormatter.format(price).replace("{mob}", EntityName.valueOf(entityType).getName())))
+                .map(s -> s.replace("{price}", BalanceFormatter.format(price)).replace("{mob}", EntityName.valueOf(entityType).getName()))
                 .collect(Collectors.toList());
         return new Item(SICached.get().get(item -> item.getEntityType() == entityType).getSpawnerItem().getItem())
                 .lore(lore)

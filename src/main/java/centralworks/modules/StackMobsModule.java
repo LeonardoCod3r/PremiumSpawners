@@ -3,7 +3,7 @@ package centralworks.modules;
 import centralworks.Main;
 import centralworks.Module;
 import centralworks.PluginSystem;
-import centralworks.listeners.stackmobs.EntityListeners;
+import centralworks.listeners.commons.EntityListeners;
 import org.bukkit.Bukkit;
 
 @Module
