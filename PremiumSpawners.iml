@@ -55,6 +55,12 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.MilkBowl:VaultAPI:1.7" level="project" />
     <orderEntry type="library" name="Maven: org.bukkit:bukkit:1.13.1-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.github.webbukkit:dynmap-api:2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.github.webbukkit:dynmap:2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.nijikokun.bukkit:Permissions:3.1.6" level="project" />
+    <orderEntry type="library" name="Maven: ru.tehkode:PermissionsEx:1.19.1" level="project" />
+    <orderEntry type="library" name="Maven: de.bananaco:bPermissions:2.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.platymuus.bukkit.permissions:PermissionsBukkit:1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.anjocaido:EssentialsGroupManager:2.10.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
