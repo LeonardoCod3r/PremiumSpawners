@@ -34,7 +34,7 @@ public class InventoryController implements Listener {
             if (inventory == null) return;
             if (inventory.equals(event.getInventory())) {
                 if (consumer != null) {
-                    if (event.getClickedInventory() != null && event.getClickedInventory().equals(event.getWhoClicked().getInventory()))
+                    if (event.getInventory() != null && event.getInventory().equals(event.getWhoClicked().getInventory()))
                         consumer.accept(event);
                 }
                 if (inventoryMaker.isCancellable()) event.setCancelled(true);

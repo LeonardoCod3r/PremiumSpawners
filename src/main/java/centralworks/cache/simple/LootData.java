@@ -30,8 +30,8 @@ public class LootData extends ListCache<Drop> {
                     .keyDrop(s)
                     .unitPrice(nav.getDouble(path + "unit-sales-value"))
                     .entityType(EntityType.valueOf(nav.getString(path + "mob")))
-                    .menuItem(new Item(Material.getMaterial(nav.getInt(path + "drop-item-menu.id")), nav.getInt(path + "drop-item-menu.amount"), nav.getInt(path + "drop-item-menu.data").shortValue()).name(nav.getColorfulString(path + "drop-item-menu.name")).lore(nav.getColorfulList(path + "drop-item-menu.lore")))
-                    .drop(new ItemStack(nav.getInt(path + "id"), 1, nav.getInt(path + "data").shortValue()))
+                    .menuItem(new Item(Material.getMaterial(nav.getString(path + "drop-item-menu.id")), nav.getInt(path + "drop-item-menu.amount"), nav.getInt(path + "drop-item-menu.data").shortValue()).name(nav.getColorfulString(path + "drop-item-menu.name")).lore(nav.getColorfulList(path + "drop-item-menu.lore")))
+                    .drop(new ItemStack(Material.getMaterial(nav.getString(path + "id")), 1, nav.getInt(path + "data").shortValue()))
                     .build();
             add(drop);
         });

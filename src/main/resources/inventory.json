@@ -27,7 +27,7 @@
       43
     ],
     "comingSoon": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/3ed1aba73f639f4bc42bd48196c715197be2712c3b962c97ebf9e9ed8efa025",
       "item_data": 3,
@@ -41,7 +41,7 @@
       ]
     },
     "info": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "{player}",
       "item_skull_url": "",
       "item_data": 3,
@@ -67,7 +67,7 @@
     "rows": 3,
     "toggle": true,
     "buy": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/964f25cfff754f287a9838d8efe03998073c22df7a9d3025c425e3ed7ff52c20",
       "item_data": 3,
@@ -81,7 +81,7 @@
       ]
     },
     "spawners": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/4e6896eafd7861b92616e5d78feea79fe3dd3363cb3e4d4aa7a4ab54e64c3012",
       "item_data": 3,
@@ -100,7 +100,7 @@
     "rows": 3,
     "toggle": true,
     "spawner_item": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
       "item_data": 3,
@@ -118,7 +118,7 @@
       ]
     },
     "boosters": {
-      "item_id": 373,
+      "item_id": "POTION",
       "item_skull_owner": "",
       "item_skull_url": "",
       "item_data": 0,
@@ -132,7 +132,7 @@
       ]
     },
     "friends": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "Steve",
       "item_skull_url": "",
       "item_data": 3,
@@ -146,7 +146,7 @@
       ]
     },
     "utils": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/8928ef335313214bb8cc137df153c1bee7b7a9d1e8e6281fe9d362d91fe9d89",
       "item_data": 3,
@@ -160,7 +160,7 @@
       ]
     },
     "top": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/99e77fae5313bac19bf14577d50093e4738ebd70fd54a4de1a27475d0ec9538f",
       "item_data": 3,
@@ -179,7 +179,7 @@
     "rows": 3,
     "toggle": true,
     "add": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/19123a068dacfc43964ec886976c4b08875687316fc1eed2711a11d65fa712",
       "item_data": 3,
@@ -194,7 +194,7 @@
       ]
     },
     "get": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
       "item_data": 3,
@@ -208,7 +208,7 @@
       ]
     },
     "remove": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/7f85bff3a2c1527f85274374c870c73d2efef6be7713eea569d3a1bc4a5efc49",
       "item_data": 3,
@@ -222,7 +222,7 @@
       ]
     },
     "back": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
       "item_data": 3,
@@ -264,7 +264,7 @@
       43
     ],
     "spawner_item": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/647e2e5d55b6d04943519bed2557c6329e33b60b909dee8923cd88b115210",
       "item_data": 3,
@@ -282,7 +282,7 @@
       ]
     },
     "add": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178",
       "item_data": 3,
@@ -296,7 +296,7 @@
       ]
     },
     "player": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "{player}",
       "item_skull_url": "",
       "item_data": 3,
@@ -309,7 +309,7 @@
       ]
     },
     "back": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
       "item_data": 3,
@@ -323,7 +323,7 @@
       ]
     },
     "back_page": {
-      "item_id": 262,
+      "item_id": "ARROW",
       "item_skull_owner": "",
       "item_skull_url": "",
       "item_data": 0,
@@ -337,7 +337,7 @@
       ]
     },
     "next_page": {
-      "item_id": 262,
+      "item_id": "ARROW",
       "item_skull_owner": "",
       "item_skull_url": "",
       "item_data": 0,
@@ -367,7 +367,7 @@
       23
     ],
     "updating": {
-      "item_id": 30,
+      "item_id": "WEB",
       "item_skull_owner": "",
       "item_skull_url": "",
       "item_data": 0,
@@ -381,7 +381,7 @@
       ]
     },
     "player": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "{player}",
       "item_skull_url": "",
       "item_data": 3,
@@ -396,7 +396,7 @@
       ]
     },
     "back": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
       "item_data": 3,
@@ -415,7 +415,7 @@
     "rows": 3,
     "toggle": true,
     "add": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178",
       "item_data": 3,
@@ -429,7 +429,7 @@
       ]
     },
     "boosters": {
-      "item_id": 373,
+      "item_id": "POTION",
       "item_skull_owner": "",
       "item_skull_url": "",
       "item_data": 0,
@@ -444,7 +444,7 @@
       ]
     },
     "back": {
-      "item_id": 397,
+      "item_id": "SKULL_ITEM",
       "item_skull_owner": "",
       "item_skull_url": "http://textures.minecraft.net/texture/38a1f037c8e5178bbe4cb9a7d335f1b110c45c1c465f1d73dcbe8cad69d9eca",
       "item_data": 3,

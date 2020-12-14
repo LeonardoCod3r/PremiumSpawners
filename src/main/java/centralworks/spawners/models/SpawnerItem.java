@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Builder
 public class SpawnerItem {
 
-    private int id;
+    private String id;
     private short data;
     private String name = "";
     private List<String> lore = Lists.newArrayList();
@@ -50,7 +50,7 @@ public class SpawnerItem {
     }
 
     public ItemStack getItem() {
-        val item = new Item(new ItemStack(id, amountItem, data));
+        val item = new Item(new ItemStack(Material.getMaterial(id), amountItem, data));
         val itemStack = item.name(name).lore(
                 lore.stream().map(s -> s
                         .replace("{entity-type}", EntityName.valueOf(entityType).getName())
@@ -150,7 +150,7 @@ public class SpawnerItem {
         val configuration = Main.getInstance().getSpawners().navigate();
         val path = "List." + entityType.toString() + ".item.";
         this.entityType = entityType;
-        this.id = configuration.getInt(path + "id");
+        this.id = configuration.getString(path + "id");
         this.data = configuration.getInt(path + "data").shortValue();
         this.skullUrl = configuration.getString(path + "skull-url");
         this.skullOwner = configuration.getString(path + "skull-owner");
@@ -164,7 +164,7 @@ public class SpawnerItem {
         val configuration = Main.getInstance().getSpawners().navigate();
         val path = "List." + spawner.getEntityType().toString() + ".item.";
         this.entityType = spawner.getEntityType();
-        this.id = configuration.getInt(path + "id");
+        this.id = configuration.getString(path + "id");
         this.data = configuration.getInt(path + "data").shortValue();
         this.skullUrl = configuration.getString(path + "skull-url");
         this.skullOwner = configuration.getString(path + "skull-owner");
@@ -175,7 +175,7 @@ public class SpawnerItem {
     }
 
     public void put(Location loc){
-        loc.getBlock().setType(Material.MOB_SPAWNER);
+        loc.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
         val spawnerBlock = ((CreatureSpawner) loc.getBlock().getState());
         spawnerBlock.setCreatureTypeByName(getEntityType().name());
         spawnerBlock.setSpawnedType(getEntityType());
@@ -187,7 +187,7 @@ public class SpawnerItem {
         try {
             val copy = CraftItemStack.asNMSCopy(itemStack);
             val nbt = copy.getTag();
-            this.id = itemStack.getTypeId();
+            this.id = itemStack.getType().name();
             this.data = itemStack.getDurability();
             if (itemStack.getItemMeta() instanceof SkullMeta) {
                 val meta = ((SkullMeta) itemStack.getItemMeta());

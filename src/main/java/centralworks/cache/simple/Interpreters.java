@@ -8,6 +8,7 @@ import centralworks.events.BoosterActiveEvent;
 import centralworks.models.EntityStacked;
 import centralworks.lib.ListCache;
 import com.google.gson.JsonObject;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -173,9 +174,9 @@ public class Interpreters extends ListCache<CraftInterpreter<?>> {
                             final CraftQuest quest = questData.getQuest();
                             final CraftQuestRule rule = quest.getRules().stream().filter(craftQuestRule -> craftQuestRule.getId().equalsIgnoreCase(questRule.getId())).findFirst().get();
                             final JsonObject additionalInformation = rule.getAdditionalInformation();
-                            final int id = additionalInformation.get("id").getAsInt();
+                            final String id = additionalInformation.get("id").getAsString();
                             final int data = additionalInformation.get("data").getAsInt();
-                            if (new ItemStack(id, 1, (short) data).isSimilar(event.getBlock().getState().getData().toItemStack())) {
+                            if (new ItemStack(Material.getMaterial(id), 1, (short) data).isSimilar(event.getBlock().getState().getData().toItemStack())) {
                                 final int i = rule.getValueAsInteger();
                                 if (questRule.addValueAsInteger(1) >= i) questRule.setCompleted(true);
                                 if (questData.isCompleted()) playerQuests.nextQuest(questData);
@@ -199,9 +200,9 @@ public class Interpreters extends ListCache<CraftInterpreter<?>> {
                             final CraftQuest quest = questData.getQuest();
                             final CraftQuestRule rule = quest.getRules().stream().filter(craftQuestRule -> craftQuestRule.getId().equalsIgnoreCase(questRule.getId())).findFirst().get();
                             final JsonObject additionalInformation = rule.getAdditionalInformation();
-                            final int id = additionalInformation.get("id").getAsInt();
+                            final String id = additionalInformation.get("id").getAsString();
                             final int data = additionalInformation.get("data").getAsInt();
-                            if (new ItemStack(id, 1, (short) data).isSimilar(event.getBlock().getState().getData().toItemStack())) {
+                            if (new ItemStack(Material.getMaterial(id), 1, (short) data).isSimilar(event.getBlock().getState().getData().toItemStack())) {
                                 final int i = rule.getValueAsInteger();
                                 if (questRule.addValueAsInteger(1) >= i) questRule.setCompleted(true);
                                 if (questData.isCompleted()) playerQuests.nextQuest(questData);

@@ -70,7 +70,7 @@ public class SellCommand extends BukkitCommand {
         String path = "Inventory.sell.items.playerStats.";
         if (nav.getBoolean(path + "toggle")) {
             inventory.setItem(nav.getInt(path + "slot"),
-                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                    new Item(Material.getMaterial(nav.getString(path + "id")), 1, nav.getInt(path + "data").shortValue())
                             .name(nav.getColorfulString(path + "name").replace("{playername}", dropStorage.getCorrectNameOwner()))
                             .setSkullUrl(nav.getString(path + "skull-url"))
                             .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", dropStorage.getCorrectNameOwner()))
@@ -83,7 +83,7 @@ public class SellCommand extends BukkitCommand {
         path = "Inventory.sell.items.sellAll.";
         if (nav.getBoolean(path + "toggle")) {
             inventory.setItem(nav.getInt(path + "slot"),
-                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                    new Item(Material.getMaterial(nav.getString(path + "id")), 1, nav.getInt(path + "data").shortValue())
                             .name(nav.getColorfulString(path + "name").replace("{playername}", dropStorage.getCorrectNameOwner()))
                             .setSkullUrl(nav.getString(path + "skull-url"))
                             .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", dropStorage.getCorrectNameOwner()))
@@ -106,7 +106,7 @@ public class SellCommand extends BukkitCommand {
         path = "Inventory.sell.items.autoSell.";
         if (nav.getBoolean(path + "toggle")) {
             inventory.setItem(nav.getInt(path + "slot"),
-                    new Item(Material.getMaterial(nav.getInt(path + "id")), 1, nav.getInt(path + "data").shortValue())
+                    new Item(Material.getMaterial(nav.getString(path + "id")), 1, nav.getInt(path + "data").shortValue())
                             .name(nav.getColorfulString(path + "name").replace("{playername}", p.getName()))
                             .setSkullUrl(nav.getString(path + "skull-url"))
                             .setSkullOwner(nav.getColorfulString(path + "skull-owner").replace("{playername}", p.getName()))

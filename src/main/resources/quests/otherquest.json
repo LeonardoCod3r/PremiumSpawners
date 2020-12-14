@@ -19,7 +19,7 @@
       "additionalInformation": {},
       "defaultValue": "0",
       "inventoryView": {
-        "item_id": 1,
+        "item_id": "STONE",
         "item_skull_owner": "",
         "item_skull_url": "",
         "item_data": 0,
@@ -49,7 +49,7 @@
       "id": "two",
       "type": "ITEM",
       "sliceReward": {
-        "item_id": 1,
+        "item_id": "STONE",
         "item_amount": 10,
         "item_skull_owner": "",
         "item_skull_url": "",
@@ -67,7 +67,7 @@
     }
   ],
   "inventoryView": {
-    "item_id": 1,
+    "item_id": "STONE",
     "item_skull_owner": "",
     "item_skull_url": "",
     "item_data": 0,

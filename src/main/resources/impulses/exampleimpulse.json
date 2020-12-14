@@ -5,7 +5,7 @@
   "type": "GENERATION",
   "value": 2.0,
   "item": {
-    "item_id": 1,
+    "item_id": "STONE",
     "item_skull_owner": "",
     "item_skull_url": "",
     "item_data": 0,

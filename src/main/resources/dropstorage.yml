@@ -20,12 +20,12 @@ Boosters:
     - "member.member:1.0"
 Drops:
   dropTwo:
-    id: 277
+    id: "ROTTEN_FLESH"
     data: 0
     mob: ZOMBIE
     unit-sales-value: 10000000.0
     drop-item-menu:
-      id: 277
+      id: "ROTTEN_FLESH"
       data: 0
       name: "&eCarne de Zumbi"
       lore:
@@ -34,12 +34,12 @@ Drops:
         - "&ePreço de venda: {price-sell-all}"
       amount: 1
   galinha:
-    id: 365
+    id: "RAW_CHICKEN"
     data: 0
     mob: CHICKEN
     unit-sales-value: 1000000.0
     drop-item-menu:
-      id: 365
+      id: "RAW_CHICKEN"
       data: 0
       name: "&eFrango cru"
       lore:
@@ -55,7 +55,7 @@ Inventory:
     items:
       playerStats:
         slot: 4 #válido a primeira e a última row
-        id: 397
+        id: "SKULL_ITEM"
         data: 3
         toggle: true
         skull-owner: "{playername}"
@@ -67,7 +67,7 @@ Inventory:
       sellAll:
         slot: 51 #válido a primeira e a última row
         toggle: true
-        id: 339
+        id: "PAPER"
         data: 0
         name: "&eVender tudo"
         lore:
@@ -76,7 +76,7 @@ Inventory:
       autoSell:
         slot: 47 #válido a primeira e a última row
         toggle: true
-        id: 154
+        id: "HOPPER"
         data: 0
         name: "&aAuto vender"
         lore:

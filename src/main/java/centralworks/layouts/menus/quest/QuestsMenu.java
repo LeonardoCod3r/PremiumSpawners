@@ -29,10 +29,10 @@ public class QuestsMenu extends InventoryMaker {
                 return;
             }
             if (page != pages) {
-                setItem(48, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> new QuestsMenu(p, page + 1)));
+                setItem(48, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> new QuestsMenu(p, page + 1)));
             }
             if (page != 1) {
-                setItem(50, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> new QuestsMenu(p, page - 1)));
+                setItem(50, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> new QuestsMenu(p, page - 1)));
             }
             final List<CraftQuest> list = quests.subList(slots.size() * (page - 1), Math.min(quests.size(), slots.size() * (page + 1)));
             for (int count = 0; count < slots.size() && count < list.size(); count++) {
@@ -47,7 +47,7 @@ public class QuestsMenu extends InventoryMaker {
     public Item getInfoPlayer(Player p) {
         final LoadingCache<String, PlayerQuests> cache = Caches.getCache(PlayerQuests.class);
         final PlayerQuests playerQuests = cache.getIfPresent(p.getName());
-        return new Item(Material.SKULL_ITEM, 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações").lore(
+        return new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).setSkullOwner(p.getName()).name("§eInformações").lore(
                 "§fUsuário: §7" + p.getName(),
                 "§fÚltima missão completada: §7" +
                         (playerQuests.hasCompletedQuest() ?

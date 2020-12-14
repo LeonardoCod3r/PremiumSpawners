@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemSettings implements Cloneable{
 
-    private Integer item_id;
+    private String item_id;
     private Integer item_data;
     private String item_skull_owner;
     private String item_skull_url;

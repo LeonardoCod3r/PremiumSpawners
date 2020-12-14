@@ -225,7 +225,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         final boolean hologram = nav.getBoolean("HologramToggle");
         Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
             final Location l = getLocation();
-            l.getBlock().setType(Material.MOB_SPAWNER);
+            l.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
             final CreatureSpawner spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
             spawnerBlock.setCreatureTypeByName(getEntityType().name());
             spawnerBlock.setSpawnedType(getEntityType());
@@ -295,7 +295,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         HologramsAPI.getHolograms(Main.getInstance()).stream().filter(h -> h.getCreationTimestamp() == getHologramId()).findFirst().ifPresent(Hologram::delete);
         setHologramId(null);
         final Location l = getLocation();
-        l.getBlock().setType(Material.AIR);
+        l.getBlock().setType(Material.getMaterial("AIR"));
         impulsesOfGeneration.forEach(SpawnerImpulse::stop);
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
         cache.invalidate(getLocSerialized());

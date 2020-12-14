@@ -33,10 +33,10 @@ public class QuestRulesMenu extends InventoryMaker {
             return;
         }
         if (page != pages) {
-            setItem(18, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> new QuestRulesMenu(p, cq, page + 1)));
+            setItem(18, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> new QuestRulesMenu(p, cq, page + 1)));
         }
         if (page != 1) {
-            setItem(26, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> new QuestRulesMenu(p, cq, page - 1)));
+            setItem(26, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> new QuestRulesMenu(p, cq, page - 1)));
         }
         final int calculate = page - 1;
         final List<QuestRule> list = rules.size() == 1 ? rules : rules.subList(calculate, Math.min(calculate + 5, rules.size()));

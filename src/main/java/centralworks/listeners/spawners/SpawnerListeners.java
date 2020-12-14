@@ -51,7 +51,7 @@ public class SpawnerListeners {
         public void onInteract(PlayerInteractEvent e) {
             val block = e.getClickedBlock();
             if (block != null && e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (block.getType() != Material.MOB_SPAWNER) return;
+                if (block.getType() != Material.getMaterial("MOB_SPAWNER")) return;
                 val location = block.getLocation();
                 val p = e.getPlayer();
                 val user = Caches.getCache(User.class).getIfPresent(p.getName());
@@ -111,7 +111,7 @@ public class SpawnerListeners {
         @EventHandler
         public void onBreak(BlockBreakEvent e) {
             val block = e.getBlock();
-            if (block.getType() != Material.MOB_SPAWNER) return;
+            if (block.getType() != Material.getMaterial("MOB_SPAWNER")) return;
             val location = block.getLocation();
             val p = e.getPlayer();
             val item = p.getItemInHand();
@@ -146,7 +146,7 @@ public class SpawnerListeners {
             if (!SpawnerItem.isSpawnerItem(item)) return;
             val l = e.getBlock().getLocation();
             val spawnerItem = new SpawnerItem(item);
-            l.getBlock().setType(Material.MOB_SPAWNER);
+            l.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
             val spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
             spawnerBlock.setCreatureTypeByName(spawnerItem.getEntityType().name());
             spawnerBlock.setSpawnedType(spawnerItem.getEntityType());
@@ -157,7 +157,7 @@ public class SpawnerListeners {
         @EventHandler
         public void onBreak(BlockBreakEvent e) {
             val block = e.getBlock();
-            if (block.getType() == Material.MOB_SPAWNER ) return;
+            if (block.getType() == Material.getMaterial("MOB_SPAWNER")) return;
             val p = e.getPlayer();
             val item = p.getItemInHand();
             val entityType = ((CreatureSpawner) block.getState()).getSpawnedType();
@@ -179,7 +179,7 @@ public class SpawnerListeners {
 
         @EventHandler
         public void onInteractWithEgg(final PlayerInteractEvent e) {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.MOB_SPAWNER && e.getItem() != null && e.getItem().getType() == Material.MONSTER_EGG) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.getMaterial("MOB_SPAWNER") && e.getItem() != null && e.getItem().getType() == Material.getMaterial("MONSTER_EGG")) {
                 e.setCancelled(true);
             }
         }

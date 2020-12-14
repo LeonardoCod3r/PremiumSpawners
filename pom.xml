@@ -132,16 +132,16 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.github.webbukkit</groupId>
             <artifactId>dynmap</artifactId>
             <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <groupId>com.github.azbh111</groupId>
+            <artifactId>spigot-1.8.8</artifactId>
+            <version>R</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -154,6 +154,7 @@
             <groupId>com.github.azbh111</groupId>
             <artifactId>craftbukkit-1.8.8</artifactId>
             <version>R</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

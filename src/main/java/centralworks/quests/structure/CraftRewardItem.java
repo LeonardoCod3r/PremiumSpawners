@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CraftRewardItem implements CraftSliceReward<CraftRewardItem> {
 
-    private Integer item_id;
+    private String item_id;
     private String item_skull_owner;
     private String item_skull_url;
     private Integer item_amount;

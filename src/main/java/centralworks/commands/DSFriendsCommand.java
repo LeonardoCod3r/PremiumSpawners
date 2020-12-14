@@ -32,7 +32,7 @@ public class DSFriendsCommand extends BukkitCommand {
         final List<String> friends = dropStorage.getFriends();
         inventory.clear();
         inventory.setCancellable(true);
-        inventory.setItem(4, new Item(Material.getMaterial(397), 1, (short) 3).setSkullOwner(p.getName()).name("§e" + p.getName()).lore("§fAmigos: " + friends.size()));
+        inventory.setItem(4, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).setSkullOwner(p.getName()).name("§e" + p.getName()).lore("§fAmigos: " + friends.size()));
         final List<Integer> slots = Arrays.asList(11, 12, 13, 14, 15);
         final double pages = Math.ceil(friends.size() / 5.0);
         if (page > pages || page <= 0) {
@@ -40,9 +40,9 @@ public class DSFriendsCommand extends BukkitCommand {
             return;
         }
         if (page != pages)
-            inventory.setItem(16, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> openFriendsInventory(p, dropStorage, page + 1)));
+            inventory.setItem(16, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eAvançar").lore("§7Clique para ir a página " + (page + 1)).setSkullUrl("http://textures.minecraft.net/texture/715445da16fab67fcd827f71bae9c1d2f90c73eb2c1bd1ef8d8396cd8e8").onClick(inventoryClickEvent -> openFriendsInventory(p, dropStorage, page + 1)));
         if (page != 1)
-            inventory.setItem(10, new Item(Material.SKULL_ITEM, 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> openFriendsInventory(p, dropStorage, page - 1)));
+            inventory.setItem(10, new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3).name("§eVoltar").lore("§7Clique para ir a página " + (page - 1)).setSkullUrl("http://textures.minecraft.net/texture/eed78822576317b048eea92227cd85f7afcc44148dcb832733baccb8eb56fa1").onClick(inventoryClickEvent -> openFriendsInventory(p, dropStorage, page - 1)));
         final int calculate = page - 1;
         final List<String> subList = friends.subList(calculate, Math.min(calculate + 5, friends.size()));
         int count = 0;
@@ -50,7 +50,7 @@ public class DSFriendsCommand extends BukkitCommand {
             if (subList.get(count) != null && Bukkit.getOfflinePlayer(subList.get(count)) != null) {
                 final OfflinePlayer player = Bukkit.getOfflinePlayer(subList.get(count));
                 inventory.setItem(slots.get(count),
-                        new Item(Material.getMaterial(397), 1, (short) 3)
+                        new Item(Material.getMaterial("SKULL_ITEM"), 1, (short) 3)
                                 .name("§f" + player.getName())
                                 .setSkullOwner(player.getName())
                                 .lore("§fEsse jogador está " + (player.isOnline() ? "§aOnline" : "§fOffline") + "§f.", "§cClique para remover da lista de amigos.")
