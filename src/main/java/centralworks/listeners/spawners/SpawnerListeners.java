@@ -2,17 +2,17 @@ package centralworks.listeners.spawners;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
-import centralworks.models.User;
 import centralworks.cache.simple.Delay;
 import centralworks.events.SpawnerBreakEvent;
 import centralworks.events.SpawnerPlaceEvent;
 import centralworks.events.SpawnerStackEvent;
+import centralworks.layouts.menus.spawner.InfoSpawnerMenu;
+import centralworks.lib.LocationUtils;
+import centralworks.models.User;
 import centralworks.spawners.models.Spawner;
 import centralworks.spawners.models.SpawnerBuilder;
 import centralworks.spawners.models.SpawnerItem;
 import centralworks.spawners.utils.FilteringFunctions;
-import centralworks.layouts.menus.spawner.InfoSpawnerMenu;
-import centralworks.lib.LocationUtils;
 import lombok.Getter;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -42,7 +42,30 @@ public class SpawnerListeners {
         plugin = Main.getInstance();
         val factionMode = plugin.getSpawners().navigate().getBoolean("FactionMode");
         breakWithSilkTouch = plugin.getSpawners().navigate().getBoolean("BreakWithSilkTouch");
-        listener = factionMode ? new WithoutSimpleMode() : new WithSimpleMode();
+        listener = factionMode ? new WithSimpleMode() : new WithoutSimpleMode();
+    }
+
+    private static void boom(User user, Spawner spawner, SpawnerItem spawnerItem) {
+        val p = user.getPlayer();
+        val nav = plugin.getMessages().navigate();
+        val event = new SpawnerBreakEvent(p, spawner, spawnerItem);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+        spawnerItem.giveItem(p);
+        spawner.destroy(user);
+        p.sendMessage(nav.getMessage("spawnerRemoved"));
+        Delay.put(p.getName());
+    }
+
+    public static class Commons implements Listener {
+
+        @EventHandler
+        public void onInteractWithEgg(final PlayerInteractEvent e) {
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.getMaterial("MOB_SPAWNER") && e.getItem() != null && e.getItem().getType() == Material.getMaterial("MONSTER_EGG")) {
+                e.setCancelled(true);
+            }
+        }
+
     }
 
     public static class WithoutSimpleMode extends Commons {
@@ -144,20 +167,23 @@ public class SpawnerListeners {
         public void onPlace(BlockPlaceEvent e) {
             val item = e.getItemInHand();
             if (!SpawnerItem.isSpawnerItem(item)) return;
+            e.setCancelled(true);
             val l = e.getBlock().getLocation();
             val spawnerItem = new SpawnerItem(item);
-            l.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
-            val spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
-            spawnerBlock.setCreatureTypeByName(spawnerItem.getEntityType().name());
-            spawnerBlock.setSpawnedType(spawnerItem.getEntityType());
-            spawnerBlock.setDelay(20);
-            spawnerBlock.update();
+            Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+                l.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
+                val spawnerBlock = ((CreatureSpawner) l.getBlock().getState());
+                spawnerBlock.setCreatureTypeByName(spawnerItem.getEntityType().name());
+                spawnerBlock.setSpawnedType(spawnerItem.getEntityType());
+                spawnerBlock.setDelay(20);
+                spawnerBlock.update();
+            });
         }
 
         @EventHandler
         public void onBreak(BlockBreakEvent e) {
             val block = e.getBlock();
-            if (block.getType() == Material.getMaterial("MOB_SPAWNER")) return;
+            if (block.getType() != Material.getMaterial("MOB_SPAWNER")) return;
             val p = e.getPlayer();
             val item = p.getItemInHand();
             val entityType = ((CreatureSpawner) block.getState()).getSpawnedType();
@@ -174,28 +200,4 @@ public class SpawnerListeners {
         }
 
     }
-
-    public static class Commons implements Listener {
-
-        @EventHandler
-        public void onInteractWithEgg(final PlayerInteractEvent e) {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.getMaterial("MOB_SPAWNER") && e.getItem() != null && e.getItem().getType() == Material.getMaterial("MONSTER_EGG")) {
-                e.setCancelled(true);
-            }
-        }
-
-    }
-
-    private static void boom(User user, Spawner spawner, SpawnerItem spawnerItem) {
-        val p = user.getPlayer();
-        val nav = plugin.getMessages().navigate();
-        val event = new SpawnerBreakEvent(p, spawner, spawnerItem);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
-        spawnerItem.giveItem(p);
-        spawner.destroy(user);
-        p.sendMessage(nav.getMessage("spawnerRemoved"));
-        Delay.put(p.getName());
-    }
-
 }

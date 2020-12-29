@@ -3,6 +3,7 @@ package centralworks.modules;
 import centralworks.Main;
 import centralworks.Module;
 import centralworks.PluginSystem;
+import centralworks.cache.google.Caches;
 import centralworks.cache.simple.SICached;
 import centralworks.cache.simple.SpawnerRanking;
 import centralworks.commands.SpawnersCommand;
@@ -42,7 +43,7 @@ public class SpawnerModule extends PluginSystem {
 
     @Override
     public void terminate(Main plugin) {
-        new Spawner().getRepository().findAll().forEach(Spawner::impulsesForceStop);
+        Caches.getCache(Spawner.class).asMap().values().forEach(Spawner::impulsesForceStop);
     }
 
     @Override

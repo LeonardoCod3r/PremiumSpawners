@@ -7,8 +7,8 @@
                       transaction-type="RESOURCE_LOCAL">
         <class>centralworks.models.User</class>
         <class>centralworks.spawners.models.Spawner</class>
-        <class>centralworks.models.DropStorage</class>
-        <class>centralworks.models.DropPlayer</class>
+        <class>centralworks.models.ProductStorage</class>
+        <class>centralworks.models.UserProduct</class>
         <class>centralworks.models.BoosterPlayer</class>
         <class>centralworks.quests.models.PlayerQuests</class>
         <class>centralworks.quests.models.QuestData</class>

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-public class ItemSettings implements Cloneable{
+public class ItemSettings implements Cloneable {
 
     private String item_id;
     private Integer item_data;
@@ -38,7 +38,7 @@ public class ItemSettings implements Cloneable{
         item.lore(item_lore.stream().map(s -> s.replace("&", "§")).map(loreReplacement).collect(Collectors.toList()));
         item.setSkullUrl(item_skull_url);
         item.setSkullOwner(item_skull_owner);
-        item_enchants.forEach(s -> {
+        if (item_enchants != null) item_enchants.forEach(s -> {
             final String[] split = s.split(":");
             item.enchant(Enchantment.getByName(split[0]), Integer.valueOf(split[1]));
         });

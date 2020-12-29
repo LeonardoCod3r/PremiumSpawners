@@ -22,7 +22,7 @@ public class BoosterPlayer {
     @Setter
     @ManyToOne
     @Deprecated
-    private DropStorage dropStorage;
+    private ProductStorage productStorage;
     @Getter
     @Setter
     @Expose
@@ -32,8 +32,8 @@ public class BoosterPlayer {
     @Expose
     private Integer time;
 
-    public BoosterPlayer(DropStorage dropStorage, Double multiplier, Integer time) {
-        this.dropStorage = dropStorage;
+    public BoosterPlayer(ProductStorage productStorage, Double multiplier, Integer time) {
+        this.productStorage = productStorage;
         this.multiplier = multiplier;
         this.time = time;
     }

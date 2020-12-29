@@ -4,7 +4,6 @@ import centralworks.Main;
 import centralworks.Module;
 import centralworks.PluginSystem;
 import centralworks.cache.simple.BonusRegistered;
-import centralworks.cache.simple.LootData;
 import centralworks.commands.DSFriendsCommand;
 import centralworks.commands.SellCommand;
 import centralworks.listeners.dropstorage.EntityListeners;
@@ -23,7 +22,6 @@ public class DropStorageModule extends PluginSystem {
 
     @Override
     public void start(Main plugin) {
-        LootData.get().load();
         final SimpleCommandMap map = ((CraftServer) Main.getInstance().getServer()).getCommandMap();
         map.register("armazem", new SellCommand());
         final Settings.Navigate nav = Main.getInstance().getDropStorage().navigate();

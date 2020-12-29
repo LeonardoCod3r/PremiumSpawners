@@ -3,19 +3,17 @@ package centralworks.models;
 import centralworks.Main;
 import centralworks.cache.google.Caches;
 import centralworks.cache.simple.BonusRegistered;
-import centralworks.cache.simple.LootData;
 import centralworks.database.Storable;
 import centralworks.database.specifications.BindRepository;
 import centralworks.database.specifications.Repository;
+import centralworks.market.models.Market;
+import centralworks.market.models.Product;
 import centralworks.repositories.json.FastDropStorageRepository;
 import centralworks.repositories.mysql.JpaDropStorageRepository;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -31,7 +29,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class DropStorage extends Storable<DropStorage> implements Serializable {
+public class ProductStorage extends Storable<ProductStorage> implements Serializable {
 
     @Id
     @Column(length = 16)
@@ -62,7 +60,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Getter
     @Setter
     @Expose
-    private List<DropPlayer> dropPlayers = Lists.newArrayList();
+    private List<UserProduct> userProducts = Lists.newArrayList();
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
@@ -70,18 +68,18 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     @Expose
     private List<String> friends = Lists.newArrayList();
 
-    public DropStorage(OfflinePlayer p) {
+    public ProductStorage(OfflinePlayer p) {
         this.owner = p.getName();
     }
 
-    public DropStorage(String owner) {
+    public ProductStorage(String owner) {
         this.owner = owner;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Repository<DropStorage, String> getRepository() {
-        final BindRepository<DropStorage, String> bindRepository = new BindRepository<>(DropStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
+    public Repository<ProductStorage, String> getRepository() {
+        final BindRepository<ProductStorage, String> bindRepository = new BindRepository<>(ProductStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
         return bindRepository.getRelativeRepository();
     }
 
@@ -96,18 +94,18 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     public Double getAmountAll() {
         Double amountAll = 0D;
-        for (DropPlayer dropPlayer : getDropPlayers()) {
-            amountAll += dropPlayer.getAmount();
+        for (UserProduct userProduct : getUserProducts()) {
+            amountAll += userProduct.getAmount();
         }
         return amountAll;
     }
 
     public void fixDrops() {
-        LootData.get().getList().forEach(drop -> {
-            if (getDropPlayers().stream().noneMatch(dropPlayer -> dropPlayer.getKeyDrop().equalsIgnoreCase(drop.getKeyDrop()))) {
-                final List<DropPlayer> list = new ArrayList<>(getDropPlayers());
-                list.add(new DropPlayer(this, drop.getKeyDrop(), 0D));
-                setDropPlayers(list);
+        Market.getInstance().getProducts().forEach(product -> {
+            if (getUserProducts().stream().noneMatch(userProduct -> userProduct.getProductKey().equalsIgnoreCase(product.getId()))) {
+                final List<UserProduct> list = new ArrayList<>(getUserProducts());
+                list.add(new UserProduct(this, product.getId(), 0D));
+                setUserProducts(list);
             }
         });
     }
@@ -122,24 +120,19 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
     }
 
     public void sellAll() {
-        getDropPlayers().forEach(dropPlayer -> dropPlayer.sell(getOwnerPlayer(), this));
+        getUserProducts().forEach(userProduct -> userProduct.sell(getOwnerPlayer(), this));
     }
 
-    public DropPlayer getDropPlayer(String keyDrop) {
-        return getDropPlayers().stream().filter(dropPlayer -> dropPlayer.getKeyDrop().equals(keyDrop)).findFirst().get();
+    public UserProduct getDropPlayer(String keyDrop) {
+        return getUserProducts().stream().filter(userProduct -> userProduct.getProductKey().equals(keyDrop)).findFirst().get();
     }
 
     public Double getPriceAll() {
-        double priceAll = 0D;
-        for (DropPlayer dropPlayer : dropPlayers) {
-            final Drop drop = LootData.get().get(dropPlayer.getKeyDrop());
-            priceAll += drop.getUnitPrice() * dropPlayer.getAmount();
+        var priceAll = 0D;
+        for (UserProduct userProduct : userProducts) {
+            priceAll += userProduct.getPrice(this);
         }
         return priceAll;
-    }
-
-    public Double getPriceWithBonus() {
-        return getPriceAll() + (getPriceAll() * getBonus() / 100);
     }
 
     public User getUser() {
@@ -185,7 +178,7 @@ public class DropStorage extends Storable<DropStorage> implements Serializable {
 
     public void addBooster(BoosterPlayer boosterPlayer) {
         getBoostersActive().add(boosterPlayer);
-        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+        final LoadingCache<String, ProductStorage> cache = Caches.getCache(ProductStorage.class);
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Optional.ofNullable(cache.getIfPresent(getOwner())).ifPresent(storage -> {
             final ArrayList<BoosterPlayer> list = new ArrayList<>(storage.getBoostersActive());
             list.remove(boosterPlayer);

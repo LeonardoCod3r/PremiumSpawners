@@ -4,7 +4,7 @@ import centralworks.Main;
 import centralworks.cache.google.Caches;
 import centralworks.cache.simple.ICached;
 import centralworks.models.Impulse;
-import centralworks.models.DropStorage;
+import centralworks.models.ProductStorage;
 import centralworks.lib.PlayerCommons;
 import centralworks.lib.Settings;
 import centralworks.lib.enums.Permission;
@@ -29,9 +29,9 @@ public class BoosterCommand extends BukkitCommand {
         final Settings.Navigate nav = plugin.getMessages().navigate();
         if (s instanceof Player && args.length == 0) {
             final Player p = (Player) s;
-            final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
-            final DropStorage dropStorage = cache.getIfPresent(p.getName());
-            p.sendMessage(nav.getMessage("booster-view").replace("{multiplier}", dropStorage.getMultiplier().toString()));
+            final LoadingCache<String, ProductStorage> cache = Caches.getCache(ProductStorage.class);
+            final ProductStorage productStorage = cache.getIfPresent(p.getName());
+            p.sendMessage(nav.getMessage("booster-view").replace("{multiplier}", productStorage.getMultiplier().toString()));
             return true;
         }
         if (!Permission.hasPermission(s, Permission.GIVE_BOOSTER)) {

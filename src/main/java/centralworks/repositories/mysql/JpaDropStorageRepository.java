@@ -1,14 +1,14 @@
 package centralworks.repositories.mysql;
 
-import centralworks.models.DropStorage;
+import centralworks.models.ProductStorage;
 import centralworks.database.specifications.JpaRepository;
 
-public class JpaDropStorageRepository extends JpaRepository<DropStorage, String> {
+public class JpaDropStorageRepository extends JpaRepository<ProductStorage, String> {
 
     private static JpaDropStorageRepository repository;
 
     public JpaDropStorageRepository() {
-        super(DropStorage.class);
+        super(ProductStorage.class);
     }
 
     public static JpaDropStorageRepository require() {

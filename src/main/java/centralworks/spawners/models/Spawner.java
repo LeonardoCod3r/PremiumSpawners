@@ -164,7 +164,6 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     public void impulsesForceRun() {
         var messages = Main.getInstance().getMessages().navigate();
         for (SpawnerImpulse si : getImpulsesOfGeneration()) {
-            si.fix().setValid(true);
             si.run(this, () -> {
                 if (isOnlinePlayer())
                     getPlayer().sendMessage(messages.getMessage("boosterEnd").replace("{type}", si.getImpulseType().name()));
@@ -311,7 +310,7 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         addFriend(spawner.getFriends());
         spawner.getImpulsesOfGeneration().forEach(i -> {
             i.stop();
-            i.in(this);
+            i.in(this, null);
         });
         final Settings.Navigate nav = Main.getInstance().getSpawners().navigate();
         final boolean hologram = nav.getBoolean("HologramToggle");

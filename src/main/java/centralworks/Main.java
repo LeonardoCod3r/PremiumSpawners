@@ -1,6 +1,5 @@
 package centralworks;
 
-import centralworks.cache.simple.LootData;
 import centralworks.cache.simple.SICached;
 import centralworks.database.specifications.ServiceModule;
 import centralworks.hooks.DynmapHook;
@@ -10,6 +9,7 @@ import centralworks.init.QuestLoader;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Settings;
+import centralworks.market.MarketLoader;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import de.tr7zw.nbtinjector.NBTInjector;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Animals;
@@ -117,7 +118,10 @@ public class Main extends JavaPlugin {
             questLoader.run();
         }
         if (dropStorageSystemIsActive()) {
-            LootData.get().load();
+            val loader = MarketLoader.getInstance();
+            loader.setLoaded(false);
+            loader.load();
+            loader.enable();
         }
         if (limitSystemIsActive()) {
             final LimitLoader limitLoader = LimitLoader.get();

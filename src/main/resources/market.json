@@ -1,0 +1,72 @@
+{
+  "products": [
+    {
+      "id": "ROTTEN_FLESH",
+      "data": 0,
+      "mob": "ZOMBIE",
+      "rulesMarket": {
+        "realistic": true,
+        "priceMin": 250.0,
+        "priceMax": 1850.0,
+        "originalPrice": 987.0,
+        "bonus": 11.0,
+        "amountMax": 1000000.0
+      },
+      "lootItemMenu": {
+        "item_id": "ROTTEN_FLESH",
+        "item_data": 0,
+        "item_amount": 1,
+        "item_name": "&eCarne de Zumbi",
+        "item_lore": [
+          "&ePreço unitário: {price-sell-unit}",
+          "&eQuantidade: {amount}",
+          "&ePreço de venda: {price-sell-all}"
+        ]
+      }
+    },
+    {
+      "id": "RAW_CHICKEN",
+      "data": 0,
+      "mob": "CHICKEN",
+      "rulesMarket": {
+        "realistic": true,
+        "priceMin": 50.0,
+        "priceMax": 1600.0,
+        "originalPrice": 253.0,
+        "bonus": 7.0,
+        "amountMax": 1000000.0
+      },
+      "lootItemMenu": {
+        "item_id": "RAW_CHICKEN",
+        "item_data": 0,
+        "item_amount": 1,
+        "item_name": "&eFrango cru",
+        "item_lore": [
+          "&ePreço unitário: {price-sell-unit}",
+          "&eQuantidade: {amount}",
+          "&ePreço de venda: {price-sell-all}"
+        ]
+      }
+    },
+    {
+      "id": "IRON_INGOT",
+      "data": 0,
+      "mob": "IRON_GOLEM",
+      "rulesMarket": {
+        "realistic": false,
+        "originalPrice": 253.0
+      },
+      "lootItemMenu": {
+        "item_id": "IRON_GOLEM",
+        "item_data": 0,
+        "item_amount": 1,
+        "item_name": "&eFerro",
+        "item_lore": [
+          "&ePreço unitário: {price-sell-unit}",
+          "&eQuantidade: {amount}",
+          "&ePreço de venda: {price-sell-all}"
+        ]
+      }
+    }
+  ]
+}

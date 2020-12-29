@@ -10,7 +10,7 @@ import centralworks.models.User;
 import centralworks.models.enums.ImpulseType;
 import centralworks.models.enums.LimitType;
 import centralworks.models.BoosterPlayer;
-import centralworks.models.DropStorage;
+import centralworks.models.ProductStorage;
 import centralworks.cache.simple.TCached;
 import centralworks.spawners.TaskType;
 import centralworks.spawners.models.Spawner;
@@ -35,9 +35,9 @@ public class PlayerListeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
+        final LoadingCache<String, ProductStorage> cache = Caches.getCache(ProductStorage.class);
         final String name = event.getPlayer().getName();
-        final DropStorage storage = Optional.ofNullable(cache.getIfPresent(name)).orElse(new DropStorage(name));
+        final ProductStorage storage = Optional.ofNullable(cache.getIfPresent(name)).orElse(new ProductStorage(name));
         storage.fixDrops();
         storage.applyBoostersDefault();
         storage.fixBonus(event.getPlayer());
@@ -120,8 +120,8 @@ public class PlayerListeners implements Listener {
             }
         }
 
-        final LoadingCache<String, DropStorage> cache = Caches.getCache(DropStorage.class);
-        final DropStorage dropStorage = cache.getIfPresent(p.getName());
+        final LoadingCache<String, ProductStorage> cache = Caches.getCache(ProductStorage.class);
+        final ProductStorage productStorage = cache.getIfPresent(p.getName());
 
         for (Impulse booster : ICached.get().getList()) {
             if (!item.isSimilar(booster.getAsItem())) continue;
@@ -132,10 +132,10 @@ public class PlayerListeners implements Listener {
                 return;
             }
             if (booster.getTime() == 0) {
-                dropStorage.addMultiplier(booster.getValue());
+                productStorage.addMultiplier(booster.getValue());
                 p.sendMessage(nav.getMessage("booster-used").replace("{time}", "infinito").replace("{multiplier}", booster.getValue().toString()));
             } else {
-                dropStorage.addBooster(new BoosterPlayer(dropStorage, booster.getValue(), booster.getTime()));
+                productStorage.addBooster(new BoosterPlayer(productStorage, booster.getValue(), booster.getTime()));
                 p.sendMessage(nav.getMessage("booster-used").replace("{time}", new FormatTime(TimeUnit.SECONDS.toMillis(booster.getTime())).format()).replace("{multiplier}", booster.getValue().toString()));
             }
             if (item.getAmount() > 1) item.setAmount(item.getAmount() - 1);

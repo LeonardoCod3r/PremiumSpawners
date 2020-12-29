@@ -2,7 +2,7 @@ package centralworks.cache.google;
 
 import centralworks.Main;
 import centralworks.models.User;
-import centralworks.models.DropStorage;
+import centralworks.models.ProductStorage;
 import centralworks.quests.models.PlayerQuests;
 import centralworks.spawners.models.Spawner;
 import centralworks.database.Storable;
@@ -116,23 +116,23 @@ public class Caches {
             }
         });
 
-        caches.put(DropStorage.class, new AbstractCache<DropStorage>() {
+        caches.put(ProductStorage.class, new AbstractCache<ProductStorage>() {
 
-            private LoadingCache<String, DropStorage> loadingCache;
+            private LoadingCache<String, ProductStorage> loadingCache;
 
             @Override
-            public Repository<DropStorage, String> getRepository() {
-                return new DropStorage().getRepository();
+            public Repository<ProductStorage, String> getRepository() {
+                return new ProductStorage().getRepository();
             }
 
             @Override
             public void create() {
-                var repository = new DropStorage().getRepository();
+                var repository = new ProductStorage().getRepository();
                 var nav = Main.getInstance().getCacheConfig().navigate();
                 var path = "DropStorage.";
-                var removalListener = new RemovalListener<String, DropStorage>() {
+                var removalListener = new RemovalListener<String, ProductStorage>() {
                     @Override
-                    public void onRemoval(RemovalNotification<String, DropStorage> notification) {
+                    public void onRemoval(RemovalNotification<String, ProductStorage> notification) {
                         final RemovalCause cause = notification.getCause();
                         if (Lists.newArrayList(RemovalCause.EXPIRED, RemovalCause.SIZE, RemovalCause.EXPLICIT).contains(cause) && notification.getValue() != null) {
                             notification.getValue().query().commit();
@@ -143,9 +143,9 @@ public class Caches {
                         .maximumSize(nav.getLong(path + "size"))
                         .expireAfterWrite(nav.getLong(path + "expired"), TimeUnit.MINUTES)
                         .removalListener(removalListener)
-                        .build(new CacheLoader<String, DropStorage>() {
+                        .build(new CacheLoader<String, ProductStorage>() {
                             @Override
-                            public DropStorage load(@NotNull String s) {
+                            public ProductStorage load(@NotNull String s) {
                                 return SyncRequests.supply(repository, s).persist();
                             }
                         });
@@ -153,7 +153,7 @@ public class Caches {
             }
 
             @Override
-            public LoadingCache<String, DropStorage> getCache() {
+            public LoadingCache<String, ProductStorage> getCache() {
                 return loadingCache;
             }
         });
