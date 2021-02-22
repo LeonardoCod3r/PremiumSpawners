@@ -1,4 +1,4 @@
-package centralworks.database.specifications;
+package centralworks.database;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,13 +18,9 @@ public interface Repository<O, T> {
 
     Optional<O> findAndDelete(T id);
 
-    void deleteOf(T id, String idName);
-
     List<O> findAll();
 
     List<O> findAll(Predicate<O> predicate);
-
-    boolean exists(T id, String idName);
 
     boolean exists(T id);
 

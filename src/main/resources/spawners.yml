@@ -1,4 +1,3 @@
-FactionMode: false
 HologramToggle: false
 BreakWithSilkTouch: false
 Hologram:
@@ -27,7 +26,7 @@ List:
     item:
       id: "SKULL_ITEM"
       data: 3
-      skull-owner: "DarkClosed"
+      skull-owner: "MHF_Zombie"
       name: "&6&lMOB SPAWNER"
       lore:
         - "&fCriatura: &7{entity-type}"

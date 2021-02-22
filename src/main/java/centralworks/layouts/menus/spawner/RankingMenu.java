@@ -1,13 +1,13 @@
 package centralworks.layouts.menus.spawner;
 
 import centralworks.cache.simple.SpawnerRanking;
-import centralworks.spawners.models.Spawner;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.layouts.settings.RankingMenuS;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.ItemSettings;
 import centralworks.lib.inventory.Item;
 import centralworks.lib.inventory.addons.InventorySpawner;
+import centralworks.spawners.models.Spawner;
 import org.bukkit.entity.Player;
 
 import java.util.List;

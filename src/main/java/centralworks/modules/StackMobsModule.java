@@ -15,8 +15,13 @@ public class StackMobsModule extends PluginSystem {
     }
 
     @Override
-    public void start(Main plugin) {
+    public void start(Main plugin, Object... objects) {
         Bukkit.getPluginManager().registerEvents(new EntityListeners(), Main.getInstance());
+    }
+
+    @Override
+    public void reload(Main plugin) {
+
     }
 
     @Override

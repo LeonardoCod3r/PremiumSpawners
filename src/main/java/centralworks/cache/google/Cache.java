@@ -1,11 +1,10 @@
 package centralworks.cache.google;
 
-import centralworks.database.Storable;
-import centralworks.database.specifications.Repository;
+import centralworks.database.Repository;
 import com.google.common.cache.LoadingCache;
 
 @SuppressWarnings("UnstableApiUsage")
-public interface Cache<O extends Storable<O>> {
+public interface Cache<O> {
 
     void create();
 
@@ -14,6 +13,8 @@ public interface Cache<O extends Storable<O>> {
     O getIfPresent(String key);
 
     Repository<O, String> getRepository();
+
+    int getPriority();
 
 
 }

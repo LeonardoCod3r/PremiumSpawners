@@ -1,7 +1,8 @@
-package centralworks.repositories.mysql;
+package centralworks.repositories;
 
+import centralworks.Main;
+import centralworks.database.JpaRepository;
 import centralworks.models.ProductStorage;
-import centralworks.database.specifications.JpaRepository;
 
 public class JpaDropStorageRepository extends JpaRepository<ProductStorage, String> {
 
@@ -12,6 +13,6 @@ public class JpaDropStorageRepository extends JpaRepository<ProductStorage, Stri
     }
 
     public static JpaDropStorageRepository require() {
-        return repository == null ? repository = new JpaDropStorageRepository() : repository;
+        return repository == null ? repository = Main.getInstance().getInjector().getInstance(JpaDropStorageRepository.class) : repository;
     }
 }

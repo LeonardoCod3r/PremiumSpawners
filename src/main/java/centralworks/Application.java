@@ -1,20 +1,18 @@
 package centralworks;
 
 import centralworks.cache.google.Caches;
+import centralworks.cache.simple.SICached;
 import centralworks.commands.BoosterCommand;
 import centralworks.commands.LimitCommand;
-import centralworks.listeners.commons.PlayerListeners;
 import centralworks.hooks.PlaceHolderHook;
 import centralworks.init.ImpulseLoader;
 import centralworks.init.LimitLoader;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.inventory.InventoryController;
+import centralworks.listeners.commons.PlayerListeners;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
@@ -33,45 +31,13 @@ public class Application {
     private static Function<LinkedList<PluginSystem>, LinkedList<PluginSystem>> orderToStart;
     @Getter
     @Setter
+    private static Function<LinkedList<PluginSystem>, LinkedList<PluginSystem>> orderToReload;
+    @Getter
+    @Setter
     private static Function<LinkedList<PluginSystem>, LinkedList<PluginSystem>> orderToTerminate;
 
     static {
         CACHE.set(Lists.newLinkedList());
-        registerPluginSystem(new PluginSystem() {
-            @Override
-            public String getId() {
-                return "commons";
-            }
-
-            @Override
-            public void start(Main plugin) {
-                MenusSettings.get();
-                final ImpulseLoader impulseLoader = ImpulseLoader.get();
-                impulseLoader.setDefaults();
-                impulseLoader.run();
-                if (plugin.limitSystemIsActive()) {
-                    final LimitLoader limitLoader = LimitLoader.get();
-                    limitLoader.setDefaults();
-                    limitLoader.run();
-                    new PlaceHolderHook().register();
-                }
-                Bukkit.getPluginManager().registerEvents(new PlayerListeners(), plugin);
-                Bukkit.getPluginManager().registerEvents(InventoryController.getInstance(), plugin);
-                final SimpleCommandMap map = ((CraftServer) plugin.getServer()).getCommandMap();
-                map.register("booster", new BoosterCommand());
-                if (plugin.limitSystemIsActive()) map.register("limit", new LimitCommand());
-            }
-
-            @Override
-            public void terminate(Main plugin) {
-                Caches.getCaches().values().forEach(abstractCache -> abstractCache.getCache().invalidateAll());
-            }
-
-            @Override
-            public boolean canRegister() {
-                return true;
-            }
-        });
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             for (final ClassPath.ClassInfo info : ClassPath.from(loader).getTopLevelClasses()) {
@@ -99,7 +65,23 @@ public class Application {
     public static void startSystems() {
         LinkedList<PluginSystem> systems = CACHE.get();
         if (orderToStart != null) systems = orderToStart.apply(systems);
-        systems.stream().filter(PluginSystem::canRegister).forEach(pluginSystem -> pluginSystem.start(Main.getInstance()));
+        val instance = Main.getInstance();
+        systems.stream().filter(PluginSystem::canRegister).forEach(ps -> {
+            switch (ps.getId()) {
+                case "commons":
+                    ps.start(instance, instance.limitSystemIsActive());
+                    break;
+                case "dropstorage":
+                    ps.start(instance, instance.dropStorageSystemIsActive());
+                    break;
+                case "quests":
+                    ps.start(instance, instance.questsSystemIsActive());
+                    break;
+                default:
+                    ps.start(instance);
+                    break;
+            }
+        });
     }
 
     public static void terminateSystems() {
@@ -114,6 +96,12 @@ public class Application {
 
     public static void stopSystem(String id) {
         getPluginSystem(id).terminate(Main.getInstance());
+    }
+
+    public static void reloadAll() {
+        LinkedList<PluginSystem> systems = CACHE.get();
+        if (orderToReload != null) systems = orderToReload.apply(systems);
+        systems.stream().filter(PluginSystem::canRegister).forEach(ps -> ps.reload(Main.getInstance()));
     }
 
     private static PluginSystem getPluginSystem(String id) {

@@ -10,7 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @RequiredArgsConstructor
-public class FriendsMenuS extends InventorySettings{
+public class FriendsMenuS extends InventorySettings {
 
     private List<Integer> slots;
     private ItemSettings spawner_item;

@@ -3,12 +3,6 @@ package centralworks.models;
 import centralworks.Main;
 import centralworks.cache.google.Caches;
 import centralworks.spawners.models.Spawner;
-import centralworks.database.Storable;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
-import centralworks.lib.LocationUtils;
-import centralworks.repositories.json.FastUserRepository;
-import centralworks.repositories.mysql.JpaUserRepository;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
@@ -28,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class User extends Storable<User> implements Serializable {
+public class User implements Serializable {
 
     @Id
     @Column(length = 16)
@@ -59,20 +53,8 @@ public class User extends Storable<User> implements Serializable {
         this.name = p.getName();
     }
 
-    public User(String name){
+    public User(String name) {
         this.name = name;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<User, String> getRepository() {
-        final BindRepository<User, String> bindRepository = new BindRepository<>(User.class, JpaUserRepository.require(), FastUserRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
-    @Override
-    public Object getEntityIdentifier() {
-        return this.name;
     }
 
     public void getSpawners(Consumer<List<Spawner>> callback) {
@@ -123,19 +105,19 @@ public class User extends Storable<User> implements Serializable {
     }
 
     public void addSpawnerLocation(Location location) {
-        locationsSerialized.add(LocationUtils.locToString(location));
+        locationsSerialized.add(Main.getGson().toJson(location));
     }
 
     public Spawner getSpawner(Location location) {
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-        return cache.getIfPresent(locationsSerialized.stream().filter(location1 -> location1.equals(LocationUtils.locToString(location))).findFirst().orElse(""));
+        return cache.getIfPresent(locationsSerialized.stream().filter(location1 -> location1.equals(Main.getGson().toJson(location))).findFirst().orElse(""));
     }
 
     public boolean exists(Location location) {
-        return locationsSerialized.stream().map(LocationUtils::stringToLoc).anyMatch(location1 -> location1.equals(location));
+        return locationsSerialized.stream().map(loc -> Main.getGson().fromJson(loc, Location.class)).anyMatch(location1 -> location1.equals(location));
     }
 
     public void deleteSpawnerLocation(Location location) {
-        locationsSerialized.remove(LocationUtils.locToString(location));
+        locationsSerialized.remove(Main.getGson().toJson(location));
     }
 }

@@ -1,7 +1,7 @@
 package centralworks.models;
 
-import centralworks.models.enums.LimitType;
 import centralworks.lib.ItemSettings;
+import centralworks.models.enums.LimitType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

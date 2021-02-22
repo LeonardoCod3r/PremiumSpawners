@@ -3,8 +3,6 @@ package centralworks.modules;
 import centralworks.Main;
 import centralworks.Module;
 import centralworks.PluginSystem;
-import centralworks.market.MarketLoader;
-import lombok.val;
 
 @Module
 public class MarketModule extends PluginSystem {
@@ -15,10 +13,13 @@ public class MarketModule extends PluginSystem {
     }
 
     @Override
-    public void start(Main plugin) {
-        val loader = MarketLoader.getInstance();
-        loader.load();
-        loader.enable();
+    public void start(Main plugin, Object... objects) {
+
+    }
+
+    @Override
+    public void reload(Main plugin) {
+
     }
 
     @Override

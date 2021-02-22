@@ -11,7 +11,7 @@ import java.nio.file.Files;
 
 @Data
 @RequiredArgsConstructor
-public class MenusSettings{
+public class MenusSettings {
 
     private static MenusSettings menusSettings;
 

@@ -1,8 +1,8 @@
 package centralworks.models;
 
+import centralworks.lib.ItemSettings;
 import centralworks.models.enums.ImpulseType;
 import centralworks.spawners.Identifiers;
-import centralworks.lib.ItemSettings;
 import de.tr7zw.nbtapi.NBTItem;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

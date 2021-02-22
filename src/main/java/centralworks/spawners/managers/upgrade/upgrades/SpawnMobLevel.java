@@ -1,9 +1,9 @@
 package centralworks.spawners.managers.upgrade.upgrades;
 
+import centralworks.hooks.EconomyContext;
 import centralworks.spawners.managers.upgrade.Upgrade;
 import centralworks.spawners.managers.upgrade.UpgradeManager;
 import centralworks.spawners.models.Spawner;
-import centralworks.hooks.EconomyContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.entity.Player;

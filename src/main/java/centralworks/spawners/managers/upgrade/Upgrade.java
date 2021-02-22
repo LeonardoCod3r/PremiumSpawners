@@ -1,8 +1,8 @@
 package centralworks.spawners.managers.upgrade;
 
+import centralworks.hooks.EconomyContext;
 import centralworks.spawners.models.Spawner;
 import centralworks.spawners.models.Statistics;
-import centralworks.hooks.EconomyContext;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

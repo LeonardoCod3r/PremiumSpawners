@@ -1,7 +1,8 @@
-package centralworks.repositories.mysql;
+package centralworks.repositories;
 
+import centralworks.Main;
+import centralworks.database.JpaRepository;
 import centralworks.spawners.models.Spawner;
-import centralworks.database.specifications.JpaRepository;
 
 public class JpaSpawnerRepository extends JpaRepository<Spawner, String> {
 
@@ -12,6 +13,6 @@ public class JpaSpawnerRepository extends JpaRepository<Spawner, String> {
     }
 
     public static JpaSpawnerRepository require() {
-        return repository == null ? repository = new JpaSpawnerRepository() : repository;
+        return repository == null ? repository = Main.getInstance().getInjector().getInstance(JpaSpawnerRepository.class) : repository;
     }
 }

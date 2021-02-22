@@ -2,16 +2,17 @@ package centralworks.listeners.commons;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
+import centralworks.lib.Settings;
+import centralworks.models.EntityStacked;
 import centralworks.models.enums.ImpulseType;
 import centralworks.spawners.models.Spawner;
-import centralworks.models.EntityStacked;
-import centralworks.lib.LocationUtils;
-import centralworks.lib.Settings;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtinjector.NBTInjector;
 import lombok.val;
 import org.bukkit.Chunk;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -44,7 +45,7 @@ public class EntityListeners implements Listener {
         if (!entity.hasMetadata("NPC") && entity instanceof Creature) {
             final EntityStacked entityStacked = new EntityStacked(entity).noAI();
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-            Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(e.getSpawner().getLocation())))
+            Optional.ofNullable(cache.getIfPresent(Main.getGson().toJson(e.getSpawner().getLocation())))
                     .ifPresent(spawner -> entityStacked.setStack(spawner.getAmount() * spawner.getMultiplierOf(ImpulseType.GENERATION)));
             for (Entity nearbyEntity : entity.getNearbyEntities(entities.getDouble("Settings.area.x"), entities.getDouble("Settings.area.y"), entities.getDouble("Settings.area.z"))) {
                 if (!nearbyEntity.hasMetadata("NPC") && nearbyEntity instanceof Creature)

@@ -1,7 +1,7 @@
 package centralworks.cache.simple;
 
-import centralworks.spawners.TaskType;
 import centralworks.lib.ListCache;
+import centralworks.spawners.TaskType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

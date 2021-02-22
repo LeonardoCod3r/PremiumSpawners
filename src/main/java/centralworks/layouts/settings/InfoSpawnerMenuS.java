@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @RequiredArgsConstructor
-public class InfoSpawnerMenuS extends InventorySettings{
+public class InfoSpawnerMenuS extends InventorySettings {
 
     private ItemSettings spawner_item;
     private ItemSettings boosters;

@@ -2,19 +2,14 @@ package centralworks.spawners.models;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
-import centralworks.models.User;
-import centralworks.models.enums.ImpulseType;
 import centralworks.events.SpawnerStackEvent;
-import centralworks.database.Storable;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
 import centralworks.hooks.DynmapHook;
 import centralworks.lib.BalanceFormatter;
-import centralworks.lib.LocationUtils;
 import centralworks.lib.Settings;
 import centralworks.lib.enums.EntityName;
-import centralworks.repositories.json.FastSpawnerRepository;
-import centralworks.repositories.mysql.JpaSpawnerRepository;
+import centralworks.models.User;
+import centralworks.models.enums.ImpulseType;
+import centralworks.repositories.JpaSpawnerRepository;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.google.common.cache.LoadingCache;
@@ -39,12 +34,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Data
-public class Spawner extends Storable<Spawner> implements Serializable {
+public class Spawner implements Serializable {
 
     @Id
     @Column(length = 150)
@@ -73,26 +67,9 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     @Expose
     private Statistics statistics;
 
-    public Spawner(String locSerialized) {
-        this.locSerialized = locSerialized;
-        this.statistics = new Statistics(this);
-    }
-
     public Spawner(Location location) {
         setLocation(location);
         this.statistics = new Statistics(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<Spawner, String> getRepository() {
-        final BindRepository<Spawner, String> bindRepository = new BindRepository<>(Spawner.class, JpaSpawnerRepository.require(), FastSpawnerRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
-    @Override
-    public Object getEntityIdentifier() {
-        return this.locSerialized;
     }
 
     public Double getPrice() {
@@ -140,11 +117,11 @@ public class Spawner extends Storable<Spawner> implements Serializable {
     }
 
     public Location getLocation() {
-        return LocationUtils.stringToLoc(getLocSerialized());
+        return Main.getGson().fromJson(locSerialized, Location.class);
     }
 
     public void setLocation(Location location) {
-        this.locSerialized = LocationUtils.locToString(location);
+        this.locSerialized = Main.getGson().toJson(location);
     }
 
     public EntityType getEntityType() {
@@ -240,14 +217,14 @@ public class Spawner extends Storable<Spawner> implements Serializable {
 
     public void pullHologram() {
         final Settings.Navigate nav = Main.getInstance().getSpawners().navigate();
-            final Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), getLocation().add(0.0, 2.50, 0.0).add(0.5, 0.0, 0.5));
-            setHologramId(hologram.getCreationTimestamp());
-            nav.getColorfulList("Hologram").forEach(s -> hologram.appendTextLine(s
-                    .replace("{mob}", getEntityName())
-                    .replace("{stack}", BalanceFormatter.format(getAmount()))
-                    .replace("{owner}", getOwner()))
-            );
-            hologram.teleport(hologram.getLocation());
+        final Hologram hologram = HologramsAPI.createHologram(Main.getInstance(), getLocation().add(0.0, 2.50, 0.0).add(0.5, 0.0, 0.5));
+        setHologramId(hologram.getCreationTimestamp());
+        nav.getColorfulList("Hologram").forEach(s -> hologram.appendTextLine(s
+                .replace("{mob}", getEntityName())
+                .replace("{stack}", BalanceFormatter.format(getAmount()))
+                .replace("{owner}", getOwner()))
+        );
+        hologram.teleport(hologram.getLocation());
 
         dynmapShow();
     }
@@ -298,8 +275,8 @@ public class Spawner extends Storable<Spawner> implements Serializable {
         impulsesOfGeneration.forEach(SpawnerImpulse::stop);
         final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
         cache.invalidate(getLocSerialized());
-        query().delete();
-        if (user!=null) user.deleteSpawnerLocation(l);
+        JpaSpawnerRepository.require().delete(this);
+        if (user != null) user.deleteSpawnerLocation(l);
         else getUser().deleteSpawnerLocation(l);
         dynmapHide();
     }

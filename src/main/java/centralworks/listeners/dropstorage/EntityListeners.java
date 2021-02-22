@@ -2,14 +2,14 @@ package centralworks.listeners.dropstorage;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
-import centralworks.market.models.Product;
-import centralworks.models.UserProduct;
-import centralworks.models.ProductStorage;
-import centralworks.models.EntityStacked;
 import centralworks.lib.ActionBarMessage;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Settings;
 import centralworks.lib.enums.ItemName;
+import centralworks.market.models.Product;
+import centralworks.models.EntityStacked;
+import centralworks.models.ProductStorage;
+import centralworks.models.UserProduct;
 import com.google.common.cache.LoadingCache;
 import lombok.val;
 import org.bukkit.entity.Entity;
@@ -41,7 +41,7 @@ public class EntityListeners implements Listener {
                             if (productStorage.isMax(add))
                                 userProduct.addDropAmount(add - (productStorage.getAmountAll() + add - productStorage.getUser().getSellLimit()));
                             else userProduct.addDropAmount(add);
-                            new ActionBarMessage(p, nav.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(product.getId()).getName()));
+                            new ActionBarMessage(p, nav.getMessage("drops-add").replace("{amount}", BalanceFormatter.format(add)).replace("{drop-type}", ItemName.valueOf(product.getId() + "__" + product.getData()).getName()));
                         } else new ActionBarMessage(p, nav.getMessage("armazem-max"));
                         if (productStorage.isAutoSell()) {
                             if (userProduct.getAmount() > 0) userProduct.sell(p.getPlayer(), productStorage);

@@ -1,8 +1,6 @@
-package centralworks.database.specifications;
+package centralworks.database;
 
-import centralworks.Main;
-import centralworks.database.Storable;
-import com.google.inject.Injector;
+import com.google.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Session;
@@ -16,21 +14,16 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T> {
+public class JpaRepository<O, T> implements Repository<O, T> {
 
     @Setter
     @Getter
-    private static Session session;
+    @Inject
+    private Session session;
     @Setter
     @Getter
-    private static EntityManager em;
-
-    static {
-        final Injector injector = Main.getInstance().getInjector();
-        ;
-        session = injector.getInstance(Session.class);
-        em = injector.getInstance(EntityManager.class);
-    }
+    @Inject
+    private EntityManager em;
 
     @Getter
     private final Class<O> target;
@@ -42,10 +35,13 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
     @Override
     @SuppressWarnings("unchecked")
     public O commit(O obj) {
-        if (exists((T) obj.getEntityIdentifier())) return update(obj);
-        em.getTransaction().begin();
-        em.persist(obj);
-        em.getTransaction().commit();
+        try {
+            return update(obj);
+        }catch (Exception ignored) {
+            em.getTransaction().begin();
+            em.persist(obj);
+            em.getTransaction().commit();
+        }
         return obj;
     }
 
@@ -54,10 +50,10 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
         em.getTransaction().begin();
         try {
             final O obj = em.find(target, id);
-            em.getTransaction().commit();
             return Optional.ofNullable(obj);
         } catch (Exception ignored) {
-            if (em.getTransaction().isActive()) em.getTransaction().commit();
+        } finally {
+            em.getTransaction().commit();
         }
         return Optional.empty();
     }
@@ -65,16 +61,24 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
     @Override
     public O update(O obj) {
         em.getTransaction().begin();
-        obj = em.merge(obj);
-        em.getTransaction().commit();
+        try {
+            obj = em.merge(obj);
+        }catch (Exception ignored) {
+        }finally {
+            em.getTransaction().commit();
+        }
         return obj;
     }
 
     @Override
     public void delete(O obj) {
         em.getTransaction().begin();
-        em.remove(obj);
-        em.getTransaction().commit();
+        try {
+            em.remove(obj);
+        } catch (Exception ignored) {
+        } finally {
+            em.getTransaction().commit();
+        }
     }
 
     @Override
@@ -84,13 +88,6 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
         o.ifPresent(em::remove);
         em.getTransaction().commit();
         return o;
-    }
-
-    @Override
-    public void deleteOf(T id, String idName) {
-        em.createQuery("DELETE FROM " + target.getName() + " t where w." + idName + "=:id")
-                .setParameter("id", id)
-                .executeUpdate();
     }
 
     @Override
@@ -104,20 +101,16 @@ public class JpaRepository<O extends Storable<O>, T> implements Repository<O, T>
     }
 
     @Override
-    public boolean exists(T id, String idName) {
-        final Long result = ((Long) em.createQuery("SELECT count(o) from " + target.getName() + " o where w." + idName + "=:id")
-                .setParameter("id", id)
-                .getSingleResult());
-        return !result.equals(0L);
-    }
-
-    @Override
     public boolean exists(T id) {
+        em.getTransaction().begin();
+        boolean result = false;
         try {
-            return read(id).isPresent();
-        } catch (Exception ignored) {
-            return false;
+            final Optional<O> o = Optional.ofNullable(em.find(target, id));
+            result = o.isPresent();
+        }catch (Exception ignored) {
         }
+        em.getTransaction().commit();
+        return result;
     }
 
     @Override

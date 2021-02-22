@@ -3,23 +3,22 @@ package centralworks.listeners.spawners;
 import centralworks.Main;
 import centralworks.cache.google.Caches;
 import centralworks.cache.simple.LimitCached;
+import centralworks.cache.simple.TCached;
+import centralworks.events.BoosterActiveEvent;
+import centralworks.events.SpawnerRemoveEvent;
+import centralworks.hooks.EconomyContext;
+import centralworks.lib.BalanceFormatter;
+import centralworks.lib.Settings;
+import centralworks.lib.enums.PluginSystemType;
 import centralworks.models.Limit;
 import centralworks.models.User;
 import centralworks.models.enums.ImpulseType;
 import centralworks.models.enums.LimitType;
 import centralworks.spawners.Identifiers;
-import centralworks.cache.simple.TCached;
 import centralworks.spawners.TaskType;
-import centralworks.events.BoosterActiveEvent;
-import centralworks.events.SpawnerRemoveEvent;
 import centralworks.spawners.models.Spawner;
 import centralworks.spawners.models.SpawnerImpulse;
 import centralworks.spawners.models.SpawnerItem;
-import centralworks.hooks.EconomyContext;
-import centralworks.lib.BalanceFormatter;
-import centralworks.lib.LocationUtils;
-import centralworks.lib.Settings;
-import centralworks.lib.enums.PluginSystemType;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
@@ -58,7 +57,7 @@ public class PlayerListeners implements Listener {
             e.setCancelled(true);
             if (type == ImpulseType.DROPS) return;
             final LoadingCache<String, Spawner> cache = Caches.getCache(Spawner.class);
-            Optional.ofNullable(cache.getIfPresent(LocationUtils.locToString(block.getLocation()))).ifPresent(spawner -> {
+            Optional.ofNullable(cache.getIfPresent(Main.getGson().toJson(block.getLocation()))).ifPresent(spawner -> {
                 if (!spawner.isOwner(p.getName())) {
                     p.sendMessage(nav.getMessage("onlyActiveBooster"));
                     return;

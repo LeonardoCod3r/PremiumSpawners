@@ -2,8 +2,7 @@ package centralworks.cache.simple;
 
 import centralworks.Main;
 import centralworks.models.User;
-import centralworks.database.SyncRequests;
-import centralworks.repositories.mysql.JpaUserRepository;
+import centralworks.repositories.JpaUserRepository;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class SpawnerRanking {
         loaded = false;
         final long l = System.currentTimeMillis();
         CompletableFuture
-                .supplyAsync(() -> SyncRequests.supply(JpaUserRepository.require()).getRepository().findAll())
+                .supplyAsync(() -> JpaUserRepository.require().findAll())
                 .thenApplyAsync(userDetails -> {
                     final List<Supplier> suppliers = Lists.newArrayList();
                     for (User user : userDetails) {

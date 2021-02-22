@@ -1,17 +1,17 @@
 package centralworks.layouts.menus.spawner;
 
-import centralworks.spawners.models.Spawner;
 import centralworks.layouts.settings.InfoSpawnerMenuS;
 import centralworks.layouts.settings.MenusSettings;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.inventory.Item;
 import centralworks.lib.inventory.addons.InventorySpawner;
+import centralworks.spawners.models.Spawner;
 import org.bukkit.entity.Player;
 
 public class InfoSpawnerMenu extends InventorySpawner {
-    
+
     private static final InfoSpawnerMenuS menu;
-    
+
     static {
         menu = MenusSettings.get().getInfoSpawnerMenuSettings();
     }

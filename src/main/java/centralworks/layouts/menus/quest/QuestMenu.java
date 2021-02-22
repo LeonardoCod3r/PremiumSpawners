@@ -1,17 +1,16 @@
 package centralworks.layouts.menus.quest;
 
 import centralworks.cache.google.Caches;
+import centralworks.lib.Date;
+import centralworks.lib.inventory.InventoryMaker;
+import centralworks.lib.inventory.Item;
 import centralworks.quests.models.PlayerQuests;
 import centralworks.quests.models.QuestData;
 import centralworks.quests.structure.CraftQuest;
 import centralworks.quests.structure.CraftQuestSettings;
-import centralworks.lib.Date;
-import centralworks.lib.inventory.InventoryMaker;
-import centralworks.lib.inventory.Item;
 import com.google.common.cache.LoadingCache;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.stream.Collectors;

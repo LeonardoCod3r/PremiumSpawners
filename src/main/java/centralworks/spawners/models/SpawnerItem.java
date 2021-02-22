@@ -1,14 +1,13 @@
 package centralworks.spawners.models;
 
 import centralworks.Main;
-import centralworks.spawners.Identifiers;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.PlayerCommons;
 import centralworks.lib.enums.EntityName;
 import centralworks.lib.inventory.Item;
+import centralworks.spawners.Identifiers;
 import com.google.common.collect.Lists;
 import lombok.*;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
@@ -174,7 +173,7 @@ public class SpawnerItem {
         this.amountSpawners = spawner.getAmount();
     }
 
-    public void put(Location loc){
+    public void put(Location loc) {
         loc.getBlock().setType(Material.getMaterial("MOB_SPAWNER"));
         val spawnerBlock = ((CreatureSpawner) loc.getBlock().getState());
         spawnerBlock.setCreatureTypeByName(getEntityType().name());

@@ -1,8 +1,8 @@
 package centralworks.hooks;
 
 import centralworks.cache.google.Caches;
-import centralworks.models.User;
 import centralworks.lib.BalanceFormatter;
+import centralworks.models.User;
 import com.google.common.cache.LoadingCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;

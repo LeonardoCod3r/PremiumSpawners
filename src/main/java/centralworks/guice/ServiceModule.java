@@ -1,17 +1,18 @@
-package centralworks.database.specifications;
+package centralworks.guice;
 
 import centralworks.Main;
-import centralworks.models.User;
+import centralworks.database.JpaRepository;
+import centralworks.lib.Settings;
 import centralworks.models.BoosterPlayer;
-import centralworks.models.UserProduct;
 import centralworks.models.ProductStorage;
+import centralworks.models.User;
+import centralworks.models.UserProduct;
 import centralworks.quests.models.PlayerQuests;
 import centralworks.quests.models.QuestData;
 import centralworks.quests.models.QuestRule;
 import centralworks.spawners.models.Spawner;
 import centralworks.spawners.models.SpawnerImpulse;
 import centralworks.spawners.models.Statistics;
-import centralworks.lib.Settings;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -62,25 +63,24 @@ public class ServiceModule extends AbstractModule {
 
     private void defineProps(Properties settings) {
         final Settings.Navigate data = Main.getInstance().getData().navigate();
-        settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-        settings.put(Environment.URL, "jdbc:mysql://" + data.getString("MySQL.Host") + ":" + data.getString("MySQL.Port") + "/" + data.getString("MySQL.Database") + "?useSSL=false&useTimezone=true&serverTimezone=UTC");
-        settings.put(Environment.USER, data.getString("MySQL.User"));
-        settings.put(Environment.PASS, data.getString("MySQL.Password"));
-        settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-        settings.put(Environment.SHOW_SQL, data.getString("Advanced.showSql"));
-        settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-        settings.put(Environment.HBM2DDL_AUTO, "update");
-        settings.put(Environment.CONNECTION_PROVIDER, "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-        settings.put("hibernate.hikari.minimumIdle", data.getString("Advanced.minimumIdle"));
-        settings.put("hibernate.hikari.maximumPoolSize", data.getString("Advanced.maximumPoolSize"));
-        settings.put("hibernate.hikari.idleTimeout", data.getString("Advanced.idleTimeout"));
+        settings.put(Environment.DRIVER, data.getString("Database.driver"));
+        settings.put(Environment.URL, data.getString("Database.url"));
+        settings.put(Environment.USER, data.getString("Database.user"));
+        settings.put(Environment.PASS, data.getString("Database.password"));
+        settings.put(Environment.DIALECT, data.getString("Database.dialect"));
+        settings.put(Environment.SHOW_SQL, data.getString("Database.showSql"));
+        settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, data.getString("Database.currentSessionContextClass"));
+        settings.put(Environment.HBM2DDL_AUTO, data.getString("Database.hbm2ddlAuto"));
+        settings.put(Environment.CONNECTION_PROVIDER, data.getString("Database.connectionProvider"));
+        settings.put("hibernate.hikari.minimumIdle", data.getString("Database.minimumIdle"));
+        settings.put("hibernate.hikari.maximumPoolSize", data.getString("Database.maximumPoolSize"));
+        settings.put("hibernate.hikari.idleTimeout", data.getString("Database.idleTimeout"));
     }
 
     @Provides
     public Session provideSessionManager(SessionFactory sessionFactory) {
         Session session = SESSION_CACHE.get();
         if (session == null) SESSION_CACHE.set(session = sessionFactory.openSession());
-        JpaRepository.setSession(session);
         return session;
     }
 
@@ -88,7 +88,6 @@ public class ServiceModule extends AbstractModule {
     public EntityManager provideEntityManager(SessionFactory sessionFactory) {
         EntityManager entityManager = ENTITY_MANAGER_CACHE.get();
         if (entityManager == null) ENTITY_MANAGER_CACHE.set(entityManager = sessionFactory.createEntityManager());
-        JpaRepository.setEm(entityManager);
         return entityManager;
     }
 }

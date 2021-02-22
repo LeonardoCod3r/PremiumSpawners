@@ -1,8 +1,8 @@
 package centralworks.lib.inventory.addons;
 
 import centralworks.cache.google.Caches;
-import centralworks.spawners.models.Spawner;
 import centralworks.lib.inventory.InventoryMaker;
+import centralworks.spawners.models.Spawner;
 import com.google.common.cache.LoadingCache;
 import lombok.Getter;
 import lombok.Setter;

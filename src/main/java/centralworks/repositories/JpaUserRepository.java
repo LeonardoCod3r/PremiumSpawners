@@ -1,7 +1,8 @@
-package centralworks.repositories.mysql;
+package centralworks.repositories;
 
+import centralworks.Main;
+import centralworks.database.JpaRepository;
 import centralworks.models.User;
-import centralworks.database.specifications.JpaRepository;
 
 public class JpaUserRepository extends JpaRepository<User, String> {
 
@@ -12,7 +13,7 @@ public class JpaUserRepository extends JpaRepository<User, String> {
     }
 
     public static JpaUserRepository require() {
-        return repository == null ? repository = new JpaUserRepository() : repository;
+        return repository == null ? repository = Main.getInstance().getInjector().getInstance(JpaUserRepository.class) : repository;
     }
 
 }

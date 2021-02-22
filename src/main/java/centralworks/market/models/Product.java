@@ -7,7 +7,6 @@ import centralworks.lib.inventory.Item;
 import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -30,12 +29,17 @@ public class Product {
     @Setter(AccessLevel.PRIVATE)
     private int idTask;
 
+    public static void sold(String idProduct, Double amount) {
+        val market = Market.getInstance();
+        market.findProductById(idProduct).ifPresent(product -> product.sold(amount));
+    }
+
     public void resetSoldAmount() {
         this.soldAmount = 0.0;
     }
 
     public void runDelayToResetSoldAmount() {
-        idTask = Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), this::resetSoldAmount, 60 * 60 * 20L).getTaskId();
+        idTask = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), this::resetSoldAmount, 60 * 60 * 20L, 60 * 60 * 20L).getTaskId();
     }
 
     public EntityType getEntityType() {
@@ -51,17 +55,16 @@ public class Product {
     }
 
     public void calculatePrice(int holdKey) {
+        var valor = 0.0;
+        if (!rulesMarket.realistic || rulesMarket.amountMax < this.soldAmount) valor = rulesMarket.originalPrice;
+        else {
+            var current = rulesMarket.originalPrice;
+            var ratio = (this.soldAmount - rulesMarket.amountMax) / rulesMarket.baseForCalculateFall;
+            current -= ratio * rulesMarket.repercussionForFall / 100;
+            current = Math.max(rulesMarket.priceMin, current);
+            valor = current;
+        }
         if (holdKey == -1 || this.holdKey == holdKey) {
-            var valor = 0.0;
-            if (rulesMarket.realistic) valor = rulesMarket.originalPrice;
-            else {
-                var current = rulesMarket.originalPrice;
-                var ratio = rulesMarket.amountMax / soldAmount;
-                current += ratio * rulesMarket.bonus - rulesMarket.bonus;
-                current = Math.ceil(current);
-                current = ratio < 1 ? Math.max(rulesMarket.priceMin, current) : Math.min(rulesMarket.priceMax, current);
-                valor = current;
-            }
             setCurrentPrice(valor);
         }
     }
@@ -74,16 +77,15 @@ public class Product {
         this.soldAmount -= soldAmount;
     }
 
+    public void firstValue() {
+        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> this.calculatePrice(-1));
+    }
+
     public void sold(Double amount) {
         val holdKey = ThreadLocalRandom.current().nextInt(10000);
         this.setHoldKey(holdKey);
         this.addSoldAmount(amount);
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> this.calculatePrice(holdKey));
-    }
-
-    public static void sold(String idProduct, Double amount) {
-        val market = Market.getInstance();
-        market.findProductById(idProduct).ifPresent(product -> product.sold(amount));
     }
 
     @Data
@@ -93,9 +95,9 @@ public class Product {
 
         private boolean realistic = false;
         private Double priceMin;
-        private Double priceMax;
+        private Double baseForCalculateFall;
         private Double originalPrice;
-        private Double bonus;
+        private Double repercussionForFall;
         private Double amountMax;
 
     }

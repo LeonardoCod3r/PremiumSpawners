@@ -3,13 +3,7 @@ package centralworks.models;
 import centralworks.Main;
 import centralworks.cache.google.Caches;
 import centralworks.cache.simple.BonusRegistered;
-import centralworks.database.Storable;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
 import centralworks.market.models.Market;
-import centralworks.market.models.Product;
-import centralworks.repositories.json.FastDropStorageRepository;
-import centralworks.repositories.mysql.JpaDropStorageRepository;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
@@ -29,7 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class ProductStorage extends Storable<ProductStorage> implements Serializable {
+public class ProductStorage implements Serializable {
 
     @Id
     @Column(length = 16)
@@ -49,13 +43,13 @@ public class ProductStorage extends Storable<ProductStorage> implements Serializ
     @Setter
     @Expose
     private Integer bonus = 0;
-    @OneToMany(mappedBy = "dropStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "productStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
     @Expose
     private List<BoosterPlayer> boostersActive = Lists.newArrayList();
-    @OneToMany(mappedBy = "dropStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "productStorage", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Getter
     @Setter
@@ -74,18 +68,6 @@ public class ProductStorage extends Storable<ProductStorage> implements Serializ
 
     public ProductStorage(String owner) {
         this.owner = owner;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<ProductStorage, String> getRepository() {
-        final BindRepository<ProductStorage, String> bindRepository = new BindRepository<>(ProductStorage.class, JpaDropStorageRepository.require(), FastDropStorageRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
-    @Override
-    public Object getEntityIdentifier() {
-        return this.owner;
     }
 
     public String isAutoSellResult() {

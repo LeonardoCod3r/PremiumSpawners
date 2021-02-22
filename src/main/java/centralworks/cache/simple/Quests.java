@@ -1,7 +1,7 @@
 package centralworks.cache.simple;
 
-import centralworks.quests.structure.CraftQuest;
 import centralworks.lib.ListCache;
+import centralworks.quests.structure.CraftQuest;
 
 public class Quests extends ListCache<CraftQuest> {
 

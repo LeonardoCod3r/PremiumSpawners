@@ -3,15 +3,11 @@ package centralworks.quests.models;
 import centralworks.cache.simple.Quests;
 import centralworks.quests.structure.CraftQuest;
 import centralworks.quests.structure.CraftQuestSettings;
-import centralworks.database.Storable;
-import centralworks.database.specifications.BindRepository;
-import centralworks.database.specifications.Repository;
-import centralworks.repositories.json.FastUserQuestsRepository;
-import centralworks.repositories.mysql.JpaUserQuestsRepository;
-import centralworks.spawners.models.Spawner;
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.Expose;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -25,12 +21,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 @Data
-public class PlayerQuests extends Storable<PlayerQuests> implements Serializable {
+public class PlayerQuests implements Serializable {
 
     @Id
     @Column(length = 16)
@@ -49,18 +44,6 @@ public class PlayerQuests extends Storable<PlayerQuests> implements Serializable
 
     public PlayerQuests(String name) {
         this.name = name;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Repository<PlayerQuests, String> getRepository() {
-        final BindRepository<PlayerQuests, String> bindRepository = new BindRepository<>(PlayerQuests.class, JpaUserQuestsRepository.require(), FastUserQuestsRepository.require());
-        return bindRepository.getRelativeRepository();
-    }
-
-    @Override
-    public Object getEntityIdentifier() {
-        return this.name;
     }
 
     public Player getPlayer() {

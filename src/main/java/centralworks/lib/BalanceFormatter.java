@@ -45,7 +45,7 @@ public class BalanceFormatter {
 
     public static String format(Double value) {
         int index = 0;
-        while(value / 1000.0 >= 1.0) {
+        while (value / 1000.0 >= 1.0) {
             value /= 1000.0;
             ++index;
         }

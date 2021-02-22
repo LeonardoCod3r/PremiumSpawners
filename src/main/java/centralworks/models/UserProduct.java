@@ -52,7 +52,7 @@ public class UserProduct {
     public void sell(Player p, ProductStorage storage) {
         getProduct().ifPresent(product -> {
             val v = product.getCurrentPrice() * amount;
-            final EconomyContext.Economy economy = EconomyContext.getContext(PluginSystemType.PRODUCT_STORAGE).getEconomy();
+            val economy = EconomyContext.getContext(PluginSystemType.PRODUCT_STORAGE).getEconomy();
             economy.addMoney(p.getName(), v + (v * storage.getBonus() / 100));
             product.sold(amount);
             setAmount(0D);
@@ -60,9 +60,9 @@ public class UserProduct {
     }
 
     public Double getPrice(ProductStorage storage) {
-        AtomicReference<Double> price = new AtomicReference<>(0.0);
+        val price = new AtomicReference<>(0.0);
         getProduct().ifPresent(product -> {
-            final double value = product.getCurrentPrice() * getAmount();
+            val value = product.getCurrentPrice() * getAmount();
             price.set(value + (value * storage.getBonus() / 100));
         });
         return price.get();

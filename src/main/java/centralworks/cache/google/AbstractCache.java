@@ -1,10 +1,8 @@
 package centralworks.cache.google;
 
-import centralworks.database.Storable;
-
 import java.util.Optional;
 
-public abstract class AbstractCache<O extends Storable<O>> implements Cache<O> {
+public abstract class AbstractCache<O> implements Cache<O> {
 
     public O getIfPresent(String key) {
         final O obj = getCache().getIfPresent(key);
@@ -14,5 +12,7 @@ public abstract class AbstractCache<O extends Storable<O>> implements Cache<O> {
             return opt.orElse(null);
         }
     }
+
+    public abstract Class<O> getClassRelative();
 
 }

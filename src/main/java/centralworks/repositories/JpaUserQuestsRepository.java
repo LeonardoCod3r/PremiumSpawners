@@ -1,7 +1,8 @@
-package centralworks.repositories.mysql;
+package centralworks.repositories;
 
+import centralworks.Main;
+import centralworks.database.JpaRepository;
 import centralworks.quests.models.PlayerQuests;
-import centralworks.database.specifications.JpaRepository;
 
 public class JpaUserQuestsRepository extends JpaRepository<PlayerQuests, String> {
 
@@ -12,6 +13,6 @@ public class JpaUserQuestsRepository extends JpaRepository<PlayerQuests, String>
     }
 
     public static JpaUserQuestsRepository require() {
-        return repository == null ? repository = new JpaUserQuestsRepository() : repository;
+        return repository == null ? repository = Main.getInstance().getInjector().getInstance(JpaUserQuestsRepository.class) : repository;
     }
 }

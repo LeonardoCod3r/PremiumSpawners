@@ -2,10 +2,6 @@ package centralworks.commands;
 
 import centralworks.Main;
 import centralworks.cache.google.Caches;
-import centralworks.market.models.Product;
-import centralworks.models.Drop;
-import centralworks.models.UserProduct;
-import centralworks.models.ProductStorage;
 import centralworks.lib.ActionBarMessage;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Settings;
@@ -13,6 +9,9 @@ import centralworks.lib.enums.ItemName;
 import centralworks.lib.enums.Permission;
 import centralworks.lib.inventory.InventoryMaker;
 import centralworks.lib.inventory.Item;
+import centralworks.market.models.Product;
+import centralworks.models.ProductStorage;
+import centralworks.models.UserProduct;
 import com.google.common.cache.LoadingCache;
 import lombok.val;
 import org.bukkit.Bukkit;
@@ -113,7 +112,8 @@ public class SellCommand extends BukkitCommand {
                                     .replace("{future-state}", "" + (!productStorage.isAutoSell() ? "ativar" : "desativar")))
                                     .collect(Collectors.toList()))
                             .onClick(inventoryClickEvent -> {
-                                if (!Permission.hasPermission(p, Permission.AUTO_SELL)) productStorage.setAutoSell(false);
+                                if (!Permission.hasPermission(p, Permission.AUTO_SELL))
+                                    productStorage.setAutoSell(false);
                                 else productStorage.setAutoSell(!productStorage.isAutoSell());
                                 Bukkit.dispatchCommand(p, "drops " + productStorage.getOwner());
                             }));
@@ -133,7 +133,7 @@ public class SellCommand extends BukkitCommand {
                                     if (userProduct.getAmount() > 0) {
                                         new ActionBarMessage(p, messages.getMessage("drops-sell")
                                                 .replace("{amount}", BalanceFormatter.format(userProduct.getAmount()))
-                                                .replace("{item}", ItemName.valueOf(product.getId()).getName())
+                                                .replace("{item}", ItemName.valueOf(product.getId() + "__" + product.getData()).getName())
                                                 .replace("{price}", BalanceFormatter.format(userProduct.getPrice(productStorage))));
                                         userProduct.sell(p, productStorage);
                                     }

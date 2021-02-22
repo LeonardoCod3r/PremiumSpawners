@@ -6,10 +6,10 @@
       "mob": "ZOMBIE",
       "rulesMarket": {
         "realistic": true,
-        "priceMin": 250.0,
-        "priceMax": 1850.0,
-        "originalPrice": 987.0,
-        "bonus": 11.0,
+        "priceMin": 100.0,
+        "baseForCalculateFall": 40.0,
+        "originalPrice": 451.0,
+        "repercussionForFall": 4.0,
         "amountMax": 1000000.0
       },
       "lootItemMenu": {
@@ -31,9 +31,9 @@
       "rulesMarket": {
         "realistic": true,
         "priceMin": 50.0,
-        "priceMax": 1600.0,
+        "baseForCalculateFall": 30.0,
         "originalPrice": 253.0,
-        "bonus": 7.0,
+        "repercussionForFall": 3.0,
         "amountMax": 1000000.0
       },
       "lootItemMenu": {
@@ -54,7 +54,7 @@
       "mob": "IRON_GOLEM",
       "rulesMarket": {
         "realistic": false,
-        "originalPrice": 253.0
+        "originalPrice": 862.0
       },
       "lootItemMenu": {
         "item_id": "IRON_GOLEM",

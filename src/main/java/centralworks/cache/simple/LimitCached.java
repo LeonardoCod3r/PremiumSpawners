@@ -1,7 +1,7 @@
 package centralworks.cache.simple;
 
-import centralworks.models.Limit;
 import centralworks.lib.ListCache;
+import centralworks.models.Limit;
 
 public class LimitCached extends ListCache<Limit> {
 

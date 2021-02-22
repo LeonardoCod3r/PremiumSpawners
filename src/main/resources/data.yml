@@ -1,13 +1,14 @@
 Answered: false #no edit this
-Database: MYSQL #LOCAL for small servers or MYSQL for large servers.
-MySQL:
-  User: "root"
-  Password: "123"
-  Database: "main"
-  Host: "localhost"
-  Port: "3306"
-Advanced:
+Database:
+  driver: "com.mysql.cj.jdbc.Driver"
+  url: "jdbc:mysql://localhost:3306/main?useSSL=false&useTimezone=true&serverTimezone=UTC"
+  user: "root"
+  password: ""
+  dialect: "org.hibernate.dialect.MySQL5Dialect"
   showSql: "true"
+  currentSessionContextClass: "thread"
+  hbm2ddlAuto: "update"
+  connectionProvider: "org.hibernate.hikaricp.internal.HikariCPConnectionProvider"
   minimumIdle: "5"
   maximumPoolSize: "50"
   idleTimeout: "30000"
