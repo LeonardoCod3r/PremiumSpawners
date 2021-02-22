@@ -1,6 +1,6 @@
 package centralworks.cache.google;
 
-import com.google.common.cache.*;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import lombok.Getter;

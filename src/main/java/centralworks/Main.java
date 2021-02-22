@@ -1,8 +1,8 @@
 package centralworks;
 
 import centralworks.adapters.LocationTypeAdapter;
-import centralworks.guice.ServiceModule;
 import centralworks.guice.PluginModule;
+import centralworks.guice.ServiceModule;
 import centralworks.hooks.DynmapHook;
 import centralworks.lib.BalanceFormatter;
 import centralworks.lib.Settings;

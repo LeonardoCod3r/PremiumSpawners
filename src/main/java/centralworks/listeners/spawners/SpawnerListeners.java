@@ -12,7 +12,6 @@ import centralworks.spawners.models.Spawner;
 import centralworks.spawners.models.SpawnerBuilder;
 import centralworks.spawners.models.SpawnerItem;
 import centralworks.spawners.utils.FilteringFunctions;
-import lombok.Getter;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

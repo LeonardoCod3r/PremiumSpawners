@@ -37,7 +37,7 @@ public class JpaRepository<O, T> implements Repository<O, T> {
     public O commit(O obj) {
         try {
             return update(obj);
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
             em.getTransaction().begin();
             em.persist(obj);
             em.getTransaction().commit();
@@ -63,8 +63,8 @@ public class JpaRepository<O, T> implements Repository<O, T> {
         em.getTransaction().begin();
         try {
             obj = em.merge(obj);
-        }catch (Exception ignored) {
-        }finally {
+        } catch (Exception ignored) {
+        } finally {
             em.getTransaction().commit();
         }
         return obj;
@@ -107,7 +107,7 @@ public class JpaRepository<O, T> implements Repository<O, T> {
         try {
             final Optional<O> o = Optional.ofNullable(em.find(target, id));
             result = o.isPresent();
-        }catch (Exception ignored) {
+        } catch (Exception ignored) {
         }
         em.getTransaction().commit();
         return result;

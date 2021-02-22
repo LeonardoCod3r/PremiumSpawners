@@ -10,7 +10,6 @@ import centralworks.listeners.dropstorage.EntityListeners;
 import centralworks.listeners.dropstorage.PlayerListeners;
 import centralworks.market.MarketLoader;
 import centralworks.market.models.Market;
-import centralworks.market.models.Product;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;

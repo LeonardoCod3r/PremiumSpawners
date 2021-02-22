@@ -1,7 +1,6 @@
 package centralworks.guice;
 
 import centralworks.Main;
-import centralworks.database.JpaRepository;
 import centralworks.lib.Settings;
 import centralworks.models.BoosterPlayer;
 import centralworks.models.ProductStorage;
