@@ -1,2 +1,4 @@
 # PremiumSpawners
-This is the source code of my minecraft plugin with advanced monster generator system and integrated missions. BETA VERSION
+## Archived
+
+Arquivei esse projeto porque está desorganizado e não está dentro dos conformes dos padrões de programação Java. Neste momento, estou trabalhando para replanejar os sistemas proporcionados por este plugin.
